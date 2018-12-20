@@ -1,4 +1,10 @@
 {
+  "plugins": {
+    "lyqPlugin": {
+      "version": "1.0.0",
+      "provider": "wx4b1c27ae1940d4fd"
+    }
+  },
   "pages": [
     "pages/manage/manage",
     "pages/plan/plan",
@@ -44,40 +50,30 @@
     ]
   },
   "usingComponents": {
-    "address-view-edit": "components/address-view-edit/address-view-edit",
-    "allot-edit": "components/allot-edit/allot-edit",
-    "array-view-edit": "components/array-view-edit/array-view-edit",
-    "asset-type": "components/asset-type/asset-type",
-    "audio-view-edit": "components/audio-view-edit/audio-view-edit",
-    "content-edit": "components/content-edit/content-edit",
-    "date-view-edit": "components/date-view-edit/date-view-edit",
-    "field-view": "components/field-view/field-view",
-    "file-select": "components/file-select/file-select",
-    "goods-type": "components/goods-type/goods-type",
-    "gstct-type": "components/gstct-type/gstct-type",
-    "map-select-unit": "components/map-select-unit/map-select-unit",
-    "pics-view-edit": "components/pics-view-edit/pics-view-edit",
-    "record-view": "components/record-view/record-view",
-    "recycle-dragsort": "components/recycle-dragsort/recycle-dragsort",
-    "recycle-select": "components/recycle-select/recycle-select",
-    "rich-view-edit": "components/rich-view-edit/rich-view-edit",
-    "share-order": "components/share-order/share-order",
-    "switch-afamily": "components/switch-afamily/switch-afamily",
-    "thumbnail-view-edit": "components/thumbnail-view-edit/thumbnail-view-edit",
-    "time-view-edit": "components/time-view-edit/time-view-edit",
-    "video-view-edit": "components/video-view-edit/video-view-edit"
+    "address-view-edit": "plugin://lyqPlugin/components/address-view-edit/address-view-edit",
+    "allot-edit": "plugin://lyqPlugin/components/allot-edit/allot-edit",
+    "array-view-edit": "plugin://lyqPlugin/components/array-view-edit/array-view-edit",
+    "asset-type": "plugin://lyqPlugin/components/asset-type/asset-type",
+    "audio-view-edit": "plugin://lyqPlugin/components/audio-view-edit/audio-view-edit",
+    "content-edit": "plugin://lyqPlugin/components/content-edit/content-edit",
+    "date-view-edit": "plugin://lyqPlugin/components/date-view-edit/date-view-edit",
+    "field-view": "plugin://lyqPlugin/components/field-view/field-view",
+    "file-select": "plugin://lyqPlugin/components/file-select/file-select",
+    "goods-type": "plugin://lyqPlugin/components/goods-type/goods-type",
+    "gstct-type": "plugin://lyqPlugin/components/gstct-type/gstct-type",
+    "map-select-unit": "plugin://lyqPlugin/components/map-select-unit/map-select-unit",
+    "pics-view-edit": "plugin://lyqPlugin/components/pics-view-edit/pics-view-edit",
+    "record-view": "plugin://lyqPlugin/components/record-view/record-view",
+    "recycle-dragsort": "plugin://lyqPlugin/components/recycle-dragsort/recycle-dragsort",
+    "recycle-select": "plugin://lyqPlugin/components/recycle-select/recycle-select",
+    "rich-view-edit": "plugin://lyqPlugin/components/rich-view-edit/rich-view-edit",
+    "share-order": "plugin://lyqPlugin/components/share-order/share-order",
+    "switch-afamily": "plugin://lyqPlugin/components/switch-afamily/switch-afamily",
+    "thumbnail-view-edit": "plugin://lyqPlugin/components/thumbnail-view-edit/thumbnail-view-edit",
+    "time-view-edit": "plugin://lyqPlugin/components/time-view-edit/time-view-edit",
+    "video-view-edit": "plugin://lyqPlugin/components/video-view-edit/video-view-edit"
   },
   "subPackages": [
-    {
-      "root": "pluginPage",
-      "pages": [
-        "approve/approve",
-        "procedures/procedures",
-        "vprocedure/vprocedure",
-        "lprocedures/lprocedures",
-        "fprocedure/fprocedure"
-      ]
-    },
     {
       "root": "index",
       "pages": [

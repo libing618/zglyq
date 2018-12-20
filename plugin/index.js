@@ -1,9 +1,11 @@
 const db = wx.cloud.database();
 let app=getApp()
-function formatNumber(n) {
-  n = n.toString()
-  return n[1] ? n : '0' + n
-};
+export function iMenu(indexArr, menuArr) {
+  allMenu = require['modules.js'][indexArr];
+  return menuArr.map(rNumber=> {
+    return { tourl: allMenu['N' + rNumber].tourl, mIcon: allMenu[indexArr]['m' + rNumber], mName: allMenu[indexArr]['N' + rNumber].mName }
+  })
+}
 
 export function hTabClick(e) {                                //点击头部tab
   this.setData({
