@@ -1,0 +1,34 @@
+<view id="{{name}}">
+  <view wx:if="{{showModalBox}}" class="place_box" style="top:{{useWindowTop}}px;height:{{useWindowHeight}}px;">
+    <view class="modal_box" bindtap="downModal"></view>
+    <view animation="{{animationData}}" class="modal_attr_box" style="top:{{useWindowTop}}px;height:{{useWindowHeight}}px;">
+      <view class="page__hd">
+        <view class="page__title">
+          <view wx:if="{{replacefile}}" class="pm-sure_btn" bindtap="fSave">确定</view>
+          <view class="pm-cancel_btn" bindtap="downModal">返回</view>
+        </view>
+        <view class="close_icon" bindtap="downModal">×</view>
+      </view>
+      <view class="page__bd">
+        <swiper class="swiper_box" indicator-dots="{{false}}" autoplay="{{true}}">
+          <block wx:for="{{filepaths}}" wx:key="{{index}}">
+            <swiper-item>
+              <image src="{{item}}" class="swimage"></image>
+              <rich-view-edit name="{{name}}-e{{index}}" value="{{explain[index]}}" csc="e" editable="1"/>
+            </swiper-item>
+          </block>
+        </swiper>
+      </view>
+    </view>
+  </view>
+  <view wx:else bindtap="choosepics">
+    <swiper class="swiper_box" indicator-dots="{{false}}" autoplay="{{true}}">
+      <block wx:for="{{filepaths}}" wx:key="{{index}}">
+        <swiper-item>
+          <image src="{{item}}" class="swimage"></image>
+          <rich-view-edit name="{{name}}-e{{index}}" value="{{explain[index]}}" csc="e" editable="0"/>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+</view>

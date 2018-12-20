@@ -1,0 +1,27 @@
+<import src="../../libs/wepage.wxml" />
+<view class="page">
+  <template is="p_navBar__switchTab" data="{{statusBar,navBarTitle:' 创业服务平台--生产管理'}}"/>
+  <view class="page__hd">
+    <view class="page__title">产量库存总览</view>
+    <view class="page__desc">可供应总量{{pandect[0]}}件，总库存{{pandect[1]}}件。</view>
+  </view>
+  <view class="page__bd">
+    <template is="showgrids" data="{{grids}}"/>
+  </view>
+  <view class="weui-panel weui-panel_access">
+    <block wx:for="{{mPage}}" wx:key="{{index}}" wx:for-item="ac">
+      <view class="weui-media-box weui-media-box_small-appmsg">
+        <navigator url="/pluginPage/vprocedure/vprocedure?pNo={{pNo}}&artId={{ac}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+          <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+            <image class="weui-media-box__thumb" src="{{pageData[ac].thumbnail}}" background-size="cover"></image>
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">{{pageData[ac].uName}}</view>
+            <view class="weui-media-box__desc">{{pageData[ac].title}}</view>
+            <view class="weui-media-box__desc">可供应量{{pageData[ac].canSupply}},库存{{pageData[ac].cargoStock}}</view>
+          </view>
+        </navigator>
+      </view>
+    </block>
+  </view>
+</view>

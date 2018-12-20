@@ -1,0 +1,28 @@
+<import src="../../libs/wepage.wxml" />
+<view class="page">
+  <template is="p_navBar__switchTab" data="{{statusBar,navBarTitle:' 创业服务平台--营销管理'}}"/>
+  <view class="page__hd">
+    <view class="page__title">销售情况总览</view>
+    <view class="page__desc">销量{{pandect[0]}}，预定未付款{{pandect[1]}}件，付款未发货{{pandect[2]}}件，发货未收到{{pandect[3]}}件，交货且签收{{pandect[4]}}件。</view>
+  </view>
+  <view class="page__bd">
+    <template is="showgrids" data="{{grids}}"/>
+  </view>
+  <view class="weui-tab">
+    <block wx:for="{{mPage}}" wx:key="{{index}}" wx:for-item="ac">
+      <view class="weui-cells">
+        <navigator url="/pluginPage/vprocedure/vprocedure?pNo={{pNo}}&artId={{ac}}">
+          <view class="weui-media-box weui-media-box_appmsg" hover="true" hover-class="weui-cell_active">
+            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+              <image class="weui-media-box__thumb" src="{{pageData[ac].thumbnail}}" background-size="cover"></image>
+            </view>
+            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+              <view class="weui-media-box__title">{{pageData[ac].uName}}:销量{{pageData[ac].sold}}</view>
+              <view class="weui-media-box__desc">付款未发货{{pageData[ac].payment}},交货且签收{{pageData[ac].delivered}}</view>
+            </view>
+          </view>
+        </navigator>
+      </view>
+    </block>
+  </view>
+</view>

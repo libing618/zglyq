@@ -1,0 +1,259 @@
+<import src="wedetail.wxml" />
+<wxs module="mDot">
+module.exports =
+  function(i,cArray){ return i==cArray.length-1 ? '' : '、' }
+</wxs>
+<wxs module="mid">
+module.exports = ['T', 'p','sg','so', 'Geo', '-1', '-2', '-3', '-4','-5']
+</wxs>
+<template name="i_-1">
+  <view class="weui-label">{{p}}</view>
+  <pics-view-edit name="{{gname}}" value="{{c}}" editable="1"></pics-view-edit>
+</template>
+
+<template name="i_-2">
+  <view class="weui-label">{{p}}</view>
+  <thumbnail-view-edit name="{{gname}}" csc="pic" value="{{c}}" p="{{p}}" editable="1"></thumbnail-view-edit>
+</template>
+
+<template name="i_-3">
+  <view class="weui-label">{{p}}</view>
+  <audio-view-edit name="{{gname}}" value="{{c}}" editable="1"></audio-view-edit>
+</template>
+
+<template name="i_-4">
+  <view class="weui-label">{{p}}</view>
+  <video-view-edit name="{{gname}}" value="{{c}}" editable="1"></video-view-edit>
+</template>
+
+<template name="i_-5">
+  <view class="weui-label">{{p}}</view>
+  <file-select name="{{gname}}" value="{{c}}" editable="1"></file-select>
+</template>
+
+<template name="i_-6">
+  <view class="weui-label">{{p}}</view>
+  <thumbnail-view-edit name="{{gname}}" csc="{{csc}}" value="{{c}}" editable="1"></thumbnail-view-edit>
+</template>
+
+<template name="i_are">
+  <array-view-edit name="{{gname}}" value="{{c}}" p="{{p}}" editable="1"></array-view-edit>
+</template>
+
+<template name="i_ast">
+  <asset-type name="{{gname}}" value="{{c}}" p="{{p}}"></asset-type>
+</template>
+
+<template name="i_cAe">
+  <view class="weui-label">{{p}}</view>
+  <content-edit name="{{gname}}" value="{{c}}" editable="1"></content-edit>
+</template>
+
+<template name="i_digit">
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">{{p}}:</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input id="{{gname}}" name="{{gname}}" value="{{c}}" class="weui-input" bindblur="i_digit"/>
+    </view>
+  </view>
+</template>
+
+<template name="i_dVE">
+  <date-view-edit name="{{gname}}" value="{{c}}" p="{{p}}"  enableTime="{{false}}" editable="1"></date-view-edit>
+</template>
+
+<template name="i_dtE">
+  <date-view-edit name="{{gname}}" value="{{c}}" p="{{p}}"  enableTime="{{true}}" editable="1"></date-view-edit>
+</template>
+
+<template name="i_eDetail">
+  <view class="weui-label">{{p}}</view>
+  <view class="weui-article">
+    <block wx:for="{{c}}" wx:key="{{index}}" wx:for-index="n">
+      <view style="transform: translateX(-{{selectd==n ? translateX : 0}}rpx); transition: transform {{transitionTime/1000}}s;" id="ad-{{n}}" catchtouchstart="i_eDetail" catchtouchmove=" m_touchmove" catchtouchmove=" m_touchebd">
+        <button class="weui-btn" style="display:{{ selectd==n ? 'flex' : 'none' }}" formType="submit" id="fdeldata">删除</button>
+        <view class="weui-msg" style="background-color:{{selectd==n ? '#999999' : '#F8F8F8'}};">
+          <template is="d{{item.t}}" data="{{c:item,n,editable:1}}"></template>
+        </view>
+        <button class="wslider-left-item" style="display:{{ selectd==n ? 'flex' : 'none' }}" formType="submit" id="fenins">插入</button>
+      </view>
+    </block>
+  </view>
+</template>
+
+<template name="i_fg">
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">{{p}}:</view>
+    </view>
+    <view class="weui-cell__bd">
+      <view>{{c ? c : 0}}</view>
+      <input hidden="{{true}}" name="{{gname}}" value="{{c}}"/>
+    </view>
+  </view>
+</template>
+
+<template name="i_Geo">
+  <view class="weui-label">{{p}}</view>
+  <address-view-edit name="{{gname}}" value="{{c}}" editable="1"></address-view-edit>
+</template>
+
+<template name="i_gSt">
+  <goods-type name="{{gname}}" value="{{c}}" p="{{p}}" editable="1"></goods-type>
+</template>
+
+<template name="i_h1">
+<view class="weui-cell weui-cell_input">
+  <view class="weui-cell__hd">
+      <view class="weui-label">{{p}}:</view>
+  </view>
+  <view class="weui-cell__bd">
+    <input name="{{gname}}" value="{{c}}" class="weui-input" placeholder="请输入{{p}}" />
+  </view>
+</view>
+</template>
+
+<template name="i_h2">
+<view class="weui-cell weui-cell_input">
+  <view class="weui-cell__hd">
+      <view class="weui-label">{{p}}:</view>
+  </view>
+  <view class="weui-cell__bd">
+    <input name="{{gname}}" value="{{c}}" class="weui-input" placeholder="请输入{{p}}" />
+  </view>
+</view>
+</template>
+
+<template name="i_h3">
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+        <view class="weui-label">{{p}}:</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input name="{{gname}}" value="{{c}}" class="weui-input" placeholder="请输入{{p}}" />
+    </view>
+  </view>
+</template>
+
+<template name="i_h4">
+  <view class="weui-cell weui-cell_input" style="font-size: 24rpx;">
+    <view class="weui-cell__hd">
+      <view class="weui-label">{{p}}:</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input name="{{gname}}" value="{{c}}" class="weui-input" placeholder="请输入{{p}}" />
+    </view>
+  </view>
+</template>
+
+<template name="i_iNd">
+  <gstct-type name="{{gname}}" value="{{c}}" p="{{p}}" editable="1"></gstct-type>
+</template>
+
+<template name="i_iSc">
+  <inscan-edit name="{{gname}}" value="{{c}}" p="{{p}}"></inscan-edit>
+</template>
+
+<template name="i_listsel">
+  <picker id="{{gname}}" name="{{gname}}" mode="selector" value="{{c ? c : 0}}" range="{{aList}}" bindchange="i_listsel">
+    <view  class="weui-cell">
+      <view class="weui-cell__hd">{{p}}:</view>
+      <view class="weui-cell__bd">{{c ? aList[c] : aList[0]}}</view>
+    </view>
+  </picker>
+</template>
+
+<template name="i_mSU">
+  <map-select-unit name="{{gname}}" value="{{c}}" p="{{p}}"></map-select-unit>
+</template>
+
+<template name="i_integer">
+  <view class="weui-cell weui-cell_input">
+    <view class="weui-cell__hd">
+      <view class="weui-label">{{p}}:</view>
+    </view>
+    <view class="weui-cell__bd">
+      <input id="{{gname}}" name="{{gname}}" value="{{c}}" class="weui-input" bindblur="i_integer"/>
+    </view>
+  </view>
+</template>
+
+<template name="i_p">
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cells__tips">{{p}}:</view>
+    <view class="weui-cells__title">
+      <textarea class="weui-textarea" name="{{gname}}" value="{{c}}" placeholder="请输入{{p}}" />
+    </view>
+  </view>
+</template>
+
+<template name="i_pDt">
+  <gstct-type name="{{gname}}" value="{{c}}" p="{{p}}" csc="1"  editable="1"></gstct-type>
+</template>
+
+<template name="i_sId">
+  <recycle-select name="{{gname}}" value="{{c}}" p="{{p}}"></recycle-select>
+</template>
+
+<template name="i_tVE">
+  <time-view-edit name="{{gname}}" value="{{c}}" p="{{p}}" editable="1"></time-view-edit>
+</template>
+
+<template name="i_t64">
+  <view class="weui-label">{{p}}</view>
+  <thumbnail-view-edit name="{{gname}}" csc="base64" value="{{c}}" editable="1"></thumbnail-view-edit>
+</template>
+
+<template name="i_tDM">
+  <view class="weui-cells__title">{{p}}</view>
+  <thumbnail-view-edit name="{{gname}}" csc="documents" value="{{c}}" editable="1"></thumbnail-view-edit>
+</template>
+
+<template name="i_cargopackage">
+  <view class="weui-cell" bingtap="i_cargopackage">
+    <view class="weui-cell__hd">{{p}}:</view>
+    <view class="weui-cell__ft"><icon id="se-{{n}}" bindtap="i_cargopackage" type="{{inclose ? 'info' : 'success_no_circle'}}" size="20"/></view>
+  </view>
+  <view hidden="{{inclose}}" class="weui-cells">
+    <view wx:for="{{c}}" wx:key="{{index}}" wx:for-item="objarr">
+      <view class="weui-media-box weui-media-box_appmsg" hover="true" hover-class="weui-cell_active" id="{{objarr._id}}" data-pNo="{{gname}}" bingtap="i_cargopackage">
+        <view class="weui-media-box__hd_in-appmsg">
+          <image class="weui-media-box__thumb" src="{{objarr.thumbnail}}" background-size="cover"></image>
+        </view>
+        <view wx:if="{{csc=='cargo'}}" class="weui-media-box__bd_in-appmsg">
+          <view class="weui-media-box__title">{{objarr.uName}}/{{objarr.package}}份装/{{objarr.price}}元</view>
+          <view class="weui-media-box__desc">外观{{objarr.surface}},尺寸{{objarr.size}},重量{{objarr.weight}}</view>
+        </view>
+        <view wx:else class="weui-media-box__bd_in-appmsg">
+          <view class="weui-media-box__title">{{objarr.uName}}/ 含量{{objarr.package}}</view>
+          <view class="weui-media-box__desc">{{objarr.title}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="weui-cell__hd weui-cell_link" id="lj-{{n}}" data-id="{{index}}" bindtap="i_cargopackage">{{item.uName}}</view>
+  </view>
+</template>
+
+<template name="m_insbottom">
+  <view class="weui-footer_fixed-bottom weui-grids">
+    <block wx:for="{{['标题', '正文','产品', '订单','位置', '图片集', '图片', '音频', '视频', '文件']}}" wx:key="{{index}}">
+      <view class="weui-grid" id="{{mid[index]}}" hover-class="weui-grid_active" bindtap="insmenu">
+        <image class="weui-grid__icon" src="../../images/{{index}}.png"></image>
+        <view class="weui-grid__label">{{item}}</view>
+      </view>
+    </block>
+  </view>
+</template>
+
+<template name="m_insright">
+  <view class="weui-right_fixed weui-grids">
+    <block wx:for="{{['标题', '正文','产品', '订单','位置', '图片集', '图片', '音频', '视频', '文件']}}" wx:key="{{index}}">
+      <view class="weui-grid" id="{{mid[index]}}" hover-class="weui-grid_active" bindtap="insmenu">
+        <image class="weui-grid__icon" src="../../images/{{index}}.png"></image>
+        <view class="weui-grid__label">{{item}}</view>
+      </view>
+    </block>
+  </view>
+</template>

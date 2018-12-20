@@ -1,0 +1,36 @@
+<wxs module="mDot">
+  module.exports =
+    function(i,cArray){ return i==cArray.length-1 ? '' : '、' }
+</wxs>
+<view id="{{name}}">
+  <view class="weui-cell">
+    <view class="weui-cell__hd">{{p}}:</view>
+    <view class="weui-cell__bd">{{editable ? '(点项目名称可删除)': ''}}</view>
+    <view wx:if="{{editable}}" class="weui-cell__ft">
+      <button class="weui-btn" bindtap="selclose" size="mini">{{inclose ? '选择添加项目' : '确认添加项目' }}</button>
+    </view>
+  </view>
+  <view hidden="{{inclose}}" class="weui-picker">
+    <view class="weui-cell">
+      <view class="weui-cell__hd">选择类型：</view>
+      <view class="weui-cell__bd">{{apdv[succId]}}</view>
+      <view class="weui-cell__ft"><button id="su-{{n}}" bindtap="industrysel" size="mini">确定</button></view>
+    </view>
+    <picker-view class="weui-picker__view" indicator-class="weui-picker__indicator" mask-class="weui-picker__mask" value="{{aVl}}" bindchange="itemsel">
+      <picker-view-column>
+        <view wx:for="{{kd1}}" wx:key="{{index}}" style="line-height: 36rpx">{{apdv[item]}}</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{drone[ kd1[aVl[0]] ]}}" wx:key="{{index}}" style="line-height: 36rpx">{{apdv[item]}}</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{drone[ drone[ kd1[aVl[0]] ][aVl[1]] ]}}" wx:key="{{index}}" style="line-height: 36rpx">{{apdv[item]}}</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+  <view class="weui-cell pm-row__flex">
+    <view wx:for="{{_id}}" wx:key="{{index}}">
+      <view class="weui-cell_link" data-id="{{index}}" bindtap="selectdel">{{apdv[item]}}{{mDot(index,_id)}}</view>
+    </view>
+  </view>
+</view>

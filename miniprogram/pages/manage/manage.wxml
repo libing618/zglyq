@@ -1,0 +1,33 @@
+<import src="../../libs/wepage.wxml" />
+<view class="page">
+  <template is="p_navBar__switchTab" data="{{statusBar,navBarTitle:' 创业服务平台--综合管理'}}"/>
+  <view class="page__hd">
+    <swiper class="swiper_box" indicator-dots="{{false}}" autoplay="{{true}}">
+      <block wx:for="{{mSwiper}}" wx:key="{{index}}">
+        <swiper-item>
+          <navigator url="/pluginPage/vprocedure/vprocedure?pNo={{pNo}}&artId={{item._id}}">
+            <image src="{{pageData[item].thumbnail}}" class="swimage"></image>
+            <view class="swtext">{{pageData[item].title}}</view>
+          </navigator>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <view class="page__bd">
+    <view wx:if="{{unAuthorize}}">
+      <button open-type="getUserInfo" bindgetuserinfo="userInfoHandler">我要使用这个平台</button>
+    </view>
+    <view wx:else>
+      <template is="showgrids" data="{{grids}}"/>
+    </view>
+
+    <template is="tabsCk" data="{{ fLength , pageCk , tabs ,wWidth }}"/>
+     <view class="weui-tab__panel">
+      <block wx:for="{{mPage[pageCk]}}" wx:key="{{index}}">
+        <record-view pno="{{pNo}}" sitem="{{pageData[item]}}"></record-view>
+      </block>
+    </view>
+  </view>
+
+</view>
