@@ -3,7 +3,7 @@ App({
   aIndex: require('globaldata.js').aIndex,
   pIndex: require('globaldata.js').pIndex,
   aCount: require('globaldata.js').aCount,
-  fData: require('./modules/procedureclass'),
+  fData: requirePlugin('lyqPlugin').procedureclass,
   aData: {},
   pData: {},
   logData: [],

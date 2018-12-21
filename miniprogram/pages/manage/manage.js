@@ -1,8 +1,7 @@
-import {iMenu} from '../../modules/allmenu.js';
 import {tabClick,addViewData} from '../../modules/util.js';
 import { loginAndMenu, shareMessage } from '../../modules/initForm';
 import { openWxLogin } from '../../modules/wxcloudcf';
-import {getData} from '../../modules/db-get-data';
+const {iMenu,getData} = requirePlugin('lyqPlugin');
 var app = getApp();
 
 Page({
