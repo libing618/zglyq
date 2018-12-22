@@ -1,4 +1,4 @@
-<import src="../../libs/impedit.wxml" />
+<import src="../../style/impedit.wxml" />
 <view class="weui-cells">
   <template is="i_digit" data="{{gname:'channel',p:'渠道分成比例%',c:c.channel}}"></template>
   <template is="i_digit" data="{{gname:'extension',p:'推广分成比例%',c:c.extension}}"></template>

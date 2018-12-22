@@ -1,13 +1,12 @@
-import {iMenu} from '../../modules/allmenu.js'
-import {shareMessage} from '../../modules/initForm';
+import {shareMessage} from '../../libs/util.js';
+const { iMenu, cargoCount } = requirePlugin('lyqPlugin');
 const db = wx.cloud.database();
 var app = getApp();
 Page({
   data:{
     mPage: [],
     pNo: 'goods',                       //商品信息
-    pageData: {},
-    grids: iMenu(1,app.roleData.wmenu[1])
+    pageData: {}
   },
 
   setPage: function(){
@@ -20,7 +19,8 @@ Page({
     this.setPage();              //更新缓存以后有变化的数据
     this.setData({
       statusBar: app.sysinfo.statusBarHeight,
-      wWidth: app.sysinfo.windowWidth
+      wWidth: app.sysinfo.windowWidth,
+      grids: iMenu(1, app.roleData.wmenu[1])
     })
   },
 

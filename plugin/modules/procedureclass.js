@@ -5,6 +5,7 @@
 //csc对应关系:idname数组选择，存储gname对应数据表选择的ID值，显示选择对应的uName
 //数据型对应关系:t的digit代表2位小数点浮点数，integer则为整数型
 //address包括三个字段地址、地理位置"aGeoPoint"、行政编码"address_code"
+
 module.exports = {
 "_Role":{
   "pName": "单位名称和负责人",

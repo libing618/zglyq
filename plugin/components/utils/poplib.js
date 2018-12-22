@@ -1,4 +1,4 @@
-const cloudPath = require('../../config.js').cloudFileRoot
+const cloudPath = '../../config.js'
 const {sysinfo} = getApp();
 module.exports = Behavior({
   data: {
@@ -11,7 +11,7 @@ module.exports = Behavior({
     fileNameAnaly(fileName,pathName,occupy){
       return new Promise((resolve,reject)=>{
         let sFile = {};
-        let placeFiles = {
+        let placeFiles = {     //占位文件
           img: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/零分.png',
           pic: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/零分.png',
           audio: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/中国好人 - 王玮玮.mp3',
@@ -26,7 +26,7 @@ module.exports = Behavior({
           ]
         };
         function checkFile(fName){     //检查是否本地文件
-          return new Promise((resolve,reject)={
+          return new Promise((resolve,reject)=>{
             let fs = wx.getFileSystemManager();
             fs.access({
               path: fName,

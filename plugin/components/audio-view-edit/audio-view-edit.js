@@ -1,4 +1,3 @@
-const placeFile = require('../../config.js').placeaudio      //占位音频文件
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior,'wx://form-field'],
@@ -14,13 +13,11 @@ Component({
     addGlobalClass: true
   },
   data: {
-    explain: '音频文件说明',
-    placefile: placeFile,
-    filepath: placeFile
+    explain: '音频文件说明'
   },
   lifetimes:{
     attached(){
-      this.fileNameAnaly(this.data.value,'/audio/').then(()=>{
+      this.fileNameAnaly(this.data.value,'audio').then(()=>{
         this.videoContext = wx.createVideoContext('myAudio');
       });
       if (this.data.editable==2){ this.chooseaudio() }

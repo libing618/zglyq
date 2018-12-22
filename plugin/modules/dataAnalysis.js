@@ -136,7 +136,7 @@ export function sumFamily(className,fields,familyCount){                  //暂�
           });
         };
         sFields.forEach(fName=>{ newSum.set(fName,fSum[fName]) })
-        newSum.setACL(app.configData.reqRole)
+
         newSum.save().then(()=>{
           let fieldSum = [];
           for (let i=0;i<sLength;i++){
@@ -182,7 +182,6 @@ export function sumData(mIntervals,className,sumField){                   //暂�
           let aSumRecord = new addSum;
           aSumRecord.set('yearMon',nym);
           aSumRecord.set('userId',app.roleData.user._id);
-          aSumRecord.setACL(app.configData.reqRole);
           newSum.push(aSumRecord);
         };
       });
@@ -201,7 +200,6 @@ export function sumData(mIntervals,className,sumField){                   //暂�
           for (let i=0;i<sfLength;i++){
             newSum[j].set(sumField[i],mSum[apmInterval[j]][i]);
           };
-          newSum[j].setACL(app.configData.reqRole);
         };
         AV.Object.saveAll(newSum).then(()=>{
           for (let i=0;i<sfLength;i++){
@@ -247,7 +245,6 @@ export function countSort( className, cField) {     //进行数据库统计排�
           });
         };
         cFields.forEach(fName => { cSumUp.set(fName, cSum[fName].sort(sortId)) })
-        newSum.setACL(app.configData.reqRole)
         newSum.save().then(() => {
           let fieldSum = [];
           function sortCount(a, b) {

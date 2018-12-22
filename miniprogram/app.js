@@ -10,21 +10,18 @@ App({
 
   onLaunch: function () {
     var that = this;
+
+//    that.fData = requirePlugin('lyqPlugin').procedureclass;
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;
         let sdkvc = res.SDKVersion.split('.');
         let sdkVersion = parseFloat(sdkvc[0] + '.' + sdkvc[1] + sdkvc[2]);
-        if (sdkVersion < 2.23) {
+        if (sdkVersion < 2.41) {
           wx.showModal({
             title: '提示',
             content: '当前微信版本过低，无法正常使用，请升级到最新微信版本后重试。',
             compressed(res) { setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000); }
-          })
-        } else {
-          wx.cloud.init({
-            env: 'cyfwtest-07b693',
-            traceUser: true
           })
         };
         that.sysinfo.menuButton = wx.getMenuButtonBoundingClientRect()

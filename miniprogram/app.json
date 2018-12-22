@@ -1,7 +1,7 @@
 {
   "plugins": {
     "lyqPlugin": {
-      "version": "1.0.0",
+      "version": "dev",
       "provider": "wx4b1c27ae1940d4fd"
     }
   },

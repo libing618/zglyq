@@ -1,5 +1,5 @@
 //审批流程列表
-import {hTabClick} from '../../modules/util.js';
+import {hTabClick} from '../../index.js';
 import { shareMessage,checkRols } from '../../modules/initForm';
 const db = wx.cloud.database();
 var app = getApp();

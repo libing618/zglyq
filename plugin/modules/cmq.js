@@ -1,5 +1,9 @@
-const cmqClient = require('../libs/qcloudapi-wxapp')
-const config = require('../config');
+const cmqClient = require('qcloudapi-wxapp')
+const config = {
+  Region: 'bj',
+  SecretId: 'AKIDkJdhV4nUM2ThhTxukKflcDZfV5RXt5Ui',
+  SecretKey: 'A5lCRSFpEQN6aqsfDVYMuEI6f081g8LK',
+};
 class CMQ {
   constructor () {
     this.cmq_client = new cmqClient({

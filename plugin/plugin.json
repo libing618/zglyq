@@ -24,11 +24,11 @@
     "video-view-edit": "components/video-view-edit/video-view-edit"
   },
   "pages": {
-    "approve":"pages/approve/approve",
-    "procedures":"pages/procedures/procedures",
-    "vprocedure":"pages/vprocedure/vprocedure",
-    "lprocedures":"pages/lprocedures/lprocedures",
-    "fprocedure":"pages/fprocedure/fprocedure"
+    "approve":"page/approve/approve",
+    "procedures":"page/procedures/procedures",
+    "vprocedure":"page/vprocedure/vprocedure",
+    "lprocedures":"page/lprocedures/lprocedures",
+    "fprocedure":"page/fprocedure/fprocedure"
     },
   "main": "index.js"
 }

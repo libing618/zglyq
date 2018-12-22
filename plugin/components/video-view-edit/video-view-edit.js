@@ -1,5 +1,4 @@
 var modalBehavior = require('../utils/poplib.js');
-const placeFile = require('../../config.js').placevideo;      //占位视频文件
 Component({
   behaviors: [modalBehavior,'wx://form-field'],
   properties: {
@@ -14,13 +13,11 @@ Component({
     addGlobalClass: true
   },
   data: {
-    explain: '视频文件说明',
-    placefile: placeFile,
-    filepath: placeFile
+    explain: '视频文件说明'
   },
   lifetimes:{
     attached(){
-      this.fileNameAnaly(this.data.value,'/video/').then(()=>{
+      this.fileNameAnaly(this.data.value,'video').then(()=>{
         this.videoContext = wx.createVideoContext('myVideo')
       });
       if (this.data.editable==2){ this.choosevideo() }

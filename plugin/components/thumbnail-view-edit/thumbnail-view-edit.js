@@ -1,5 +1,4 @@
 //缩略图编辑
-const placeFile = require('../../config.js').placeimg     //占位图像文件
 const sysinfo = getApp().sysinfo;
 const xm = {"base64":300,"documents":600,"pic":900,"img":1200};
 const ym = {"base64":225,"documents":450,"pic":675,"img":900};
@@ -114,7 +113,7 @@ Component({
               width: 300,
               height: 225,
               success: (res) => {
-                const upng = require("../../libs/UPNG.js")          //比较重要的代码
+                const upng = require("../utils/UPNG.js")          //比较重要的代码
                 let png = upng.encode([res.data.buffer], res.width, res.height)
                 that.setData({ value: 'data:image/png;base64,' + wx.arrayBufferToBase64(png) });
                 that.downModal();
@@ -155,7 +154,7 @@ Component({
                   width: 600,
                   height: 450,
                   success: (res) => {
-                    const upng = require("../../libs/UPNG.js")
+                    const upng = require("../utils/UPNG.js")
                     let png = upng.encode([res.data.buffer], res.width, res.height)
                     that.setData({ value: 'data:image/png;base64,' + wx.arrayBufferToBase64(png) });
                     that.downModal();

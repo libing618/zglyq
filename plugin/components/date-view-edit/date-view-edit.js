@@ -1,4 +1,4 @@
-import {formatTime} from '../../modules/util.js';
+import {formatTime} from '../../index.js';
 const today = new Date()
 const week = [
   { value: '周日', classed: 'weekend' },

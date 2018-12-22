@@ -1,7 +1,5 @@
-import {iMenu} from '../../modules/allmenu.js'
-import {shareMessage} from '../../modules/initForm';
-import { cargoCount } from '../../modules/dataAnalysis.js';
-
+import {shareMessage} from '../../libs/util.js';
+const { iMenu, cargoCount } = requirePlugin('lyqPlugin');
 var app = getApp()
 Page({
   data:{
@@ -18,6 +16,7 @@ Page({
   },
 
   onReady:function(){
+
     this.setPage();
     this.setData({
       statusBar: app.sysinfo.statusBarHeight,

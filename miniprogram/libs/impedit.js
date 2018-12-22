@@ -1,4 +1,3 @@
-import { fileUpload } from '../modules/wxcloudcf';
 const db = wx.cloud.database();
 var app = getApp();
 
@@ -212,7 +211,7 @@ module.exports = {
             let emptyField = '';                   //检查是否有字段输入为空
             that.data.fieldName.forEach(fName=>{
               if (fName in value){
-                that.data.vData[fName]=value[fName]; 
+                that.data.vData[fName]=value[fName];
               }
               if (typeof that.data.vData[fName]=='undefined'){
                 emptyField += '《' + that.data.fieldType[fName].p + '》';

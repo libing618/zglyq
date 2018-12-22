@@ -1,6 +1,6 @@
 const db = wx.cloud.database();
 const _ = db.command;
-const crypto = require('../libs/crypto');
+const crypto = require('crypto');
 let app = getApp();
 function _mapResData(rData){           //处理查询到的数组
   return iData = rData.map(aProc =>{

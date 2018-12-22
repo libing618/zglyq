@@ -1,4 +1,4 @@
-<import src="../../libs/wepage.wxml" />
+<import src="../../style/wepage.wxml" />
 <view class="page">
   <template is="p_navBar__back" data="{{statusBar,navBarTitle}}"/>
   <view class="page__bd" id="{{artId}}">

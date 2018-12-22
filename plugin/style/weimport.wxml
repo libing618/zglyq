@@ -1,5 +1,4 @@
 <import src="wedetail.wxml" />
-<wxs src="../components/goods-type/goodstype.wxs" module="gslist" />
 <wxs module="mDot">
   module.exports =
     function(cArray){ return cArray.join('、') }
