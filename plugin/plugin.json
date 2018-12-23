@@ -28,7 +28,21 @@
     "procedures":"page/procedures/procedures",
     "vprocedure":"page/vprocedure/vprocedure",
     "lprocedures":"page/lprocedures/lprocedures",
-    "fprocedure":"page/fprocedure/fprocedure"
+    "fprocedure":"page/fprocedure/fprocedure",
+    "wxchat":"page/wxchat/wxchat",
+    "statistics":"page/statistics/statistics",
+    "f_Role":"page/f_Role/f_Role",
+    "adjustment":"page/adjustment/adjustment",
+    "accounting":"page/accounting/accounting",
+    "myshare":"page/myshare/myshare",
+    "material":"page/material/material",
+    "distributor":"page/distributor/distributor",
+    "distribution":"page/distribution/distribution",
+    "evaluate":"page/evaluate/evaluate",
+    "packing":"page/packing/packing",
+    "sOrder":"page/sOrder/sOrder",
+    "structure":"page/structure/structure",
+    "supply":"page/supply/supply"
     },
   "main": "index.js"
 }

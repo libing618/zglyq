@@ -25,13 +25,6 @@ export function noEmptyObject(obj){
   return false;
 };
 
-export function addViewData(addItem,mPage,indArr) {
-  let spData = {}
-  spData[mPage] = indArr;
-  addItem.forEach(mId=>{ spData['pageData.'+mId]=app.aData[mId] });
-  this.setData(spData)
-};
-
 export function indexClick(e){                           //选择打开的索引数组本身id
   this.setData({ iClicked: e.currentTarget.id });
 };

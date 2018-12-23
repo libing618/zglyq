@@ -10,9 +10,7 @@
     "pages/plan/plan",
     "pages/production/production",
     "pages/customer/customer",
-    "pages/signup/signup",
-
-    "pages/wxchat/wxchat"
+    "pages/signup/signup"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -77,35 +75,16 @@
     {
       "root": "index",
       "pages": [
-        "structure/structure",
         "rcustomer/rcustomer",
         "addresslist/addresslist",
-        "workconnection/workconnection",
         "process/process",
         "storage/storage",
         "stocks/stocks",
         "capital/capital",
         "returns/returns",
         "logistics/logistics",
-        "evaluate/evaluate",
         "communication/communication",
         "statement/statement"
-      ]
-    },
-    {
-      "root": "inputedit",
-      "pages": [
-        "statistics/statistics",
-        "f_Role/f_Role",
-        "adjustment/adjustment",
-        "accounting/accounting",
-        "myshare/myshare",
-        "material/material",
-        "distributor/distributor",
-        "distribution/distribution",
-        "packing/packing",
-        "sOrder/sOrder",
-        "supply/supply"
       ]
     }
   ],

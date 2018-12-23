@@ -10,8 +10,6 @@ App({
 
   onLaunch: function () {
     var that = this;
-
-//    that.fData = requirePlugin('lyqPlugin').procedureclass;
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;
@@ -29,7 +27,7 @@ App({
         that.sysinfo.rpxTopx = res.windowWidth/750;                   //转换比例屏幕宽750rpx
       }
     });
-    ['aIndex', 'aData','aCount','pIndex'].forEach(dataName => {
+    ['aIndex', 'aData','aCount'].forEach(dataName => {
       wx.getStorage({
         key: dataName,
         success: function (res) {
@@ -37,16 +35,7 @@ App({
         }
       })
     });
-    wx.getNetworkType({
-      success: function (res) {
-        if (res.networkType == 'none') {
-          that.netState = false;
-          wx.showToast({ title: '请检查网络！' });
-        } else {
-          that.netState = true;
-        }
-      }
-    });
+
     wx.onNetworkStatusChange(res => {
       if (!res.isConnected) {
         that.netState = false;
@@ -71,6 +60,7 @@ App({
           wx.setStorage({key:"aIndex", data:that.aIndex});
           wx.setStorage({ key: 'aCount', data: that.aCount });
           wx.setStorage({key:"pIndex", data:that.pIndex});
+          wx.setStorage({key:"pData", data:that.pData});
         }
       }
     });

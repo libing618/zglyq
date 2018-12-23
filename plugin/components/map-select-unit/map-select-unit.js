@@ -87,7 +87,7 @@ Component({
 
     fSave({ currentTarget:{id,dataset},detail:{value} }){                  //确认返回数据
       if (this.data.reqProIsSuperior) {
-        app.roleData.sUnit = this.data.unitArray[this.data.sId];
+        wx.setStorage({key:'roleData.sUnit', data:this.data.unitArray[this.data.sId]});
         this.setData({ value: { _id: this.data.unitArray[this.data.sId]._id, uName: this.data.unitArray[this.data.sId].uName} });
       } else {
         this.setData({value:this.data.unitArray[this.data.sId]})

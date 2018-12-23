@@ -1,4 +1,4 @@
-import {tabClick,addViewData,shareMessage} from '../../libs/util.js';
+import {tabClick,shareMessage} from '../../libs/util.js';
 const { iMenu, loginAndMenu, getData, openWxLogin } = requirePlugin('lyqPlugin');
 var app = getApp();
 
@@ -13,12 +13,13 @@ Page({
 
   onLoad: function () {
     var that = this;
-    let grids;
+    let grids,pageData;
     wx.hideTabBar();
-    app.aIndex.banner = require('../../test/articles').banner;
-    app.aIndex.articles = require('../../test/articles').articles;
-    Object.assign(app.aData, require('../../test/articles').artdata);
+    app.aData.banner = require('../../test/articles').banner;
+    app.aIndex = require('../../test/articles').aIndex;
+    app.aData.articles= require('../../test/articles').articles;
     that.banner = new getData('banner');
+    pageData = that.banner.nData;
     that.articles = []
     for (let i = 0; i < 3; i++) { that.articles.push(new getData('articles', i)) };
     return new Promise((resolve,reject)=>{
@@ -36,14 +37,14 @@ Page({
         if (stoRole){app.roleData=stoRole};
         grids = iMenu(0,app.roleData.wmenu[0]);
         grids[0].mIcon = app.roleData.user.avatarUrl;
+        for (let i = 0; i < 3; i++) {Object.assign(pageData,that.articles[i].nData)}
         that.setData({
           statusBar: app.sysinfo.statusBarHeight,
           wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
           mSwiper: that.banner.aIndex,
-          mPage: that.articles.map(a=>{return a.aIndex}),
-          pageData: app.aData,
-          grids: grids,
-          pageCk: app.aIndex.pCkarticles
+          mPage: that.articles.map(a=>{return a.nIndex}),
+          ...pageData,
+          grids: grids
         },resolve(true));
       })
       }).then(() => {
@@ -80,13 +81,13 @@ Page({
 
   onPullDownRefresh: function () {
     this.articles[this.data.pageCk].upData().then(aSetData={
-      if (aSetData) {addViewData(aSetData,'mPage['+this.data.pageCk+']',this.articles[this.data.pageCk].aIndex)}
+      if (aSetData) {this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']')}
     });
   },
 
   onReachBottom: function () {
     this.articles[this.data.pageCk].downData().then(aSetData={
-      if (aSetData) {addViewData(aSetData,'mPage['+this.data.pageCk+']',this.articles[this.data.pageCk].aIndex)}
+      if (aSetData) {this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']')}
     });
   },
 

@@ -1,7 +1,7 @@
 const db = wx.cloud.database();
 const _ = db.command;
 const crypto = require('crypto');
-let app = getApp();
+let {roleData,fData,aData,aIndex} = getApp();
 function _mapResData(rData){           //处理查询到的数组
   return iData = rData.map(aProc =>{
     app.aData[aProc._id] = aProc;
@@ -9,8 +9,8 @@ function _mapResData(rData){           //处理查询到的数组
   });
 };
 
-function objToStrArr(obj) {
-  let arr = [];
+function _objToStrArr(dn,obj) {
+  let arr = [dn];
   for (let k in obj) {
     arr.push(k + '=' + JSON.stringify(obj[k]))
   }
@@ -18,11 +18,18 @@ function objToStrArr(obj) {
 }
 
 function  _getError(error) {
-  if (!app.netState) { wx.showToast({ title: '请检查网络！' }) }
-  app.logData.push([Date.now(), JSON.stringify(error)]);
+  wx.getNetworkType({
+    success: function (res) {
+      if (res.networkType == 'none') {
+        wx.showToast({ title: '请检查网络！' });
+      } else {
+        wx.showToast({ title: '数据处理错误：'+JSON.stringify(error) ,icon:'none'});
+      }
+    }
+  });
 };
 export class getData {               //wxcloud查询
-  constructor (dataName,afamily=0,uId=app.roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
+  constructor (dataName,afamily=0,uId=roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
     this.pNo = dataName;
     if (['articles','banner','qa'].includes(dataName)) {               //是否全部单位数组
       this.unitFamily = 'allUnit';
@@ -30,48 +37,59 @@ export class getData {               //wxcloud查询
       this.unitFamily = uId;
       requirement.unitId = _.eq(uId)
     };                //除文章类数据外只能查指定单位的数据
-    if (app.fData[dataName].afamily) {       //是否有分类数组
+    if (fData[dataName].afamily) {       //是否有分类数组
       requirement.afamily = _.eq(afamily);
       this.unitFamily  += afamily;
-    }
+    };
+    this.nData = {};
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
-    let requirStrArr = objToStrArr(requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
+    let requirStrArr = this._objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');
     this.filterId = crypto.enc.Base64.stringify(crypto.HmacSHA1(requirString, this.unitFamily));  //生成条件签名
-    if (app.aIndex[this.pNo].hasOwnProperty(this.filterId)) {       //添加以条件签名为Key的JSON初值
-      this.aIndex = app.aIndex[this.pNo][this.filterId].filter(indkey=>{ return indkey in app.aData })
+    if (aIndex.hasOwnProperty(this.filterId)) {       //添加以条件签名为Key的JSON初值
+      this.nIndex = aIndex[this.filterId].filter(indkey=>{
+        if (indkey in aData[this.pNo]) {
+          this.nData[indkey] = aData[this.pNo][indkey]
+          return true
+        };
+      })
     } else {
-      this.aIndex = [];
+      this.nIndex = [];
     };
     this.dQuery = db.collection(this.pNo).where(requirement)
     orderArr.forEach(ind=> {this.dQuery=this.dQuery.orderBy(ind[0],ind[1])} );
     this.isEnd = false;
   };
-
+  
+  addViewData(addItem,mPage) {
+    let spData = {}
+    spData[mPage] = this.nIndex;
+    addItem.forEach(mId=>{ spData['pageData.'+mId]=this.nData[mId] });
+    this.setData(spData)
+  };
   downData(){    //向下查询
     return new Promise((resolve, reject) => {
       if (this.isEnd){
         wx.showToast({title:'到底了',icon:'warn',duration:1000});
         resolve(false);
       } else {
-        this.dQuery.skip(this.aIndex.length).limit(20).get().then(({data}) => {
+        this.dQuery.skip(this.nIndex.length).limit(20).get().then(({data}) => {
           if (data.length>0){
             let addItemId = _mapResData(data);
-            this.aIndex = this.aIndex.filter(indkey=>{ return addItemId.indexOf(indkey)>=0 })
-            this.aIndex = this.aIndex.concat(addItemId)
+            this.nIndex = this.nIndex.filter(indkey=>{ return addItemId.indexOf(indkey)>=0 })
+            this.nIndex = this.nIndex.concat(addItemId)
             if (this.bufferData.length>0){            //原来有缓存数据
-              let buffTopAt=app.aData[this.bufferData[0]].updatedAt;
+              let buffTopAt=this.nData[this.bufferData[0]].updatedAt;
               let aPlace = addItemId.indexOf(this.bufferData[0]);
               if (aPlace>-1){            //从顶部查询的数据与原来的缓存数据相交
-                if (app.aData[addItemId[aPlace]].updatedAt==buffTopAt) {
+                if (this.nData[addItemId[aPlace]].updatedAt==buffTopAt) {
                   addItemId = addItemId.slice(0,aPlace)
-                  this.bufferData = this.bufferData.filter(indkey=>{ return this.aIndex.indexOf(indkey)>=0 })
-                  this.aIndex = this.aIndex.concat(this.bufferData);
+                  this.bufferData = this.bufferData.filter(indkey=>{ return this.nIndex.indexOf(indkey)>=0 })
+                  this.nIndex = this.nIndex.concat(this.bufferData);
                 };
                 this.bufferData = [];
               };
             }
-            app.aIndex[this.pNo][this.filterId] = this.aIndex;
             resolve(addItemId);
           } else {
             this.isEnd = true;
@@ -86,28 +104,27 @@ export class getData {               //wxcloud查询
       this.dQuery.limit(20).get().then(({data}) => {
         if (data.length>0){
           let addItemId = _mapResData(data);
-          if (this.aIndex.length>0){            //原来有缓存数据
-            let buffTopAt=app.aData[this.aIndex[0]].updatedAt;
-            let aPlace = addItemId.indexOf(this.aIndex[0]);
+          if (this.nIndex.length>0){            //原来有缓存数据
+            let buffTopAt=this.nData[this.nIndex[0]].updatedAt;
+            let aPlace = addItemId.indexOf(this.nIndex[0]);
             if (aPlace>-1){            //从顶部查询的数据与原来的缓存数据相交
-              if (app.aData[addItemId[aPlace]].updatedAt==buffTopAt) {
+              if (this.nData[addItemId[aPlace]].updatedAt==buffTopAt) {
                 addItemId = addItemId.slice(0,aPlace);
-                this.aIndex = this.aIndex.filter(indkey=>{ return addItemId.indexOf(indkey)>=0 })
-                this.aIndex = addItemId.concat(this.aIndex);
+                this.nIndex = this.nIndex.filter(indkey=>{ return addItemId.indexOf(indkey)>=0 })
+                this.nIndex = addItemId.concat(this.nIndex);
                 bData.forEach(bini=>{
                   if(addItemId.indexOf(bini)<0) {
-                    this.aIndex.push(bini)
+                    this.nIndex.push(bini)
                   }
                 })
               } else {           //相交的缓存数据时间有变化则不再考虑缓存数据
-                this.aIndex = addItemId
+                this.nIndex = addItemId
               }
             } else {
-              this.bufferData = this.aIndex;
-              this.aIndex = addItemId;
+              this.bufferData = this.nIndex;
+              this.nIndex = addItemId;
             }
           }
-          app.aIndex[this.pNo][this.filterId] = this.aIndex;
           resolve(addItemId);
         } else {
           resolve(false);
@@ -125,10 +142,9 @@ export class getData {               //wxcloud查询
             if (notEnd.data.length>19) {
               return readAll();
             } else {
-              this.aIndex = _mapResData(aProcedure);
+              this.nIndex = _mapResData(aProcedure);
               this.isEnd = true;
-              app.aIndex[this.pNo][this.filterId] = this.aIndex;
-              resolve(this.aIndex);
+              resolve(this.nIndex);
             }
           });
         }
