@@ -1,6 +1,5 @@
 var modalBehavior = require('../utils/poplib.js');
-const db = wx.cloud.database();
-const _ = db.command;
+const {geoQueryUnit} = require('../../modules/db-get-data');
 var mapBahavior = require('../utils/mapAnalysis.js');   //位置授权及解析
 let app = getApp();
 Component({
@@ -53,10 +52,10 @@ Component({
       };
       that.authorizeLocation(false).then(aGeoPoint =>{
         that.buildAdd(aGeoPoint).then(addGroup=>{
-          that.unitData = new (newPage.selTypes,Math.floor(addGroup.code/10000);     //省级行政区划代码
-          .get().then( ({data})=>{
-            if (data.length>0) {
-              that.calDistance(aGeoPoint,data).then(({markers,unitArray,points})=>{
+          that.unitData = new geoQueryUnit(newPage.selTypes,Math.floor(addGroup.code/10000);     //省级行政区划代码
+          that.unitData.nextGroup().then( unitdata=>{
+            if (unitdata.length>0) {
+              that.calDistance(aGeoPoint,unitdata).then(({markers,unitArray,points})=>{
                 newPage.markers = markers;
                 newPage.unitArray = unitArray;
                 newPage.circles = [{

@@ -1,8 +1,4 @@
-wx.cloud.init({
-  env: 'lyqplugincloud-b64fe0',
-  traceUser: true
-})
-const db = wx.cloud.database();
+import {querySsq} from '../../modules/db-get-data';
 var modalBehavior = require('../utils/poplib.js')
 var mapBahavior = require('../utils/mapAnalysis.js');   //位置授权及解析
 
@@ -75,12 +71,12 @@ Component({
       wx.chooseLocation({
         success: function (res) {
           if (that.data.editable) {
-            that.buildAdd(db.Geo.Point(res.longitude,res.latitude)).then(addGroup=>{
+            that.buildAdd({longitude:res.longitude,latitude:res.latitude}).then(addGroup=>{
               that.setData({
                 address1: addGroup.address,
                 'value._id': addGroup.address,
                 'value.code': addGroup.code,
-                'value.aGeoPoint': db.Geo.Point(res.longitude,res.latitude),
+                'value.aGeoPoint': {longitude:res.longitude,latitude:res.latitude},
                 region: addGroup.region
               });
             })
@@ -107,11 +103,9 @@ Component({
 
     raddgroup: function({ currentTarget:{id,dataset},detail:{value} }){                  //读村镇区划数据
       if (this.data.saddv != 0) {
-        let db = wx.cloud.database();
-        db.collection('ssq4').where({tncode: this.data.saddv}).get()
-        .then(({data}) => {
-          if (data.length>0){
-            this.setData({dglist: data[0].tn});
+        querySsq(this.data.saddv).then(ssqdata => {
+          if (ssqdata.length>0){
+            this.setData({dglist: ssqdata[0].tn});
           };
         }).catch( console.error );
       };

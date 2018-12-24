@@ -1,4 +1,7 @@
-
+wx.cloud.init({
+  env: 'lyqplugincloud-b64fe0',
+  traceUser: true
+})
 App({
   roleData: require('globaldata.js').roleData,                 //读数据记录的缓存
   aIndex: require('globaldata.js').aIndex,
@@ -11,7 +14,7 @@ App({
 
   onLaunch: function () {
     var that = this;
-    
+
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;

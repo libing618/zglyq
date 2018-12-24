@@ -28,6 +28,13 @@ function _getError(error) {
     }
   });
 };
+
+export function querySsq(saddv) {                                //读村镇区划数据
+  return new Promise((resolve, reject) => {
+    db.collection('ssq4').where({tncode: saddv}).get().then(({data}) => { resolve(data) })
+  }).catch(err=>{_getError(err)});
+};
+
 export class geoQueryUnit {
   constructor (selTypes,province_code){
     this.qUnit = db.collection('_Role').where(
@@ -37,7 +44,25 @@ export class geoQueryUnit {
         })
       ),
       { 'address_code': _.lt((province_code+1)*10000).and(_.gte(province_code*10000)) }
-    )
+    );
+    this.unitCount = 0;
+  };
+  nextGroup(){
+    return new Promise((resolve, reject) => {
+      if (this.unitCount == -1){
+        resolve( [] )
+      } else {
+        this.qUnit.skip(this.nIndex.length).limit(20).get().then(({data}) => {
+          if (data.length>0){
+            this.unitCount += data.length;
+            resolve(data)
+          } else {
+            this.unitCount = -1
+            resolve( [] )
+          }
+        })
+      }
+    }).catch(err=>{_getError(err)})
   }
 }
 export class getData {               //wxcloud批量查询
@@ -55,29 +80,42 @@ export class getData {               //wxcloud批量查询
     };
     this.nData = {};
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
-    let requirStrArr = this._objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
+    let requirStrArr = _objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');
     this.filterId = crypto.enc.Base64.stringify(crypto.HmacSHA1(requirString, this.unitFamily));  //生成条件签名
+    this.dQuery = db.collection(this.pNo).where(requirement)
+    orderArr.forEach(ind=> {this.dQuery=this.dQuery.orderBy(ind[0],ind[1])} );
+    this.isEnd = false;
     if (aIndex.hasOwnProperty(this.filterId)) {       //添加以条件签名为Key的JSON初值
-      this.nIndex = aIndex[this.filterId].filter(indkey=>{
-        if (indkey in aData[this.pNo]) {
-          this.nData[indkey] = aData[this.pNo][indkey]
-          return true
-        };
+      return new Promise((resolve,reject)=>{
+        wx.getStorage({
+          key: this.pNo,
+          success: function (res) {
+            if (res.data){Object.assign(aData[this.pNo],res.data)};
+            resolve(true)
+          },
+          fail: ()=>{
+            resolve(false)
+          }
+        })
+      }).then(()=>{
+        this.nIndex = aIndex[this.filterId].filter(indkey=>{
+          if (indkey in aData[this.pNo]) {
+            this.nData[indkey] = aData[this.pNo][indkey]
+            return true
+          };
+        })
       })
     } else {
       this.nIndex = [];
     };
-    this.dQuery = db.collection(this.pNo).where(requirement)
-    orderArr.forEach(ind=> {this.dQuery=this.dQuery.orderBy(ind[0],ind[1])} );
-    this.isEnd = false;
   };
 
   addViewData(addItem,mPage) {
     let spData = {}
     spData[mPage] = this.nIndex;
     addItem.forEach(mId=>{ spData['pageData.'+mId]=this.nData[mId] });
-    this.setData(spData)
+    return spData;
   };
   downData(){    //向下查询
     return new Promise((resolve, reject) => {
@@ -109,7 +147,7 @@ export class getData {               //wxcloud批量查询
           }
         })
       }
-    }).catch(err=>{this._getError(err)})
+    }).catch(err=>{_getError(err)})
   };
   upData(){    //从头查询
     return new Promise((resolve, reject) => {
@@ -142,7 +180,7 @@ export class getData {               //wxcloud批量查询
           resolve(false);
         }
       })
-    }).catch(err=>{this._getError(err)})
+    }).catch(err=>{_getError(err)})
   };
   allData(){    //查询全部
     return new Promise((resolve, reject) => {
@@ -161,6 +199,6 @@ export class getData {               //wxcloud批量查询
           });
         }
       });
-    }).catch(err=>{this._getError(err)})
+    }).catch(err=>{_getError(err)})
   }
 }

@@ -41,22 +41,36 @@ Page({
         that.setData({
           statusBar: app.sysinfo.statusBarHeight,
           wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
-          mSwiper: that.banner.aIndex,
+          mSwiper: that.banner.nIndex,
           mPage: that.articles.map(a=>{return a.nIndex}),
           ...pageData,
           grids: grids
         },resolve(true));
       })
-      }).then(() => {
-        loginAndMenu(app.roleData).then(rData => {
-          let succPage = { unAuthorize: false }
-          if (app.roleData.wmenu[0].toString() != rData.wmenu[0].toString()) {
-            succPage.grids = iMenu(0, rData.wmenu[0]);
-            succPage.grids[0].mIcon = rData.user.avatarUrl;   //把微信头像地址存入第一个菜单icon
-          };
-          app.roleData = rData;
-          that.setData(succPage);
-          if (app.roleData.user.line != 9) { wx.showTabBar() };
+    }).then(() => {
+      loginAndMenu(app.roleData).then(rData => {
+        let succPage = { unAuthorize: false }
+        if (app.roleData.wmenu[0].toString() != rData.wmenu[0].toString()) {
+          succPage.grids = iMenu(0, rData.wmenu[0]);
+          succPage.grids[0].mIcon = rData.user.avatarUrl;   //把微信头像地址存入第一个菜单icon
+        };
+        app.roleData = rData;
+        if (app.roleData.user.line != 9) { wx.showTabBar() };
+        let firstPage = [
+          that.banner.upData().then(banner=>{
+            Object.assign(succPage, that.banner.addViewData(banner,'mSwiper') );
+          })
+        ];
+        that.articles.forEach((article,i)=>{
+          firstPage.push(
+            article.upData().then(artData=>{
+              Object.assign(succPage, article.addViewData(artData,'mPage['+i+']'))
+            })
+          )
+        });
+        Promise.all(firstPage).then(()=>{
+          that.setData(succPage)
+        });
       })
     }).catch(loginerr=>{
       app.logData.push([Date.now(),JSON.stringify(loginerr)]);
@@ -81,13 +95,17 @@ Page({
 
   onPullDownRefresh: function () {
     this.articles[this.data.pageCk].upData().then(aSetData={
-      if (aSetData) {this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']')}
+      if (aSetData) {
+        this.setData( this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']') )
+      }
     });
   },
 
   onReachBottom: function () {
     this.articles[this.data.pageCk].downData().then(aSetData={
-      if (aSetData) {this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']')}
+      if (aSetData) {
+        this.setData( this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']') )
+      }
     });
   },
 
