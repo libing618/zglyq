@@ -17,7 +17,7 @@ function _objToStrArr(dn,obj) {
   return arr
 }
 
-function  _getError(error) {
+function _getError(error) {
   wx.getNetworkType({
     success: function (res) {
       if (res.networkType == 'none') {
@@ -28,7 +28,19 @@ function  _getError(error) {
     }
   });
 };
-export class getData {               //wxcloud查询
+export class geoQueryUnit {
+  constructor (selTypes,province_code){
+    this.qUnit = db.collection('_Role').where(
+      _.or(
+        selTypes.map(stype=>{
+          return { indType: db.RegExp({ regexp: stype }) }
+        })
+      ),
+      { 'address_code': _.lt((province_code+1)*10000).and(_.gte(province_code*10000)) }
+    )
+  }
+}
+export class getData {               //wxcloud批量查询
   constructor (dataName,afamily=0,uId=roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
     this.pNo = dataName;
     if (['articles','banner','qa'].includes(dataName)) {               //是否全部单位数组
@@ -60,7 +72,7 @@ export class getData {               //wxcloud查询
     orderArr.forEach(ind=> {this.dQuery=this.dQuery.orderBy(ind[0],ind[1])} );
     this.isEnd = false;
   };
-  
+
   addViewData(addItem,mPage) {
     let spData = {}
     spData[mPage] = this.nIndex;
@@ -97,7 +109,7 @@ export class getData {               //wxcloud查询
           }
         })
       }
-    })
+    }).catch(err=>{this._getError(err)})
   };
   upData(){    //从头查询
     return new Promise((resolve, reject) => {
@@ -130,7 +142,7 @@ export class getData {               //wxcloud查询
           resolve(false);
         }
       })
-    })
+    }).catch(err=>{this._getError(err)})
   };
   allData(){    //查询全部
     return new Promise((resolve, reject) => {
@@ -149,6 +161,6 @@ export class getData {               //wxcloud查询
           });
         }
       });
-    })
+    }).catch(err=>{this._getError(err)})
   }
 }

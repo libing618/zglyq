@@ -1,4 +1,4 @@
-const cloudPath = '../../config.js'
+const cloudPath = 'lyqplugincloud-b64fe0'
 const {sysinfo} = getApp();
 module.exports = Behavior({
   data: {

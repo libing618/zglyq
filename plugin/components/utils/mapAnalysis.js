@@ -1,4 +1,3 @@
-const db = wx.cloud.database();
 const gscode = require('apdv.js');
 const qqmap_wx = require('qqmap-wx-jssdk.min.js');   //微信地图
 var QQMapWX = new qqmap_wx({ key: '6JIBZ-CWPW4-SLJUB-DPPNI-4TWIZ-Q4FWY' });   //开发密钥（key）
@@ -36,7 +35,7 @@ module.exports = Behavior({
             wx.getLocation({
               type: 'gcj02',
               success(res) {
-                resolve(db.Geo.Point(res.longitude, res.latitude))
+                resolve({longitude:res.longitude, latitude:res.latitude})
               },
               fail() { reject('获取位置失败'); }
             })

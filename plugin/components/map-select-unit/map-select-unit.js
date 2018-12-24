@@ -53,15 +53,8 @@ Component({
       };
       that.authorizeLocation(false).then(aGeoPoint =>{
         that.buildAdd(aGeoPoint).then(addGroup=>{
-          let province_code = Math.floor(addGroup.code/10000);     //省级行政区划代码
-          db.collection('_Role').where(
-            _.or(
-              newPage.selTypes.map(stype=>{
-                return { indType: db.RegExp({ regexp: stype }) }
-              })
-            ),
-            { 'address_code': _.lt((province_code+1)*10000).and(_.gte(province_code*10000)) }
-          ).get().then( ({data})=>{
+          that.unitData = new (newPage.selTypes,Math.floor(addGroup.code/10000);     //省级行政区划代码
+          .get().then( ({data})=>{
             if (data.length>0) {
               that.calDistance(aGeoPoint,data).then(({markers,unitArray,points})=>{
                 newPage.markers = markers;

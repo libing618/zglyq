@@ -1,3 +1,4 @@
+
 App({
   roleData: require('globaldata.js').roleData,                 //读数据记录的缓存
   aIndex: require('globaldata.js').aIndex,
@@ -10,6 +11,7 @@ App({
 
   onLaunch: function () {
     var that = this;
+    
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;
@@ -21,10 +23,10 @@ App({
             content: '当前微信版本过低，无法正常使用，请升级到最新微信版本后重试。',
             compressed(res) { setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000); }
           })
-        };
+        };                  //转换比例屏幕宽750rpx
         that.sysinfo.menuButton = wx.getMenuButtonBoundingClientRect()
         that.sysinfo.useWindowHeight = res.windowHeight-20//res.statusBarHeight-20;
-        that.sysinfo.rpxTopx = res.windowWidth/750;                   //转换比例屏幕宽750rpx
+        that.sysinfo.rpxTopx = res.windowWidth/750;
       }
     });
     ['aIndex', 'aData','aCount'].forEach(dataName => {
