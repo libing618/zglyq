@@ -35,6 +35,12 @@ export function querySsq(saddv) {                                //读村镇区�
   }).catch(err=>{_getError(err)});
 };
 
+export function afamilySwitchSave(pno,modalId,arrNext) {                                //读村镇区划数据
+  return new Promise((resolve, reject) => {
+    db.collection(pno).doc(modalId).set('afamily',arrNext).save().then(({data}) => { resolve(data) })
+  }).catch(err=>{_getError(err)});
+};
+
 export class geoQueryUnit {
   constructor (selTypes,province_code){
     this.qUnit = db.collection('_Role').where(

@@ -3,8 +3,10 @@
   <template is="p_navBar__headTab" data="{{statusBar,...ht}}"/>
   <view class="page__sub" id="model-{{pNo}}">
     <view class="weui-tab__panel">
-      <block wx:for="{{cPage[ht.pageCk]}}" wx:key="{{index}}">
-        <switch-afamily name="{{pageData[item]._id}}" value="{{pageData[item]}}"></switch-afamily>
+      <block wx:for="{{cPage}}" wx:key="{{index}}">
+        <view wx:if="{{pageData[item].afamily==ht.pageCk}}"
+          <switch-afamily name="{{pNo}}" value="{{pageData[item]}}"></switch-afamily>
+        </view>
       </block>
     </view>
     <view style="padding-bottom:100rpx;"></view>
