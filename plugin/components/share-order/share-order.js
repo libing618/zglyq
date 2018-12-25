@@ -1,4 +1,4 @@
-const {sysinfo,fData,cargoStock} = getApp();
+const {sysinfo,cargoStock} = getApp();
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],
@@ -46,9 +46,10 @@ Component({
   methods: {
     shareOrder(){
       if (this.data.clickid==this.data.sitem._id){
+        let docDefine = require('../../modules/procedureclass')[this.data.name];
         this.setData({
-          fieldName: fData[this.data.pno].pSuccess,
-          fieldType: fData[this.data.pno].fieldType
+          fieldName: docDefine.pSuccess,
+          fieldType: docDefine.fieldType
         });
         this.popModal()
       } else {

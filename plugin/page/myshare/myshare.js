@@ -8,9 +8,10 @@ Page({
     pNo: 'share',                       //流程
     statusBar: app.sysinfo.statusBarHeight,
     ht:{
-      navTabs: app.fData.share.afamily,
-      modalBtn: ['可以开始','等待订单','停止服务'],
-      fLength: app.fData.share.afamily.length,
+      navTabs: ['可以开始','等待订单','停止服务'],
+      tWidth: 470 * app.sysinfo.rpxTopx / 3,   //每个tab宽度470rpx÷3
+      fLength: 3,
+      twwHalf: 48 * app.sysinfo.rpxTopx,
       pageCk: 0
     },
     mPage: [],

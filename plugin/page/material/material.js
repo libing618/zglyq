@@ -3,6 +3,7 @@ import { indexClick,binddata } from '../../modules/util.js';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
 const _ = db.command;
+const rawDefine = require('../../modules/procedureclass').rawOperate
 var app = getApp()
 Page({
   data: {
@@ -11,8 +12,8 @@ Page({
     dObjectId: '0',             //已建数据的ID作为修改标志，0则为新建
     pageData: [],
     iClicked: '0',
-    fieldType:app.fData.rawOperate.fieldType,
-    fieldName:app.fData.rawOperate.pSuccess
+    fieldType:rawDefine.fieldType,
+    fieldName:rawDefine.pSuccess
   },
   subscription: {},
   indexField:'',      //定义索引字段
@@ -67,12 +68,12 @@ Page({
 
   onLoad: function (ops) {        //传入参数为oState,不得为空
     var that = this;
-    if (checkRols(app.fData.rawOperate.ouRoles[ops.oState],app.roleData.user)){  //检查用户操作权限
-      that.indexField = app.fData.rawOperate.oSuccess[ops.oState].indexField;
-      that.sumField = app.fData.rawOperate.oSuccess[ops.oState].sumField;
+    if (checkRols(rawDefine.ouRoles[ops.oState],app.roleData.user)){  //检查用户操作权限
+      that.indexField = rawDefine.oSuccess[ops.oState].indexField;
+      that.sumField = rawDefine.oSuccess[ops.oState].sumField;
       if (app.cargoStock) {
         wx.setNavigationBarTitle({
-          title: app.roleData.uUnit.nick + '的' + app.fData.rawOperate.oprocess[ops.oState]
+          title: app.roleData.uUnit.nick + '的' + rawDefine.oprocess[ops.oState]
         });
       } else {
         wx.showToast({ title: '无库存数据！', duration: 2500 });

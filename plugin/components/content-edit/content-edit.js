@@ -1,4 +1,4 @@
-const {sysinfo,fData,cargoStock} = getApp()
+const {sysinfo,cargoStock} = getApp()
 Component({
   behaviors: ['wx://form-field'],
   properties: {
@@ -28,16 +28,17 @@ Component({
   methods: {
     clickfield({ currentTarget:{id,dataset},detail:{value} }){            //字段内容查看弹出页
       if (this.data.clickid==this.data.sitem._id){
+        let docDefine = require('../../modules/procedureclass')[this.data.name]
         this.setData({
-          fieldName: fData[this.data.pno].pSuccess,
-          fieldType: fData[this.data.pno].fieldType
+          fieldName: docDefine.pSuccess,
+          fieldType: docDefine.fieldType
         });
         this.popModal();
         if (this.data.name=='goods') {
-          cargototal = cargoStock[this.data.sfield[id]._id]
+          cargototal = cargoStock[this.data.value._id]
           this.data.setData({
             scale: ((cargototal.payment + cargototal.delivering + cargototal.delivered) / cargototal.packages).toFixed(0),
-            csupply: (cargototal.canSupply / this.data.sfield[id].packages - 0.5).toFixed(0)
+            csupply: (cargototal.canSupply / this.data.value[id].packages - 0.5).toFixed(0)
           });
         }
       }

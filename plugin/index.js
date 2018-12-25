@@ -91,7 +91,6 @@ export function formatTime(date=new Date(),isDay=false) {
   }
 };
 
-module.exports ={
-  procedureclass: require('modules/procedureclass.js'),
+module.exports = {
   getData: require('modules/db-get-data.js')
 }

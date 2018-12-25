@@ -5,11 +5,8 @@ wx.cloud.init({
 App({
   roleData: require('globaldata.js').roleData,                 //读数据记录的缓存
   aIndex: require('globaldata.js').aIndex,
-  pIndex: require('globaldata.js').pIndex,
   aCount: require('globaldata.js').aCount,
-  fData: requirePlugin('lyqPlugin').procedureclass,
   aData: {},
-  pData: {},
   logData: [],
 
   onLaunch: function () {
@@ -58,14 +55,11 @@ App({
         if (res.currentSize > (res.limitSize - 512)) {          //如缓存占用大于限制容量减512kb，将大数据量的缓存移除。
           wx.removeStorage({ key: "aData" });
           wx.removeStorage({key:"aIndex"});
-          wx.removeStorage({key:"pData"});
-          wx.removeStorage({key:"pIndex"});
+          wx.removeStorage({key:"aCount"});
         } else {
           wx.setStorage({ key: 'roleData', data: that.roleData });
           wx.setStorage({key:"aIndex", data:that.aIndex});
           wx.setStorage({ key: 'aCount', data: that.aCount });
-          wx.setStorage({key:"pIndex", data:that.pIndex});
-          wx.setStorage({key:"pData", data:that.pData});
         }
       }
     });

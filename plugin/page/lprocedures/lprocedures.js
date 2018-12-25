@@ -11,11 +11,12 @@ Page ({
 
   onLoad: function (ops) {        //传入参数为pNo,不得为空
     var that = this;
-    that.artid = Number(ops.artId);
+    let artid = Number(ops.artId);
+    let docDefine = require('../../modules/procedureclass')[ops.pNo];
     that.setData({
       pNo: ops.pNo,
-      artId: isNaN(that.artid) ? ops.pNo : that.artid,
-      navBarTitle: isNaN(that.artid) ? app.fData[ops.pNo].pName : app.fData[ops.pNo].pName+'--'+app.fData[ops.pNo].afamily[that.artid]
+      artId: isNaN(artid) ? ops.pNo : artid,
+      navBarTitle: isNaN(artid) ? docDefine.pName : docDefine.pName+'--'+docDefine.afamily[artid]
     });
   },
 

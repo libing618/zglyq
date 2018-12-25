@@ -16,6 +16,12 @@ Page({
   onLoad: function(options) {
     var that = this ;
     that.data.pNo = options.pNo;
+    let docDefine = require('../../modules/procedureclass')[options.pNo];
+    this.setData({
+      fieldName: docDefine.pSuccess,
+      fieldType: docDefine
+
+
     that.inFamily = (typeof app.fData[that.data.pNo].afamily != 'undefined');
     that.data.vData = initData(app.fData[that.data.pNo].pSuccess,app.fData[that.data.pNo].fieldType,app.aData[that.data.pNo][options.artId]);
     that.data.fieldName = app.fData[this.data.pno].pSuccess;

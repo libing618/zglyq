@@ -18,35 +18,33 @@ Page({
     tabExplain: ['需要您审批', '在他人审批过程中', '可供查阅'],
     pTotal: [0,0,0],
     pageData: {},
-    pAt:[[new Date(0),new Date(0)],[new Date(0),new Date(0)]],
-    indexPage: app.pIndex.prodessing,
-    procedures: app.pIndex.procedures,
-    anClicked: app.pIndex.proceduresCk
+    pAt:[[new Date(0),new Date(0)],[new Date(0),new Date(0)]],  //缓存中处理中流程更新时间
+    prodessing: [[],[]],              //流程分类缓存数组
+    procedures: {},              //已发布流程缓存数组
+    proceduresCk: 'goods'             //选中的已发布流程
   },
 
   onLoad:function(options){
     if (checkRols(app.roleData.user.line == 9 ? -1 : app.roleData.user.line,app.roleData.user) ){
-      let pSetData = { pClassName: [], processName:{}};
-      for (let procedure in app.fData) {
-        pSetData.pClassName.push(procedure);
-        pSetData.processName[procedure] = app.fData[procedure].pName;
-        if (!app.pIndex.procedures[procedure]) {
-          app.pIndex.procedures[procedure]=[];
-          app.pIndex.proceduresAt[procedure]=[new Date(0),new Date(0)];
-        }
-      };
       return new Promise((resolve,reject)=>{
         wx.getStorage({
           key: 'procedures',
           success: function (res) {
             if (res.data) {
-              app.pData = res.data;
               resolve(res.data)
             } else { resolve( {} ) };
           }
         })
-      }).then( storData=>{
-        pSetData.pageData = storData;
+      }).then( pSetData=>{
+        let docsDefine = require('../../modules/procedureclass');
+        for (let procedure in docsDefine) {
+          pSetData.pClassName.push(procedure);
+          pSetData.processName[procedure] = docsDefine[procedure].pName;
+          if (!this.data.procedures[procedure]) {
+            pSetData.procedures[procedure]=[];
+            pSetData.proceduresAt[procedure]=[new Date(0),new Date(0)];
+          }
+        };
         this.updatepending(true,0).then(usData=>{
           if (usData){
             Object.assign(pSetData,usData)
@@ -57,30 +55,20 @@ Page({
     };
   },
 
-  onReady: function(){
-    this.updatepending(true,1).then(ps1=>{
-      this.updatepending(true,2).then(ps2=>{
-        if (ps1){
-          if (ps2){
-            Object.assign(ps1,ps2);
-          }
-          this.setData(ps1);
-        } else {
-          if (ps2){
-            this.setData(ps2);
-          }
-        }
-      })
+  hTabClick: function({currentTarget:{id,dataset},detail:{value}}){
+    this.setData({
+      "ht.pageCk": Number(id)
+    },()=>{
+      this.updatepending(true).then(pSetData={
+        if (pSetData) {this.setData(pSetData)}
+      });
     });
   },
 
-  hTabClick: hTabClick,
-
   anClick: function(e){                           //选择审批流程类型
-    app.pIndex.proceduresCk = e.currentTarget.id;
-    this.setData({ anClicked: app.pIndex.proceduresCk });
+    this.setData({ proceduresCk: e.currentTarget.id });
     this.updatepending(true).then(pSetData={
-      if (pSetData) {that.setData(pSetData)}
+      if (pSetData) {this.setData(pSetData)}
     })
   },
 
@@ -91,9 +79,9 @@ Page({
         wx.cloud.callFunction({
           name:'process',
           data:{
-            pModel: app.pIndex.proceduresCk,
+            pModel: that.data.proceduresCk,
             sData:{
-              rDate: pck==2 ? app.pIndex.processingAt[app.pIndex.proceduresCk] : that.data.pAt[pck],
+              rDate: pck==2 ? that.data.pAt[that.data.proceduresCk] : that.data.pAt[pck],
               isDown: isDown ? 'asc' : 'desc',
               lastTotal: that.data.pTotal[pck]
             },
@@ -105,44 +93,45 @@ Page({
           let lena = result.records.length ;
           if (lena>0){
             let aprove = {}, aPlace = -1;
-            uSetData.pAt = that.data.pAt;
-            if (isDown) {                     //下拉刷新
-              if (pck==2){
-                app.pIndex.processingAt[app.pIndex.proceduresCk][1] = result.records[lena-1].updatedAt;                          //更新本地最新时间
-                app.pIndex.processingAt[app.pIndex.proceduresCk][0] = result.records[0].updatedAt;                 //更新本地最后更新时间
+            if (pck==2) {                   //已发布
+              uSetData.proceduresAt = { $(that.data.proceduresCk):that.data.proceduresAt[that.data.proceduresCk] };
+              uSetData.procedures = {$(that.data.proceduresCk):that.data.procedures[that.data.proceduresCk]};
+              if (isDown) {                     //下拉刷新
+                uSetData.proceduresAt[that.data.proceduresCk][1] = result.records[lena-1].updatedAt;       //更新本地最新时间
+                uSetData.proceduresAt[that.data.proceduresCk][0] = result.records[0].updatedAt;         //更新本地最后更新时间
               } else {
+                uSetData.proceduresAt[that.data.proceduresCk][0] = result.records[lena - 1].updatedAt;          //更新本地最后更新时间
+              };
+              result.records.forEach( aprove =>{              //dProcedure为审批流程的表名
+                if (isDown) {                               //各类审批流程的ID数组
+                  aPlace = uSetData.procedures[that.data.proceduresCk].indexOf(aprove._id)
+                  if (aPlace >= 0) { uSetData.procedures[that.data.proceduresCk].splice(aPlace, 1) }           //删除本地的重复记录列表
+                  uSetData.procedures[that.data.proceduresCk].unshift(aprove._id);                   //按流程类别加到管理数组中
+                } else {
+                  uSetData.procedures[that.data.proceduresCk].push(aprove._id);                   //按流程类别加到管理数组中
+                };
+                uSetData['pageData.'+aprove._id] = aprove;                  //增加页面中的新收到数据
+              });
+            } else {
+              uSetData.pAt = that.data.pAt;
+              uSetData.processing = that.data.processing;
+              if (isDown) {                     //下拉刷新
                 uSetData.pAt[pck][1] = result.records[lena-1].updatedAt;                          //更新本地最新时间
                 uSetData.pAt[pck][0] = result.records[0].updatedAt;                 //更新本地最后更新时间
-              }
-            } else {
-              if (pck==2){
-                app.pIndex.processingAt[app.pIndex.proceduresCk][0] = result.records[lena - 1].updatedAt;          //更新本地最后更新时间
               } else {
                 uSetData.pAt[pck][0] = result.records[lena - 1].updatedAt;
-              }
-            };
-            result.records.forEach( aprove =>{              //dProcedure为审批流程的表名
-              if (aprove.processState==2 ){                   //已发布
-                if (isDown) {                               //各类审批流程的ID数组
-                  aPlace = app.pIndex.procedures[aprove.dProcedure].indexOf(aprove._id)
-                  if (aPlace >= 0) { app.pIndex.procedures[aprove.dProcedure].splice(aPlace, 1) }           //删除本地的重复记录列表
-                  app.pIndex.procedures[aprove.dProcedure].unshift(aprove._id);                   //按流程类别加到管理数组中
-                } else {
-                  app.pIndex.procedures[aprove.dProcedure].push(aprove._id);                   //按流程类别加到管理数组中
-                };
-              } else {
+              };
+              result.records.forEach( aprove =>{              //dProcedure为审批流程的表名
                 if (isDown) {                               //审批流程的ID数组
-                  aPlace = app.pIndex.processing[pck].indexOf(aprove._id);
-                  if (aPlace >= 0) { app.pIndex.procedures[pck].splice(aPlace, 1) }           //删除本地的重复记录列表
-                  app.pIndex.processing[pck].unshift(aprove._id);                   //按流程类别加到管理数组中
+                  aPlace = uSetData.processing[pck].indexOf(aprove._id);
+                  if (aPlace >= 0) { uSetData.procedures[pck].splice(aPlace, 1) }           //删除本地的重复记录列表
+                  uSetData.processing[pck].unshift(aprove._id);                   //按流程类别加到管理数组中
                 } else {
-                  app.pIndex.processing[pck].push(aprove._id);                   //按流程类别加到管理数组中
+                  uSetData.processing[pck].push(aprove._id);                   //按流程类别加到管理数组中
                 };
-              }
-              app.pData[aprove._id] = aprove;            //pageData是ID为KEY的JSON格式的审批流程数据
-              uSetData['pageData.'+aprove._id] = aprove;                  //增加页面中的新收到数据
-            });
-            uSetData.indexPage = app.pIndex.processing;
+                uSetData['pageData.'+aprove._id] = aprove;     //pageData是ID为KEY的JSON格式的审批流程数据
+              });
+            };
           }
           resolve( uSetData );
         }).catch( console.error );
@@ -168,7 +157,17 @@ Page({
     wx.getStorageInfo({             //查缓存的信息
       success: function (res) {
         if (res.currentSize < (res.limitSize - 512)) {          //如缓存占用大于限制容量减512kb，将大数据量的缓存移除。
-          wx.setStorage({ key: 'pData', data: app.pData });
+          wx.setStorage({
+            key: 'procedures',
+            data: {
+              pageData: that.data.pageData,
+              pAt:that.data.pAt,
+              prodessing: that.data.prodessing,
+              proceduresAt: that.data.proceduresAt,
+              procedures: that.data.procedures,
+              proceduresCk: that.data.proceduresCk
+            }
+          });
         }
       }
     });

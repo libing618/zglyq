@@ -43,7 +43,7 @@ Page({
           wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
           mSwiper: that.banner.nIndex,
           mPage: that.articles.map(a=>{return a.nIndex}),
-          ...pageData,
+          pageData,
           grids: grids
         },resolve(true));
       })

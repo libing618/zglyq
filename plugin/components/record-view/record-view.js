@@ -50,11 +50,13 @@ Component({
 
   methods:{
     clickitem(e){
+      let docDefine = require('../../modules/procedureclass')[this.data.pno];
       this.setData({
-        fieldName: app.fData[this.data.pno].pSuccess,
-        fieldType: app.fData[this.data.pno].fieldType,
-        vData: initData(app.fData[this.data.pno].pSuccess, app.fData[this.data.pno].fieldType, this.data.sitem),
-        enUpdate: this.data.sitem.unitId==app.roleData.uUnit._id && typeof app.fData[this.data.pno].suRoles!='undefined'
+        fieldName: docDefine.pSuccess,
+        fieldType: docDefine.fieldType,
+        inFamily: typeof docDefine.afamily != 'undefined'
+        vData: initData(docDefine.pSuccess, docDefine.fieldType, this.data.sitem),
+        enUpdate: this.data.sitem.unitId==app.roleData.uUnit._id && typeof docDefine.suRoles!='undefined'
       });
       this.popModal();
     },
@@ -67,8 +69,8 @@ Component({
           url += '&artId='+that.data.vData._id;
           break;
         case 'fTemplate' :
-          url += typeof app.fData[that.data.pno].afamily != 'undefined' ? '&artId='+that.data.vData.afamily : '';
-          let newRecord = typeof that.data.fieldType.afamily!='undefined' ? that.data.pno+that.data.vData.afamily : that.data.pno;
+          url += that.data.inFamily ? '&artId='+that.data.vData.afamily : '';
+          let newRecord = that.data.inFamily ? that.data.pno+that.data.vData.afamily : that.data.pno;
           app.aData[that.data.pno][newRecord] = that.data.vData;
           break;
       };

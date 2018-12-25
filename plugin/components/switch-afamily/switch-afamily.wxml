@@ -14,7 +14,7 @@
         </block>
       </view>
       <view class="page__ft weui-footer_fixed-bottom">
-        <button class="weui-btn" size="mini" bindtap="fSwitch">{{smtName[value.afamily+1]}}</button>
+        <button class="weui-btn" size="mini" bindtap="fSwitch">{{(value.afamily+1)==value.afamily.length ? smtName[0] : smtName[value.afamily+1]}}</button>
         <button class="weui-btn" type="primary" size="mini" bindtap="downModal">返回</button>
       </view>
     </view>

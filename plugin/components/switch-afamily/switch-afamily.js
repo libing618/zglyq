@@ -38,17 +38,18 @@ Component({
   methods: {
     clickitem({ currentTarget:{id,dataset},detail:{value} }){            //切换选择弹出页
       if (id==this.data.value._id){
+        let docDefine = require('../../modules/procedureclass')[this.data.name];
         this.setData({
-          fieldName: app.fData[this.data.name].pSuccess,
-          fieldType: app.fData[this.data.name].fieldType,
-          smtName: app.fData[this.data.name].afamily
+          fieldName: docDefine.pSuccess,
+          fieldType: docDefine.fieldType,
+          smtName: docDefine.afamily
         });
         this.popModal()
       }
     },
     fSwitch(){                  //确认切换到下一数组并返回
       let that = this;
-      let arrNext = (that.data.value.afamily + 1) == that.data.smtName.length ? 0 : (that.data.ht.pageCk + 1);
+      let arrNext = (that.data.value.afamily + 1) == that.data.smtName.length ? 0 : (that.data.value.afamily + 1);
       afamilySwitchSave(that.data.name,that.data.clickid,arrNext).then(()=>{
         that.setData({'value.afamily': arrNext});
         that.downModal();

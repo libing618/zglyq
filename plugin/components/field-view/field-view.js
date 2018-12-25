@@ -1,4 +1,4 @@
-const {sysinfo,fData,cargoStock} = getApp()
+const {sysinfo,cargoStock} = getApp()
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],
@@ -30,10 +30,11 @@ Component({
 
   methods: {
     clickfield({ currentTarget:{id,dataset},detail:{value} }){            //字段内容查看弹出页
-      if (this.data.clickid==this.data.sitem._id){
+      if (this.data.clickid==this.data.sfield._id){
+        let docDefine = require('../../modules/procedureclass')[this.data.name]
         this.setData({
-          fieldName: fData[this.data.pno].pSuccess,
-          fieldType: fData[this.data.pno].fieldType
+          fieldName: docDefine.pSuccess,
+          fieldType: docDefine.fieldType
         });
         this.popModal();
         if (this.data.name=='goods') {

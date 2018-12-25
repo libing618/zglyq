@@ -9,38 +9,39 @@ function getdate(idate) {
   var day = rdate.getDate();
   return year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)
 };
-function setRole(puRoles,suRoles){      //流程审批权限列表
+function setRole(pNo){      //流程审批权限列表
+  let docDefine = require('../../modules/procedureclass')[pNo];
   let cManagers = [ [app.roleData.user.unit + app.roleData.user.line + app.roleData.user.position, app.roleData.user.uName] ];
-  if (app.roleData.uUnit.afamily > 2 && puRoles) {          //单位类型为企业且有本单位审批设置
+  if (app.roleData.uUnit.afamily > 2 && docDefine.puRoles) {          //单位类型为企业且有本单位审批设置
     let pRolesNum = 0, pRoleUser;
-    for (let i = 0; i < puRoles.length; i++) {
+    for (let i = 0; i < docDefine.puRoles.length; i++) {
       pRoleUser = [];
       app.roleData.uUnit.unitUsers.forEach((pUser) => {
-        if ((pUser.line+''+pUser.position) == puRoles[i]) {
+        if ((pUser.line+''+pUser.position) == docDefine.puRoles[i]) {
           pRoleUser.push(pUser.uName);
         }
       })
       if (pRoleUser.length>0) {
         pRolesNum = pRolesNum + 1;
-        cManagers.push([app.roleData.user.unit+puRoles[i],pRoleUser.join('、')]);
+        cManagers.push([app.roleData.user.unit+docDefine.puRoles[i],pRoleUser.join('、')]);
       }
     };
     if (pRolesNum==0 && app.roleData.user.line!=8) {
       cManagers.push([app.roleData.user.unit+'88','本单位管理员']);
     }
   }
-  if (suRoles & app.roleData.sUnit.afamily > 2) {                 //上级单位类型为企业,有审批设置
+  if (docDefine.suRoles & app.roleData.sUnit.afamily > 2) {                 //上级单位类型为企业,有审批设置
     let sRolesNum = 0, sRoleUser;
-    for (let i = 0; i < suRoles.length; i++) {
+    for (let i = 0; i < docDefine.suRoles.length; i++) {
       sRoleUser = [];
       app.roleData.sUnit.unitUsers.forEach((sUser) => {
-        if (sUser.line+''+sUser.position == suRoles[i]) {
+        if (sUser.line+''+sUser.position == docDefine.suRoles[i]) {
           sRoleUser.push(sUser.uName);
         }
       });
       if (sRoleUser.length > 0) {
         sRolesNum = sRolesNum + 1;
-        cManagers.push([app.roleData.sUnit._id + suRoles[i], sRoleUser.join('、')]);
+        cManagers.push([app.roleData.sUnit._id + docDefine.suRoles[i], sRoleUser.join('、')]);
       }
     }
     if (sRolesNum == 0) {
@@ -109,9 +110,10 @@ module.exports = {
 
   initFunc: function(cName) {      //对数据录入或编辑的格式数组增加函数
     let funcArr = [];
-    app.fData[cName].pSuccess.forEach(fieldName=> {
-      if (app.fData[cName].fieldType[fieldName].t.length > 3) {             //每个输入类型定义的字段长度大于3则存在对应处理过程
-        funcArr.push('i_' + app.fData[cName].fieldType[fieldName].t);
+    let docDefine = require('procedureclass')[cName];
+    docDefine.pSuccess.forEach(fieldName=> {
+      if (docDefine.fieldType[fieldName].t.length > 3) {             //每个输入类型定义的字段长度大于3则存在对应处理过程
+        funcArr.push('i_' + docDefine.fieldType[fieldName].t);
       };
     });
     return funcArr;
@@ -212,7 +214,7 @@ module.exports = {
             let emptyField = '';                   //检查是否有字段输入为空
             that.data.fieldName.forEach(fName=>{
               if (fName in value){
-                that.data.vData[fName]=value[fName]; 
+                that.data.vData[fName]=value[fName];
               }
               if (typeof that.data.vData[fName]=='undefined'){
                 emptyField += '《' + that.data.fieldType[fName].p + '》';
@@ -304,7 +306,7 @@ module.exports = {
             });
             if (that.data.targetId == '0') {                    //新建流程的提交
               if (app.roleData.user.unit!='0' && JSON.stringify(app.roleData.sUnit)!='{}'){
-                let cManagers = setRole(app.fData[that.data.pNo].puRoles, app.fData[that.data.pNo].suRoles);
+                let cManagers = setRole(that.data.pNo);
                 if (cManagers.length == 1) {                  //流程无后续审批人
                   saveData.unitId = app.roleData.uUnit._id;
                   saveData.unitName = app.roleData.uUnit.uName;

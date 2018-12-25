@@ -1,6 +1,7 @@
 //调整当日成品生产计划
 import {hTabClick} from '../../modules/util.js';
 import {checkRols} from '../../modules/initForm';
+const docDefine = require('../../modules/procedureclass').prodesign;
 const db = wx.cloud.database();
 const _ = db.command;
 var app = getApp();
@@ -10,8 +11,10 @@ Page({
     pNo: 'prodesign',                       //流程
     statusBar: app.sysinfo.statusBarHeight,
     ht:{
-      navTabs: app.fData.prodesign.afamily,
-      fLength: app.fData.prodesign.afamily.length,
+      navTabs: docDefine.afamily,
+      fLength: docDefine.afamily.length,
+      tWidth: 470 * app.sysinfo.rpxTopx / 3,   //每个tab宽度470rpx÷3
+      twwHalf: 48 * app.sysinfo.rpxTopx,
       pageCk: 0
     },
     cPage: [],
@@ -28,7 +31,7 @@ Page({
   updateTodo: function(pNo) {    //更新页面显示数据
     var that = this;
     return new Promise((resolve, reject) => {
-      var umdata = new Array(app.fData.prodesign.afamily.length);
+      var umdata = new Array(docDefine.afamily.length);
       umdata.fill([]);
       var unitId = uId ? uId : app.roleData.uUnit._id;
       db.collection(pNo).where({

@@ -31,24 +31,25 @@ Page({
         resolve({ pNo: options.pNo, pId: isNaN(artid) ? options.artId : artid });
       }
     }).then(ops=>{
+      let docDefine = require('../../modules/procedureclass')[ops.pNo];
       switch (typeof ops.pId){
         case 'number':           //传入参数为一位数字的代表该类型新建数据或读缓存数据
           that.data.dObjectId = ops.pNo + ops.pId;      //根据类型建缓存KEY
-          that.data.navBarTitle += app.fData[ops.pNo].afamily[ops.pId]
+          that.data.navBarTitle += docDefine.afamily[ops.pId]
           break;
         case 'string':                   //传入参数为已发布ID，重新编辑已发布的数据
           that.data.dObjectId = ops.pId;
-          that.data.navBarTitle += app.fData[ops.pNo].pName;
+          that.data.navBarTitle += docDefine.pName;
           break;
         case 'undefined':               //未提交或新建的数据KEY为审批流程pModel的值
           that.data.dObjectId = ops.pNo;
-          that.data.navBarTitle += app.fData[ops.pNo].pName;
+          that.data.navBarTitle += docDefine.pName;
           break;
       }
-      let fieldName = app.fData[ops.pNo].pSuccess;
-      let fieldType = app.fData[ops.pNo].fieldType;
+      let fieldName = docDefine.pSuccess;
+      let fieldType = docDefine.fieldType;
       fieldName.unshift("uName");
-      fData.uName = {t:"h2", p:"名称" };
+      fieldType.uName = {t:"h2", p:"名称" };
       aaData = initData(fieldName,fieldType,aaData);    //require('../../test/goods0')[0]
       wImpEdit.initFunc(ops.pNo).forEach(functionName => {
         that[functionName] = wImpEdit[functionName];

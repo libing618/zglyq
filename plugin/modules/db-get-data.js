@@ -1,7 +1,7 @@
 const db = wx.cloud.database();
 const _ = db.command;
 const crypto = require('crypto');
-let {roleData,fData,aData,aIndex} = getApp();
+let {roleData,aData,aIndex} = getApp();
 function _mapResData(rData){           //处理查询到的数组
   return iData = rData.map(aProc =>{
     app.aData[aProc._id] = aProc;
@@ -80,9 +80,9 @@ export class getData {               //wxcloud批量查询
       this.unitFamily = uId;
       requirement.unitId = _.eq(uId)
     };                //除文章类数据外只能查指定单位的数据
-    if (fData[dataName].afamily) {       //是否有分类数组
+    if (require('procedureclass')[dataName].afamily) {       //是否有分类数组
       requirement.afamily = _.eq(afamily);
-      this.unitFamily  += afamily;
+      this.unitFamily += afamily;
     };
     this.nData = {};
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
