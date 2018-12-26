@@ -4,7 +4,7 @@
   <view class="page__sub" id="model-{{pNo}}">
     <view class="weui-tab__panel">
       <block wx:for="{{cPage}}" wx:key="{{index}}">
-        <view wx:if="{{pageData[item].afamily==ht.pageCk}}"
+        <view wx:if="{{pageData[item].afamily==ht.pageCk}}">
           <switch-afamily name="{{pNo}}" value="{{pageData[item]}}"></switch-afamily>
         </view>
       </block>

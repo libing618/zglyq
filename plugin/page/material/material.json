@@ -17,8 +17,6 @@
     "recycle-dragsort": "../../components/recycle-dragsort/recycle-dragsort",
     "recycle-select": "../../components/recycle-select/recycle-select",
     "rich-view-edit": "../../components/rich-view-edit/rich-view-edit",
-    "share-order": "../../components/share-order/share-order",
-    "switch-afamily": "../../components/switch-afamily/switch-afamily",
     "thumbnail-view-edit": "../../components/thumbnail-view-edit/thumbnail-view-edit",
     "time-view-edit": "../../components/time-view-edit/time-view-edit",
     "video-view-edit": "../../components/video-view-edit/video-view-edit"

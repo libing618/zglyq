@@ -1,7 +1,4 @@
-wx.cloud.init({
-  env: 'lyqplugincloud-b64fe0',
-  traceUser: true
-})
+
 App({
   roleData: require('globaldata.js').roleData,                 //读数据记录的缓存
   aIndex: require('globaldata.js').aIndex,

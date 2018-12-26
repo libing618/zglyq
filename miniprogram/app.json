@@ -94,5 +94,10 @@
     "uploadFile": 10000,
     "downloadFile": 10000
   },
+  "permission":{
+    "scope.userLocation": {
+      "desc": "在资产管理、单位管理等项目中帮助您查找位置"
+    }
+  },
   "debug": false
 }
