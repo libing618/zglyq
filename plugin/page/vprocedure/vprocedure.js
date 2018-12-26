@@ -17,18 +17,14 @@ Page({
     var that = this ;
     that.data.pNo = options.pNo;
     let docDefine = require('../../modules/procedureclass')[options.pNo];
+    that.inFamily = (typeof docDefine.afamily != 'undefined');
     this.setData({
       fieldName: docDefine.pSuccess,
-      fieldType: docDefine
-
-
-    that.inFamily = (typeof app.fData[that.data.pNo].afamily != 'undefined');
-    that.data.vData = initData(app.fData[that.data.pNo].pSuccess,app.fData[that.data.pNo].fieldType,app.aData[that.data.pNo][options.artId]);
-    that.data.fieldName = app.fData[this.data.pno].pSuccess;
-    that.data.fieldType=app.fData[this.data.pno].fieldType;
-    that.data.navBarTitle = app.aData[that.data.pNo][options.artId].uName;
-    that.data.enUpdate = that.data.vData.unitId==app.roleData.uUnit._id && typeof app.fData[that.data.pNo].suRoles!='undefined';  //本单位信息且流程有上级审批的才允许修改
-    that.setData(that.data);
+      fieldType: docDefine.fieldType,
+      navBarTitle: app.aData[that.data.pNo][options.artId].uName,
+      vData: initData(docDefine.pSuccess,docDefine.fieldType,app.aData[that.data.pNo][options.artId]),
+      enUpdate: app.aData[that.data.pNo][options.artId]==app.roleData.uUnit._id && typeof docDefine.suRoles!='undefined'  //本单位信息且流程有上级审批的才允许修改
+    });
   },
 
   fEditProcedure: function(e){
