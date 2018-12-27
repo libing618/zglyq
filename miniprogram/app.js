@@ -8,10 +8,7 @@ App({
 
   onLaunch: function () {
     var that = this;
-    wx.cloud.init({
-      env: 'lyqplugincloud-b64fe0',
-      traceUser: true
-    })
+    
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;

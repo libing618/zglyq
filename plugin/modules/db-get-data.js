@@ -1,7 +1,11 @@
+wx.cloud.init({
+  env: 'lyqplugincloud-b64fe0',
+  traceUser: true
+})
 const db = wx.cloud.database();
 const _ = db.command;
 const crypto = require('crypto');
-let {roleData,aData,aIndex} = getApp();
+const {roleData,aData,aIndex} = getApp();
 function _mapResData(rData){           //处理查询到的数组
   return iData = rData.map(aProc =>{
     app.aData[aProc._id] = aProc;
