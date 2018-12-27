@@ -1,8 +1,4 @@
 import {noEmptyObject} from '../../index.js';
-wx.cloud.init({
-  env: 'lyqplugincloud-b64fe0',
-  traceUser: true
-})
 const db = wx.cloud.database();
 
 function requestCallback(err, data) {

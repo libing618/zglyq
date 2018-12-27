@@ -109,6 +109,10 @@ Page({
     });
   },
 
+  onUnload() {
+    app.aIndex['pCk'+this.data.pNo] = Number(this.data.pageCk);
+  },
+
   onShareAppMessage: shareMessage    // 用户点击右上角分享
 
 })

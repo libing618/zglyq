@@ -9,7 +9,7 @@
             <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" id="{{ac}}" bindtap="indexClick">
               <template is="{{ iClicked==ac ? 'selecticon1' : 'selecticon2'}}" />
               <view class="weui-cell__hd">{{pageData[mPage[ac][0]].proName}}</view>
-              <view class="weui-cell__bd">{{pageData[mPage[ac][0]].cargoName}} 可供{{cargoCount[ac]}}份</view>
+              <view class="weui-cell__bd">{{pageData[mPage[ac][0]].cargoName}} 可供{{cargoCanSupply[ac]}}份</view>
               <view class="weui-cell__ft weui-cell__ft_in-access">
                 <button class="weui-btn" type="primary" size="mini" formType="submit">确认{{iSum[ac]}}份</button>
               </view>

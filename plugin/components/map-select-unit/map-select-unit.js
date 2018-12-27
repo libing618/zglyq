@@ -51,8 +51,8 @@ Component({
         wx.showToast({title:'选择服务单位，请注意：选定后不能更改！',icon: 'none'});
       };
       that.authorizeLocation(false).then(aGeoPoint =>{
-        that.buildAdd(aGeoPoint).then(addGroup=>{
-          that.unitData = new geoQueryUnit(newPage.selTypes,Math.floor(addGroup.code/10000);     //省级行政区划代码
+        that.buildAdd(aGeoPoint).then(addGroup => {     //省级行政区划代码
+          that.unitData = new geoQueryUnit(newPage.selTypes,Math.floor(addGroup.code/10000));
           that.unitData.nextGroup().then( unitdata=>{
             if (unitdata.length>0) {
               that.calDistance(aGeoPoint,unitdata).then(({markers,unitArray,points})=>{

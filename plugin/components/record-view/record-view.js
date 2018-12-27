@@ -54,7 +54,7 @@ Component({
       this.setData({
         fieldName: docDefine.pSuccess,
         fieldType: docDefine.fieldType,
-        inFamily: typeof docDefine.afamily != 'undefined'
+        inFamily: typeof docDefine.afamily != 'undefined',
         vData: initData(docDefine.pSuccess, docDefine.fieldType, this.data.sitem),
         enUpdate: this.data.sitem.unitId==app.roleData.uUnit._id && typeof docDefine.suRoles!='undefined'
       });

@@ -100,7 +100,7 @@ Page ({
       'delivering': that.cargoPlans[cargoId].delivering + confimate })
     .save().then(savecargo=>{
       let sd = {};
-      sd.cargoCount[cargoId] = that.cargoPlans[cargoId].cargoStock;
+      sd.cargoCanSupply[cargoId] = that.cargoPlans[cargoId].cargoStock;
       that.setData(sd);
       return db.saveAll(subSuppli)
     }).then(saveSuppli=>{

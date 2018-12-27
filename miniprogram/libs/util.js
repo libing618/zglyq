@@ -1,20 +1,11 @@
-const db = wx.cloud.database();
-let app=getApp()
 function formatNumber(n) {
   n = n.toString()
   return n[1] ? n : '0' + n
 };
 
-export function hTabClick(e) {                                //点击头部tab
-  this.setData({
-    "ht.pageCk": Number(e.currentTarget.id)
-  });
-};
-
 export function tabClick(e) {                                //点击tab
-  app.aIndex['pCk'+this.data.pNo] = Number(e.currentTarget.id);
   this.setData({
-    pageCk: app.aIndex['pCk'+this.data.pNo]               //点击序号切换
+    pageCk: Number(e.currentTarget.id)               //点击序号切换
   });
 };
 

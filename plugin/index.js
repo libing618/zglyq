@@ -92,5 +92,6 @@ export function formatTime(date=new Date(),isDay=false) {
 };
 
 module.exports = {
-  getData: require('modules/db-get-data.js')
+  getData: require('modules/db-get-data.js').getData,
+  cargoCount: require('modules/dataAnalysis.js').cargoCount
 }

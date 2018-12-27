@@ -1,4 +1,4 @@
-//审批流程列表
+                                                                                                                                                                                                    //审批流程列表
 import {hTabClick} from '../../index.js';
 import { shareMessage,checkRols } from '../../modules/initForm';
 const db = wx.cloud.database();
@@ -10,7 +10,7 @@ Page({
     statusBar: app.sysinfo.statusBarHeight,
     ht: {
       navTabs: ['待我审', '我已审', '已发布'],
-      tWidth: 470 * app.sysinfo.rpxTopx / 3,   //每个tab宽度470rpx÷3
+      tWidth: 470 * app.sysinfo.rpxTopx / 3,
       fLength: 3,
       twwHalf: 48 * app.sysinfo.rpxTopx,   //每个tab字体宽度一半32rpx*3÷2
       pageCk: 0
@@ -94,8 +94,10 @@ Page({
           if (lena>0){
             let aprove = {}, aPlace = -1;
             if (pck==2) {                   //已发布
-              uSetData.proceduresAt = { $(that.data.proceduresCk):that.data.proceduresAt[that.data.proceduresCk] };
-              uSetData.procedures = {$(that.data.proceduresCk):that.data.procedures[that.data.proceduresCk]};
+              uSetData.proceduresAt = {};
+              uSetData.proceduresAt[that.data.proceduresCk] = that.data.proceduresAt[that.data.proceduresCk];
+              uSetData.procedures = {};
+              uSetData.procedures[that.data.proceduresCk] = that.data.procedures[that.data.proceduresCk];
               if (isDown) {                     //下拉刷新
                 uSetData.proceduresAt[that.data.proceduresCk][1] = result.records[lena-1].updatedAt;       //更新本地最新时间
                 uSetData.proceduresAt[that.data.proceduresCk][0] = result.records[0].updatedAt;         //更新本地最后更新时间
