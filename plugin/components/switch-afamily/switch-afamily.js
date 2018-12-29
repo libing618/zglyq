@@ -1,6 +1,5 @@
 //顺序切换分类数据
 import {afamilySwitchSave} from '../../modules/db-get-data';
-var app = getApp()
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],
@@ -22,16 +21,6 @@ Component({
 
   lifetimes:{
     attached: function(){
-      switch (this.data.name) {
-        case 'cargo':
-          cargototal = app.cargoStock[this.data.value._id]
-          this.data.setData({
-            scale: ((cargototal.payment + cargototal.delivering + cargototal.delivered) / cargototal.packages).toFixed(0),
-            csupply: (cargototal.canSupply / cargototal.packages - 0.5).toFixed(0)
-          });
-          break;
-        default:
-      }
     },
   },
 

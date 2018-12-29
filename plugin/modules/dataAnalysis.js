@@ -1,7 +1,6 @@
 const db = wx.cloud.database();
 const _ = db.command;
-
-var app = getApp();
+const roleData = wx.getStorageSync('roleData');
 function sumArr(arrData,arrIndex){
   let dSum = 0;
   arrIndex.forEach(ad=>{
@@ -22,7 +21,7 @@ function readSumData(className,sumField,updAt){
   )
 };
 export function getMonInterval(){
-  var starts = app.roleData.uUnit.createdAt.split('-');
+  var starts = roleData.uUnit.createdAt.split('-');
   var staYear = parseInt(starts[0]);
   var staMon = parseInt(starts[1]);
   var endYear = new Date().getFullYear();
@@ -60,7 +59,7 @@ export function cargoCount(fields) {
     function cCount(field){
       return new Promise((resolve,reject)=>{
         wx.collection('order').where({
-          unitId: app.roleData.user.unit,
+          unitId: roleData.user.unit,
           orderState: field
         }).count().then( ({total})=>{
           resolve(total)
@@ -82,7 +81,7 @@ export function aDataSum(yearMons,className,sumField,idArr){
     yearMons.forEach(ym=>{
       monSum[ym] = fieldSum
     });
-    idArr = idArr ? idArr : app.aIndex[className][app.roleData.user._id];
+    idArr = idArr ? idArr : app.aIndex[className][roleData.user._id];
     if (idArr) {
       let dYearMon;
       idArr.forEach(mId => {
@@ -109,7 +108,7 @@ export function sumFamily(className,fields,familyCount){                  //暂�
   }
   return new Promise((resolve,reject)=>{
     db.collection(className+'Family')
-    .equalTo('userId',app.roleData.user._id)
+    .equalTo('userId',roleData.user._id)
     .first().then(sFamily=>{
       if(sFamily){
         let sfield = sFamily.toJSON();
@@ -157,7 +156,7 @@ export function sumData(mIntervals,className,sumField){                   //暂�
   return new Promise((resolve,reject)=>{
     new AV.Query(className+'Sum')
     .descending('updatedAt')
-    .equalTo('userId',app.roleData.user._id)
+    .equalTo('userId',roleData.user._id)
     .find().then(sumRec=>{
       if(sumRec){
         let sfield;
@@ -181,7 +180,7 @@ export function sumData(mIntervals,className,sumField){                   //暂�
           mSum[nym] = fieldSum;
           let aSumRecord = new addSum;
           aSumRecord.set('yearMon',nym);
-          aSumRecord.set('userId',app.roleData.user._id);
+          aSumRecord.set('userId',roleData.user._id);
           newSum.push(aSumRecord);
         };
       });
@@ -217,7 +216,7 @@ export function countSort( className, cField) {     //进行数据库统计排�
   let cSumUp;
   return new Promise((resolve, reject) => {
     new AV.Query(classObj)
-      .equalTo('userId', app.roleData.user._id)
+      .equalTo('userId', roleData.user._id)
       .select(cField)
       .first().then(sCount => {
         if (sCount) {
@@ -267,7 +266,7 @@ export function countData(monInterval,className,cObjName,cObjValue){     //进�
   return new Promise((resolve, reject) => {
     new AV.Query(classObj)
     .equalTo(cObjName, cObjValue)
-    .equalTo('userId', app.roleData.user._id)
+    .equalTo('userId', roleData.user._id)
     .find().then(sCount => {
       let initCount = {};
       if (sCount) { sCount.forEach(sField => { sCount[sField.get('yearMon')] = sField.get('count') }) };

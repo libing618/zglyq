@@ -3,7 +3,8 @@ import { formatTime,indexClick } from '../../modules/util.js';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
 const _ = db.command;
-var app = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 
 Page({
   data:{
@@ -11,7 +12,7 @@ Page({
     iClicked: '0'
   },
   onLoad:function(options){
-    checkRols(8,app.roleData.user)
+    checkRols(8,roleData.user)
   },
 
   onReady:function(){
@@ -25,7 +26,7 @@ Page({
   sumOrders:function(){
     var that = this;
     db.collection('orders').where({
-      unitId: app.roleData.uUnit._id,
+      unitId: roleData.uUnit._id,
       updatedAt: _.gt(new Date(that.data.vData.sDate)).and(_.lt( new Date(that.data.vData.eDate)))
     }).count().then(orderlist=>{
       if (orderlist) {

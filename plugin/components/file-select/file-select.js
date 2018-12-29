@@ -1,5 +1,4 @@
 import {formatTime} from '../../index.js';
-const {sysinfo} = getApp();
 var modalBehavior = require('../utils/poplib.js');
 Component({
   behaviors: [modalBehavior,'wx://form-field'],

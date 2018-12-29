@@ -2,11 +2,12 @@
 import {initData} from '../../modules/initForm';
 import {noEmptyObject} from '../../index';
 const wImpEdit = require('../../modules/impedit.js');
-var app = getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data: {
     navBarTitle: '编辑--',              //申请项目名称
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     selectd: -1,                       //详情项选中字段序号
     enIns: true,                  //插入grid菜单组关闭
     targetId: '0',              //流程申请表的ID
@@ -15,36 +16,40 @@ Page({
     fieldType: {},
     fieldName: []
   },
-  onLoad: function (options) {        //传入参数为tgId或pNo/artId,不得为空
+  onLoad: function (options) {        //传入参数为tgId或pNo/fn,不得为空
     var that = this;
     let aaData={};
-    that.data.uEV = (app.roleData.user.line!=9);            //用户已通过单位和职位审核
+    that.data.uEV = (roleData.user.line!=9);            //用户已通过单位和职位审核
     return new Promise((resolve, reject) => {
       if (typeof options.tgId == 'string') {                   //传入参数含审批流程ID，则为编辑审批中的数据
-        if (app.pData[options.tgId].length>0) {
-          aaData = app.pData[options.tgId].dObject;
+        let nPages = getCurrentPages();
+        let prePage = nPages[nPages.length-2];
+        if (prePage.data.dObject) {
+          aaData = prePage.data.dObject;
           that.data.targetId = options.tgId;
-          resolve({pNo:app.pData[options.tgId].dProcedure,pId:app.pData[options.tgId].dObjectId});
+          resolve({pNo:prePage.data.dProcedure,pId:prePage.data.dObjectId});
         } else { reject() };
       } else {
-        let artid = Number(options.artId);
-        resolve({ pNo: options.pNo, pId: isNaN(artid) ? options.artId : artid });
+        let fn = Number(options.fn);
+        resolve({ pNo: options.pNo, pId: isNaN(fn) ? -1 : fn });
       }
     }).then(ops=>{
       let docDefine = require('../../modules/procedureclass')[ops.pNo];
       switch (typeof ops.pId){
         case 'number':           //传入参数为一位数字的代表该类型新建数据或读缓存数据
-          that.data.dObjectId = ops.pNo + ops.pId;      //根据类型建缓存KEY
-          that.data.navBarTitle += docDefine.afamily[ops.pId]
+          if (pId==-1){
+            that.data.dObjectId = ops.pNo;
+            that.data.navBarTitle += docDefine.pName;
+          } else {
+            that.data.dObjectId = ops.pNo + ops.pId;      //根据类型建缓存KEY
+            that.data.navBarTitle += docDefine.afamily[ops.pId]
+          }
           break;
         case 'string':                   //传入参数为已发布ID，重新编辑已发布的数据
           that.data.dObjectId = ops.pId;
           that.data.navBarTitle += docDefine.pName;
           break;
-        case 'undefined':               //未提交或新建的数据KEY为审批流程pModel的值
-          that.data.dObjectId = ops.pNo;
-          that.data.navBarTitle += docDefine.pName;
-          break;
+        default:
       }
       let fieldName = docDefine.pSuccess;
       let fieldType = docDefine.fieldType;

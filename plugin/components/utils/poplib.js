@@ -1,5 +1,5 @@
 const cloudPath = 'lyqplugincloud-b64fe0'
-const {sysinfo} = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
 module.exports = Behavior({
   data: {
     useWindowTop: sysinfo.menuButton.bottom+5,

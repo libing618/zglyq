@@ -1,5 +1,4 @@
 // 渠道分成编辑组件
-var app = getApp()
 Component({
   behaviors: ['wx://form-field'],
   properties: {

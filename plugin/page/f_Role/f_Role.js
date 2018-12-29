@@ -3,12 +3,13 @@ import {initData} from '../../modules/initForm';
 const roleDefine = require('../../modules/procedureclass')._Role
 const db = wx.cloud.database();
 const wImpEdit = require('../../modules/impedit');
-var app = getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data: {
     pNo: '_Role',                       //流程的序号
-    navBarTitle: app.roleData.uUnit.uName ? app.roleData.uUnit.uName : '创业服务平台--单位信息',              //申请项目名称
-    statusBar: app.sysinfo.statusBarHeight,
+    navBarTitle: roleData.uUnit.uName ? roleData.uUnit.uName : '创业服务平台--单位信息',              //申请项目名称
+    statusBar: sysinfo.statusBarHeight,
     targetId: '0',              //流程申请表的ID
     dObjectId: '0',             //已建数据的ID作为修改标志，0则为新建
     vData: {},                 //编辑值的对象
@@ -21,16 +22,16 @@ Page({
 
   onLoad: function (options) {
     var that = this;
-    if (app.roleData.user.position==8) {
+    if (roleData.user.position==8) {
       db.collection('sengpi').where({
-        unitId: app.roleData.user._id,       //单位ID等于用户ID则为负责人
+        unitId: roleData.user._id,       //单位ID等于用户ID则为负责人
         dProcedure: '_Role'
       }).orderBy('updatedAt','desc').limit(1).get().then(({data}) =>{
         if (data.length==1) {
           that.data.vData = initData(roleDefine.pSuccess,roleDefine.fieldType,data[0].dObject);
           that.data.unEdit = data[0].cInstance > 0 && data[0].cInstance < data[0].cManagers.length;        //流程起点或已结束才能提交
         } else { that.data.vData=initData(roleDefine.pSuccess,roleDefine.fieldType,require('../../test/irole.js')) };
-        that.data.dObjectId = app.roleData.user.unit;
+        that.data.dObjectId = roleData.user.unit;
         wImpEdit.initFunc('_Role').forEach(functionName => {
           that[functionName] = wImpEdit[functionName]
         });

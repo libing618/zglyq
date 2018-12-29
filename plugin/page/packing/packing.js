@@ -1,10 +1,11 @@
 // inputedit/packing.js
 import {cosUploadFile} from '../../modules/initForm';
-var app = getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data: {
     navBarTitle: '编辑--',              //申请项目名称
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     enIns: true,                  //插入grid菜单组关闭
     targetId: '0',              //流程申请表的ID
     dObjectId: '0',             //已建数据的ID作为修改标志，0则为新建

@@ -4,17 +4,18 @@ import {checkRols} from '../../modules/initForm';
 const docDefine = require('../../modules/procedureclass').prodesign;
 const db = wx.cloud.database();
 const _ = db.command;
-var app = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 
 Page({
   data: {
     pNo: 'prodesign',                       //流程
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     ht:{
       navTabs: docDefine.afamily,
       fLength: docDefine.afamily.length,
-      tWidth: 470 * app.sysinfo.rpxTopx / 3,   //每个tab宽度470rpx÷3
-      twwHalf: 48 * app.sysinfo.rpxTopx,
+      tWidth: 470 * sysinfo.rpxTopx / 3,   //每个tab宽度470rpx÷3
+      twwHalf: 48 * sysinfo.rpxTopx,
       pageCk: 0
     },
     cPage: [],
@@ -23,7 +24,7 @@ Page({
 
   onLoad: function (ops) {        //传入参数为pNo
     var that = this;
-    if (checkRols(1,app.roleData.user)) {  //检查用户操作权限
+    if (checkRols(1,roleData.user)) {  //检查用户操作权限
       updateTodo('prodesign');
     };
   },
@@ -33,7 +34,7 @@ Page({
     return new Promise((resolve, reject) => {
       var umdata = new Array(docDefine.afamily.length);
       umdata.fill([]);
-      var unitId = uId ? uId : app.roleData.uUnit._id;
+      var unitId = uId ? uId : roleData.uUnit._id;
       db.collection(pNo).where({
         unitId:unitId,                //除权限和文章类数据外只能查指定单位的数据
         startTime: _.gt(new Date()),

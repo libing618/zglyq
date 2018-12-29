@@ -1,4 +1,3 @@
-const {sysinfo,cargoStock} = getApp()
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],
@@ -22,8 +21,6 @@ Component({
   },
 
   data: {
-    statusBar: sysinfo.statusBarHeight,
-    windowHeight: sysinfo.windowHeight,
     fieldName: [],
     fieldType: {}
   },

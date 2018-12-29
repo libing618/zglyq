@@ -1,26 +1,28 @@
 //货架管理
 import {checkRols} from '../../modules/initForm';
 const db = wx.cloud.database();
-var app = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 
 Page({
   data:{
-    navBarTitle: app.roleData.uUnit.uName+'的货架',
-    statusBar: app.sysinfo.statusBarHeight,
+    navBarTitle: roleData.uUnit.uName+'的货架',
+    statusBar: sysinfo.statusBarHeight,
     pageData: {}
   },
   onLoad:function(options){
-    checkRols(8,app.roleData.user)
+    checkRols(8,roleData.user)
   },
 
   clickSave:function({currentTarget:{id}}){
     var that = this;
+    let aData = wx.getStorageSync('goods');
     db.collection('goods').doc(id).update({                  //选择商品的ID
-      inSale:!app.aData.goods[id].inSale
+      inSale:!aData[id].inSale
     }).then(()=>{
       let aSetData = {};
-      app.aData.goods[id].inSale = !app.aData.goods[id].inSale;
-      aSetData['pageData.'+id+'.inSale'] = app.aData.goods[id].inSale;
+      aData[id].inSale = !aData[id].inSale;
+      aSetData['pageData.'+id+'.inSale'] = aData[id].inSale;
       that.setData(aSetData);
     }).catch( console.error );
   }

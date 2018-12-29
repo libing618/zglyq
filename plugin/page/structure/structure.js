@@ -1,7 +1,8 @@
 //单位（机构类）组织架构管理
 import { checkRols } from '../../modules/initForm';
 const db = wx.cloud.database();
-const {roleData,sysinfo} = getApp()          //设置组织架构
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
 	data:{
 		uUnitUsers: {},

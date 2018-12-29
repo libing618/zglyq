@@ -1,7 +1,7 @@
 var modalBehavior = require('../utils/poplib.js');
 const {geoQueryUnit} = require('../../modules/db-get-data');
 var mapBahavior = require('../utils/mapAnalysis.js');   //位置授权及解析
-let app = getApp();
+const roleData = wx.getStorageSync('roleData');
 Component({
   behaviors: [modalBehavior,mapBahavior,'wx://form-field'],
   properties: {
@@ -30,11 +30,11 @@ Component({
       let initData = { p: this.data.p ? this.data.p : '服务单位'};
       if (!this.data.value) { initData.value = {_id:'0',uName:'点此进入地图进行选择'} };
       if (!this.data.targetTypes) {
-        if (JSON.stringify(app.roleData.sUnit)=='{}'){
+        if (JSON.stringify(roleData.sUnit)=='{}'){
           initData.reqProIsSuperior = true;
           initData.targetTypes = '3040204';
         } else {
-          initData.value = { _id: app.roleData.sUnit._id, uName: app.roleData.sUnit.uName }
+          initData.value = { _id: roleData.sUnit._id, uName: roleData.sUnit.uName }
         }
       }
       this.setData(initData);
@@ -79,7 +79,8 @@ Component({
 
     fSave({ currentTarget:{id,dataset},detail:{value} }){                  //确认返回数据
       if (this.data.reqProIsSuperior) {
-        wx.setStorage({key:'roleData.sUnit', data:this.data.unitArray[this.data.sId]});
+        roleData.sUnit = this.data.unitArray[this.data.sId]
+        wx.setStorage({key:'roleData', data:roleData});
         this.setData({ value: { _id: this.data.unitArray[this.data.sId]._id, uName: this.data.unitArray[this.data.sId].uName} });
       } else {
         this.setData({value:this.data.unitArray[this.data.sId]})

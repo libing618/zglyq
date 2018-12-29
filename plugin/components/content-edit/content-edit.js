@@ -1,6 +1,6 @@
-const {sysinfo,cargoStock} = getApp()
+var modalBehavior = require('../utils/poplib.js')
 Component({
-  behaviors: ['wx://form-field'],
+  behaviors: [modalBehavior，'wx://form-field'],
   properties: {
     name: {
       type: String,
@@ -26,7 +26,7 @@ Component({
   },
 
   methods: {
-    clickfield({ currentTarget:{id,dataset},detail:{value} }){            //字段内容查看弹出页
+    fenins({ currentTarget:{id,dataset},detail:{value} }){            //字段内容查看弹出页
       if (this.data.clickid==this.data.sitem._id){
         let docDefine = require('../../modules/procedureclass')[this.data.name]
         this.setData({

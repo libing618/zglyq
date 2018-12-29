@@ -2,17 +2,18 @@
 import {hTabClick} from '../../index.js';
 import { shareMessage,checkRols } from '../../modules/initForm';
 const db = wx.cloud.database();
-var app = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 
 Page({
   data:{
     pClassName: {},
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     ht: {
       navTabs: ['待我审', '我已审', '已发布'],
-      tWidth: 470 * app.sysinfo.rpxTopx / 3,
+      tWidth: 470 * sysinfo.rpxTopx / 3,
       fLength: 3,
-      twwHalf: 48 * app.sysinfo.rpxTopx,   //每个tab字体宽度一半32rpx*3÷2
+      twwHalf: 48 * sysinfo.rpxTopx,   //每个tab字体宽度一半32rpx*3÷2
       pageCk: 0
     },
     tabExplain: ['需要您审批', '在他人审批过程中', '可供查阅'],
@@ -25,7 +26,7 @@ Page({
   },
 
   onLoad:function(options){
-    if (checkRols(app.roleData.user.line == 9 ? -1 : app.roleData.user.line,app.roleData.user) ){
+    if (checkRols(roleData.user.line == 9 ? -1 : roleData.user.line,roleData.user) ){
       return new Promise((resolve,reject)=>{
         wx.getStorage({
           key: 'procedures',

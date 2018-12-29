@@ -1,5 +1,4 @@
 //缩略图编辑
-const sysinfo = getApp().sysinfo;
 const xm = {"base64":300,"documents":600,"pic":900,"img":1200};
 const ym = {"base64":225,"documents":450,"pic":675,"img":900};
 var modalBehavior = require('../utils/poplib.js')

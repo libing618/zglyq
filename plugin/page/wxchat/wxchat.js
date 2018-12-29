@@ -8,13 +8,14 @@ const conversationRole = {
   "直播课堂":{participant:9,chairman:7},
   "客户服务":{participant:9,chairman:6}
 };
-var app = getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data:{
-    sysheight:app.sysinfo.windowHeight-60,
-    syswidth:app.sysinfo.windowWidth-10,
-    statusBar: app.sysinfo.statusBarHeight,
-    user: app.roleData.user,
+    sysheight:sysinfo.windowHeight-60,
+    syswidth:sysinfo.windowWidth-10,
+    statusBar: sysinfo.statusBarHeight,
+    user: roleData.user,
     enMultimedia: true,
     chairman: false,
     sPages: [],
@@ -28,15 +29,15 @@ Page({
     var that = this;
     let cPageSet = {};
     let nowPages = getCurrentPages();
-    app.nowOpenChat = nowPages[nowPages.length-1];
+    nowOpenChat = nowPages[nowPages.length-1];
     cPageSet.navBarTitle = options.ctype;
     if (options.ctype=='客户服务'){    //对话形式
       cPageSet.announcement = false;    //无通告（直播）窗口
       cPageSet.cId='5aedc6f9ee920a0046b050b4';
     } else {
-      if (checkRols(conversationRole[options.ctype].participant,app.roleData.user)){
+      if (checkRols(conversationRole[options.ctype].participant,roleData.user)){
         cPageSet.announcement = true;    //有通告（直播）窗口
-        cPageSet.chairman = conversationRole[options.ctype].participant,app.roleData.user;
+        cPageSet.chairman = conversationRole[options.ctype].participant,roleData.user;
         app.fwCs.forEacth(conversation=>{ if (options.ctype == conversation.name){cPageSet.cId=conversation.cId} });
       }
     };

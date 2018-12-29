@@ -1,5 +1,4 @@
 import {getData} from '../../modules/db-get-data'
-const {sysinfo} = getApp();
 const { transformRpx } = require('../utils/transformRpx');
 var modalBehavior = require('../utils/poplib.js')
 Component({

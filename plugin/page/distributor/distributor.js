@@ -2,11 +2,12 @@
 import {hTabClick} from '../../modules/util.js';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
-var app = getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data:{
     pNo: 'distributor',
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     ht:{
       navTabs: ['已签约店铺','已解约店铺'],
       fLength: 2,
@@ -30,8 +31,8 @@ Page({
 
   onLoad:function(options){
     var that = this;
-    if (checkRols(8,app.roleData.user)) {
-      db.collection('distributor').where({unitId:app.roleData.uUnit._id}).orderBy('updatedAt','asc').get().then(channel=>{
+    if (checkRols(8,roleData.user)) {
+      db.collection('distributor').where({unitId:roleData.uUnit._id}).orderBy('updatedAt','asc').get().then(channel=>{
         if (channel) {
           let fc;
           channel.forEach(csi=>{

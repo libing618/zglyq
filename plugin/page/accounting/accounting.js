@@ -3,12 +3,13 @@ import { formatTime,indexClick } from '../../modules/util.js';
 import {checkRols} from '../../modules/initForm';
 const db = wx.cloud.database();
 const _ = db.command;
-var app = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 
 Page({
   data:{
     pNo: 'orderlist',                       //流程
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     vData: {start_end: [formatTime(Date.now() - 864000000, true), formatTime(Date.now(), true)]},
     iClicked: ''
   },
@@ -21,7 +22,7 @@ Page({
   sumOrders:function(){
     var that = this;
     db.collection('cargoSupplies').where({
-      unitId:app.roleData.uUnit._id,
+      unitId:roleData.uUnit._id,
       updatedAt: _.gt(new Date(that.data.vData.sDate)).and(_.lt(new Date(that.data.vData.eDate+86400000)))
     }).limit(20)
     .get().then(orderlist=>{

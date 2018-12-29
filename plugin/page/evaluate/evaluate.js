@@ -1,6 +1,7 @@
 //客户评价及统计
 import {checkRols} from '../../modules/initForm';
-var app = getApp();
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data:{
     mPage: [],                 //页面管理数组
@@ -9,9 +10,9 @@ Page({
   },
   onLoad:function(options){          //参数oState为0客户评价1评价统计
     var that = this;
-    if (checkRols(3,app.roleData.user)){  //检查用户操作权限
+    if (checkRols(3,roleData.user)){  //检查用户操作权限
       wx.setNavigationBarTitle({
-        title: app.roleData.uUnit.nick+'的'+ options.oState ? '评价统计' : '客户评价'
+        title: roleData.uUnit.nick+'的'+ options.oState ? '评价统计' : '客户评价'
       })
     }
   }

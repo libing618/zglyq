@@ -1,5 +1,5 @@
 const gscode = require('../utils/apdv.js');
-const {roleData} = getApp();
+const roleData = wx.getStorageSync('roleData');
 Component({
   behaviors: ['wx://form-field'],
   properties: {
@@ -25,7 +25,9 @@ Component({
   },
   lifetimes: {
     attached() {
-      this._init(this.data.csc ? roleData.uUnit.indType.splice(',') : ['1', '2', '3', '4', '5', '6'])
+      if (this.data.editable) {
+        this._init(this.data.csc ? roleData.uUnit.indType.splice(',') : ['1', '2', '3', '4', '5', '6']);
+      }
     }
   },
   methods: {

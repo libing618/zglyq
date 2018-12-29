@@ -4,7 +4,8 @@ import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
 const _ = db.command;
 const rawDefine = require('../../modules/procedureclass').rawOperate
-var app = getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data: {
     pNo: 'rawOperate',                       //流程
@@ -36,7 +37,7 @@ Page({
         supplieQuery.greaterThan('serFamily',1);
         break;
     }
-    supplieQuery.equalTo('unitId',app.roleData.uUnit._id);                //只能查本单位数据
+    supplieQuery.equalTo('unitId',roleData.uUnit._id);                //只能查本单位数据
     supplieQuery.limit(1000);                      //取最大数量
     const setReqData = this.setReqData.bind(this);
     return Promise.all([supplieQuery.find().then(setReqData), supplieQuery.subscribe()]).then( ([fieldName,subscription])=> {
@@ -68,12 +69,12 @@ Page({
 
   onLoad: function (ops) {        //传入参数为oState,不得为空
     var that = this;
-    if (checkRols(rawDefine.ouRoles[ops.oState],app.roleData.user)){  //检查用户操作权限
+    if (checkRols(rawDefine.ouRoles[ops.oState],roleData.user)){  //检查用户操作权限
       that.indexField = rawDefine.oSuccess[ops.oState].indexField;
       that.sumField = rawDefine.oSuccess[ops.oState].sumField;
-      if (app.cargoStock) {
+      if (cargoStock) {
         wx.setNavigationBarTitle({
-          title: app.roleData.uUnit.nick + '的' + rawDefine.oprocess[ops.oState]
+          title: roleData.uUnit.nick + '的' + rawDefine.oprocess[ops.oState]
         });
       } else {
         wx.showToast({ title: '无库存数据！', duration: 2500 });

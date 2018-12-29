@@ -5,13 +5,8 @@ wx.cloud.init({
 const db = wx.cloud.database();
 const _ = db.command;
 const crypto = require('crypto');
-const {roleData,aData,aIndex} = getApp();
-function _mapResData(rData){           //处理查询到的数组
-  return iData = rData.map(aProc =>{
-    app.aData[aProc._id] = aProc;
-    return aProc._id
-  });
-};
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 
 function _objToStrArr(dn,obj) {
   let arr = [dn];
@@ -88,7 +83,7 @@ export class getData {               //wxcloud批量查询
       requirement.afamily = _.eq(afamily);
       this.unitFamily += afamily;
     };
-    this.nData = {};
+    let aIndex = wx.getStorageSync('aIndex')[dataName];
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
     let requirStrArr = _objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');
@@ -96,31 +91,30 @@ export class getData {               //wxcloud批量查询
     this.dQuery = db.collection(this.pNo).where(requirement)
     orderArr.forEach(ind=> {this.dQuery=this.dQuery.orderBy(ind[0],ind[1])} );
     this.isEnd = false;
+    this.nData = {};
+    this.nIndex = []
     if (aIndex.hasOwnProperty(this.filterId)) {       //添加以条件签名为Key的JSON初值
-      return new Promise((resolve,reject)=>{
-        wx.getStorage({
-          key: this.pNo,
-          success: function (res) {
-            if (res.data){Object.assign(aData[this.pNo],res.data)};
-            resolve(true)
-          },
-          fail: ()=>{
-            resolve(false)
-          }
-        })
-      }).then(()=>{
-        this.nIndex = aIndex[this.filterId].filter(indkey=>{
-          if (indkey in aData[this.pNo]) {
-            this.nData[indkey] = aData[this.pNo][indkey]
-            return true
+      wx.getStorage({
+        key: this.pNo,
+        success: function (res) {
+          if (res.data){
+            this.nIndex = aIndex[this.filterId].filter(indkey=>{
+              if (indkey in res.data){
+                this.nData = res.data[indkey];
+                return true
+              }
+            });
           };
-        })
-      })
-    } else {
-      this.nIndex = [];
+        }
+      });
     };
   };
-
+  _mapResData(dataIndex,rData){           //处理查询到的数组
+    rData.forEach(aProc =>{
+      if (dataIndex.includes(aProc._id) {this.nData[aProc._id] = aProc};
+    });
+    return
+  };
   addViewData(addItem,mPage) {
     let spData = {}
     spData[mPage] = this.nIndex;
@@ -135,7 +129,7 @@ export class getData {               //wxcloud批量查询
       } else {
         this.dQuery.skip(this.nIndex.length).limit(20).get().then(({data}) => {
           if (data.length>0){
-            let addItemId = _mapResData(data);
+            let addItemId = data.map(newData=>{return newData._id});
             this.nIndex = this.nIndex.filter(indkey=>{ return addItemId.indexOf(indkey)>=0 })
             this.nIndex = this.nIndex.concat(addItemId)
             if (this.bufferData.length>0){            //原来有缓存数据
@@ -150,6 +144,7 @@ export class getData {               //wxcloud批量查询
                 this.bufferData = [];
               };
             }
+            this._mapResData(addItemId,data);
             resolve(addItemId);
           } else {
             this.isEnd = true;
@@ -163,7 +158,7 @@ export class getData {               //wxcloud批量查询
     return new Promise((resolve, reject) => {
       this.dQuery.limit(20).get().then(({data}) => {
         if (data.length>0){
-          let addItemId = _mapResData(data);
+          let addItemId = data.map(newData=>{return newData._id});
           if (this.nIndex.length>0){            //原来有缓存数据
             let buffTopAt=this.nData[this.nIndex[0]].updatedAt;
             let aPlace = addItemId.indexOf(this.nIndex[0]);
@@ -185,6 +180,7 @@ export class getData {               //wxcloud批量查询
               this.nIndex = addItemId;
             }
           }
+          this._mapResData(addItemId,data);
           resolve(addItemId);
         } else {
           resolve(false);
@@ -202,7 +198,8 @@ export class getData {               //wxcloud批量查询
             if (notEnd.data.length>19) {
               return readAll();
             } else {
-              this.nIndex = _mapResData(aProcedure);
+              this.nIndex = aProcedure.map(newData=>{return newData._id});
+              this._mapResData(this.nIndex,aProcedure);
               this.isEnd = true;
               resolve(this.nIndex);
             }

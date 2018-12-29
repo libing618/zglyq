@@ -1,6 +1,7 @@
 import { fileUpload } from '../modules/wxcloudcf';
 const db = wx.cloud.database();
-var app = getApp();
+const logData = wx.getStorageSync('logData');
+const roleData = wx.getStorageSync('roleData');
 
 function getdate(idate) {
   let rdate = new Date(idate)
@@ -11,41 +12,41 @@ function getdate(idate) {
 };
 function setRole(pNo){      //流程审批权限列表
   let docDefine = require('../../modules/procedureclass')[pNo];
-  let cManagers = [ [app.roleData.user.unit + app.roleData.user.line + app.roleData.user.position, app.roleData.user.uName] ];
-  if (app.roleData.uUnit.afamily > 2 && docDefine.puRoles) {          //单位类型为企业且有本单位审批设置
+  let cManagers = [ [roleData.user.unit + roleData.user.line + roleData.user.position, roleData.user.uName] ];
+  if (roleData.uUnit.afamily > 2 && docDefine.puRoles) {          //单位类型为企业且有本单位审批设置
     let pRolesNum = 0, pRoleUser;
     for (let i = 0; i < docDefine.puRoles.length; i++) {
       pRoleUser = [];
-      app.roleData.uUnit.unitUsers.forEach((pUser) => {
+      roleData.uUnit.unitUsers.forEach((pUser) => {
         if ((pUser.line+''+pUser.position) == docDefine.puRoles[i]) {
           pRoleUser.push(pUser.uName);
         }
       })
       if (pRoleUser.length>0) {
         pRolesNum = pRolesNum + 1;
-        cManagers.push([app.roleData.user.unit+docDefine.puRoles[i],pRoleUser.join('、')]);
+        cManagers.push([roleData.user.unit+docDefine.puRoles[i],pRoleUser.join('、')]);
       }
     };
-    if (pRolesNum==0 && app.roleData.user.line!=8) {
-      cManagers.push([app.roleData.user.unit+'88','本单位管理员']);
+    if (pRolesNum==0 && roleData.user.line!=8) {
+      cManagers.push([roleData.user.unit+'88','本单位管理员']);
     }
   }
-  if (docDefine.suRoles & app.roleData.sUnit.afamily > 2) {                 //上级单位类型为企业,有审批设置
+  if (docDefine.suRoles & roleData.sUnit.afamily > 2) {                 //上级单位类型为企业,有审批设置
     let sRolesNum = 0, sRoleUser;
     for (let i = 0; i < docDefine.suRoles.length; i++) {
       sRoleUser = [];
-      app.roleData.sUnit.unitUsers.forEach((sUser) => {
+      roleData.sUnit.unitUsers.forEach((sUser) => {
         if (sUser.line+''+sUser.position == docDefine.suRoles[i]) {
           sRoleUser.push(sUser.uName);
         }
       });
       if (sRoleUser.length > 0) {
         sRolesNum = sRolesNum + 1;
-        cManagers.push([app.roleData.sUnit._id + docDefine.suRoles[i], sRoleUser.join('、')]);
+        cManagers.push([roleData.sUnit._id + docDefine.suRoles[i], sRoleUser.join('、')]);
       }
     }
     if (sRolesNum == 0) {
-      cManagers.push([app.roleData.sUnit._id + '88', '上级单位管理员']);
+      cManagers.push([roleData.sUnit._id + '88', '上级单位管理员']);
     }
   };
   return cManagers
@@ -305,11 +306,11 @@ module.exports = {
               }
             });
             if (that.data.targetId == '0') {                    //新建流程的提交
-              if (app.roleData.user.unit!='0' && JSON.stringify(app.roleData.sUnit)!='{}'){
+              if (roleData.user.unit!='0' && JSON.stringify(roleData.sUnit)!='{}'){
                 let cManagers = setRole(that.data.pNo);
                 if (cManagers.length == 1) {                  //流程无后续审批人
-                  saveData.unitId = app.roleData.uUnit._id;
-                  saveData.unitName = app.roleData.uUnit.uName;
+                  saveData.unitId = roleData.uUnit._id;
+                  saveData.unitName = roleData.uUnit.uName;
                   saveData.updatedAt = db.serverDate();
                   db.collection(that.data.pNo).add({ data: saveData }).then(() => {
                     wx.showToast({ title: '审批内容已发布', duration: 2000 });
@@ -321,10 +322,10 @@ module.exports = {
                     data: {
                       dProcedure: that.data.pNo,                //流程
                       processState: 0,                //流程处理结果0为提交
-                      processUser: app.roleData.user._id,       //流程处理人ID字符串
-                      unitName: app.roleData.uUnit.uName,                 //申请单位      //申请人
-                      unitId: app.roleData.uUnit._id,        //申请单位的ID
-                      dIdear: [{ un: app.roleData.user.uName, dt: new Date(), di: '提交流程', dIdear: '发起审批流程' }],       //流程处理意见
+                      processUser: roleData.user._id,       //流程处理人ID字符串
+                      unitName: roleData.uUnit.uName,                 //申请单位      //申请人
+                      unitId: roleData.uUnit._id,        //申请单位的ID
+                      dIdear: [{ un: roleData.user.uName, dt: new Date(), di: '提交流程', dIdear: '发起审批流程' }],       //流程处理意见
                       cManagers: cManagers,             //单位条线岗位数组
                       cInstance: 1,                     //下一处理节点
                       cFlowStep: cManagers[1],              //下一流程审批人单位条线岗位
@@ -339,14 +340,18 @@ module.exports = {
                 wx.showToast({ title: '单位设置出现问题，流程无法提交,请检查。', icon: 'none', duration: 2000 }) // 保存成功
               }
             } else {
-              app.pData[that.data.targetId].dObject = saveData;
-              app.logData.push([Date.now(), that.data.targetId + '修改内容：' + JSON.stringify(saveData)]);
+              let nPages = getCurrentPages();
+              let prePage = nPages[nPages.length-2];
+              prePage.setData ({dObject: saveData});
+              logData.push([Date.now(), that.data.targetId + '修改内容：' + JSON.stringify(saveData)]);
             };
           } else {
-            app.aData[that.data.pNo][that.data.dObjectId] = that.data.vData;
+            let aData = wx.getStorageSync(that.data.pno) || {};
+            aData[that.data.dObjectId] = that.data.vData;
+            wx.setStorageSync(that.data.pno,aData);
           }
         }).catch(error => {
-          app.logData.push([Date.now(), '编辑提交发生错误:' + JSON.stringify(error)]);
+          logData.push([Date.now(), '编辑提交发生错误:' + JSON.stringify(error)]);
           console.log(Date.now(), '编辑提交发生错误:' ,error);
         });
         setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000);

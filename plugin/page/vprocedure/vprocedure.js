@@ -1,12 +1,13 @@
 // 浏览pages
 import {initData,shareMessage} from '../../modules/initForm';
-var app=getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data:{
-    uEV: app.roleData.user.line!=9,    //用户已通过单位和职位审核
+    uEV: roleData.user.line!=9,    //用户已通过单位和职位审核
     enUpdate: false,
     pNo: 'articles',
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     vData: {},
     fieldType: {},
     fieldName: []
@@ -21,9 +22,9 @@ Page({
     this.setData({
       fieldName: docDefine.pSuccess,
       fieldType: docDefine.fieldType,
-      navBarTitle: app.aData[that.data.pNo][options.artId].uName,
-      vData: initData(docDefine.pSuccess,docDefine.fieldType,app.aData[that.data.pNo][options.artId]),
-      enUpdate: app.aData[that.data.pNo][options.artId]==app.roleData.uUnit._id && typeof docDefine.suRoles!='undefined'  //本单位信息且流程有上级审批的才允许修改
+      navBarTitle: aData[that.data.pNo][options.artId].uName,
+      vData: initData(docDefine.pSuccess,docDefine.fieldType,aData[that.data.pNo][options.artId]),
+      enUpdate: aData[that.data.pNo][options.artId]==roleData.uUnit._id && typeof docDefine.suRoles!='undefined'  //本单位信息且流程有上级审批的才允许修改
     });
   },
 
@@ -37,7 +38,7 @@ Page({
       case 'fTemplate' :
         url += that.inFamily ? '&artId='+that.data.vData.afamily : '';
         let newRecord = that.inFamily ? that.data.pNo+that.data.vData.afamily : that.data.pNo;
-        app.aData[that.data.pNo][newRecord] = that.data.vData;
+        aData[that.data.pNo][newRecord] = that.data.vData;
         break;
     };
     wx.navigateTo({ url: url});

@@ -1,5 +1,3 @@
-// components/input-scan/edit-scan.js
-var app = getApp()
 Component({
   behaviors: ['wx://form-field'],
   properties: {

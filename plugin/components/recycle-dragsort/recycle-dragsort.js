@@ -1,5 +1,4 @@
 import {getData} from '../../modules/db-get-data'
-var app = getApp()
 const { transformRpx } = require('../utils/transformRpx');
 Component({
   options: {
@@ -34,7 +33,6 @@ Component({
     pNo: '',
     mPage: [],
     pageData: {},
-    height: app.sysinfo.windowHeight,
     clickedid: '',
     movableViewPosition:{
       x:0,
