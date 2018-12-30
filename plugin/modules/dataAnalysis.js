@@ -81,14 +81,16 @@ export function aDataSum(yearMons,className,sumField,idArr){
     yearMons.forEach(ym=>{
       monSum[ym] = fieldSum
     });
-    idArr = idArr ? idArr : app.aIndex[className][roleData.user._id];
+    let aIndex = wx.getStorageSync('aIndex')[className];
+    let aData = wx.getStorageSync(className);
+    idArr = idArr ? idArr : aIndex[roleData.user._id];
     if (idArr) {
       let dYearMon;
       idArr.forEach(mId => {
-        if (app.aData[className][mId]){
-          dYearMon = app.aData[className][mId].updatedAt.splice(0,7);
+        if (aData[mId]){
+          dYearMon = aData[mId].updatedAt.splice(0,7);
           for (let i = 0; i < sLength; i++) {
-            monSum[dYearMon][i] += app.aData[className][mId][fields[i]];
+            monSum[dYearMon][i] += aData[mId][fields[i]];
           };
         }
       })
@@ -264,17 +266,16 @@ export function countSort( className, cField) {     //进行数据库统计排�
 export function countData(monInterval,className,cObjName,cObjValue){     //进行数据库统计
   var classObj = className + 'Count';
   return new Promise((resolve, reject) => {
-    new AV.Query(classObj)
-    .equalTo(cObjName, cObjValue)
-    .equalTo('userId', roleData.user._id)
-    .find().then(sCount => {
+    let queryCount = {'userId': roleData.user._id};
+    queryCount[cObjName] = cObjValue;
+    db.collection(classObj).where(queryCount).get().then(sCount => {
       let initCount = {};
       if (sCount) { sCount.forEach(sField => { sCount[sField.get('yearMon')] = sField.get('count') }) };
       initCount[monInterval.endYearMon] = undefined;
-      app.aCount[classObj] = initCount;
+      let nCount = initCount;
       let acpa = [];
       monInterval.yearMon.forEach(yearMon=>{
-        if (typeof app.aCount[classObj][yearMon]=='undefined') {
+        if (typeof nCount[yearMon]=='undefined') {
           let countClass = new AV.Query(classObj);             //除权限和文章类数据外只能查指定单位的数据
           if (cObjName) { countClass.equalTo(cObjName, cObjValue) };                //除权限和文章类数据外只能查指定单位的数据
           countClass.greaterThan('updatedAt',monInterval.dayRange[yearMon][0]);
@@ -283,14 +284,14 @@ export function countData(monInterval,className,cObjName,cObjValue){     //进�
         }
       })
       acpa.map(ym => () => ym[0].count().then(monCount => {
-        app.aCount[classObj][ym[1]] = monCount
+        nCount[ym[1]] = monCount
       })
       ).reduce(
         (m, p) => m.then(v => Promise.all([...v, p()])),
         Promise.resolve([])
       ).then(aCounts => {
-        let countAll = sumArr(app.aCount[classObj], monInterval.yearMon);
-        resolve({ countAll: countAll, countYear: sumArr(app.aCount[classObj], monInterval.endYear), countMon: app.aCount[classObj][monInterval.endYearMon] });
+        let countAll = sumArr(nCount, monInterval.yearMon);
+        resolve({ countAll: countAll, countYear: sumArr(nCount, monInterval.endYear), countMon: nCount[monInterval.endYearMon] });
       })
     })
   }).catch(console.error)

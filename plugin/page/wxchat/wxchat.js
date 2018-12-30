@@ -38,36 +38,37 @@ Page({
       if (checkRols(conversationRole[options.ctype].participant,roleData.user)){
         cPageSet.announcement = true;    //有通告（直播）窗口
         cPageSet.chairman = conversationRole[options.ctype].participant,roleData.user;
-        app.fwCs.forEacth(conversation=>{ if (options.ctype == conversation.name){cPageSet.cId=conversation.cId} });
       }
     };
+  },
 
-    app.getM(cPageSet.cId).then(updatedmessage=>{
-      cPageSet.messages = app.conMsg[cPageSet.cId];
-      if (options.pNo && options.artId){
-        let iMsg = {mtype: -1};
-        return new Promise((resolve, reject) => {
-          if (app.aData[options.pNo][options.artId]){
+  getM(cPageSet.cId,pNo,artId){
+    let aData = wx.getStorageSync(pNo)[artId] || {};
+    let cPageSet = {messages: conMsg[cPageSet.cId]};
+    if (options.pNo && options.artId){
+      let iMsg = {mtype: -1};
+      return new Promise((resolve, reject) => {
+        if (aData){
+          resolve(true)
+        } else {
+          db.collection(pNo).doc(artId).get().then(({result})=>{
+            aData = result;
             resolve(true)
-          } else {
-            db.collection(options.pNo).doc(options.artId).get().then(({result})=>{
-              app.aData[options.pNo][options.artId] = result;
-              resolve(true)
-            }).catch(reject(false))
-          }
-        }).then(()=>{
-          iMsg.mtext = app.fData[options.pNo].pName+':'+app.aData[options.pNo][options.artId].uName;
-          iMsg.mcontent = app.aData[options.pNo][options.artId];
-          iMsg.mcontent.pNo = options.pNo;
-          app.sendM(iMsg,cPageSet.cId).then(()=>{
-            cPageSet.messages = app.conMsg[cPageSet.cId];
-            that.setData(cPageSet);
-          })
+          }).catch(reject(false))
+        }
+      }).then(()=>{
+        let fData = require('../../modules/procedureclass')[pNo]
+        iMsg.mtext = fData.pName+':'+aData.uName;
+        iMsg.mcontent = aData;
+        iMsg.mcontent.pNo = pNo;
+        sendM(iMsg,cPageSet.cId).then(()=>{
+          cPageSet.messages = conMsg[cPageSet.cId];
+          that.setData(cPageSet);
         })
-      } else {
-        that.setData(cPageSet);
-      }
-    }).catch( console.error );
+      })
+    } else {
+      that.setData(cPageSet);
+    }
   },
 
   fMultimedia(){
@@ -93,11 +94,11 @@ Page({
       };
     }).then( (content) =>{
       value.wcontent = content;
-      app.sendM(value,that.data.cId).then( (rsm)=>{
+      sendM(value,that.data.cId).then( (rsm)=>{
         if (rsm){
           that.setData({
             vData: {mtype:0,wcontent:{}},
-            messages: app.conMsg[that.data.cId]
+            messages: conMsg[that.data.cId]
           })
         }
       });

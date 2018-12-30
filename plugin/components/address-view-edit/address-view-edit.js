@@ -1,3 +1,7 @@
+wx.cloud.init({
+  env: 'lyqplugincloud-b64fe0',
+  traceUser: true
+})
 import {querySsq} from '../../modules/db-get-data';
 var modalBehavior = require('../utils/poplib.js')
 var mapBahavior = require('../utils/mapAnalysis.js');   //位置授权及解析

@@ -1,9 +1,10 @@
 //流程审批模块
 const db = wx.cloud.database();
-var app=getApp()
+const sysinfo = wx.getStorageSync('sysinfo');
+const roleData = wx.getStorageSync('roleData');
 Page({
   data:{
-    statusBar: app.sysinfo.statusBarHeight,
+    statusBar: sysinfo.statusBarHeight,
     uIdearArray: ['通 过', '退回发起人 ','废 弃' ],
     cResult: -1,
     pBewrite: '',
@@ -12,22 +13,25 @@ Page({
 
   onLoad:function(options){
     var that = this;
-    let procedureClass = app.fData[app.pData[options.approveId].dProcedure];
-    app.pData[options.approveId].dObject.unitId = app.pData[options.approveId].unitId;
+    let nPages = getCurrentPages();
+    let prePage = nPages[nPages.length-2].data.pageData;
+    let pData =peePage[options.approveId];
+    let procedureClass = require('../../modules/procedureclass')[pData.dProcedure];
+    pData.dObject.unitId = pData.unitId;
     that.setData({
       ...procedureClass,
-      ...app.pData[options.approveId],
-      enEdit: app.roleData.uUnit._id==app.pData[options.approveId].unitId,          //本单位的流程允许编辑
+      ...pData,
+      enEdit: roleData.uUnit._id==pData.unitId,          //本单位的流程允许编辑
       afamilys: procedureClass.afamily ? procedureClass.afamily : false,                              //流程内容分组
-      cmLength: app.pData[options.approveId].cManagers.length    //流程审批节点长度
+      cmLength: pData.cManagers.length    //流程审批节点长度
     });
     // pSuccess: procedureClass.pSuccess,
     // fieldType: procedureClass.fieldType,      //流程内容格式
     // navBarTitle: procedureClass.pName,     //将页面标题设置成流程名称
     // pBewrite: procedureClass.pBewrite,     //流程说明
-    // dProcedure: app.pData[options.approveId].dProcedure,         //流程写入的数据表名
-    // aValue: app.pData[options.approveId],        //流程缓存
-    // processState: app.pData[options.approveId].processState,
+    // dProcedure: pData.dProcedure,         //流程写入的数据表名
+    // aValue: pData,        //流程缓存
+    // processState: pData.processState,
   },
 
   aprvClick: function(e){
@@ -101,9 +105,9 @@ Page({
         };
         if (processEnd) { cApproval.dObjectId = sObjectId }
         let uIdear = that.data.dIdear;
-        uIdear.unshift({ un: app.roleData.user.uName, dt: new Date(), di:that.data.uIdearArray[that.data.cResult] , dIdear:e.detail.value.dIdear })
+        uIdear.unshift({ un: roleData.user.uName, dt: new Date(), di:that.data.uIdearArray[that.data.cResult] , dIdear:e.detail.value.dIdear })
         cApproval.dIdear = uIdear;       //流程处理意见
-        cApproval.processUser = that.data.processUser+','+app.roleData.user._id;
+        cApproval.processUser = that.data.processUser+','+roleData.user._id;
         wx.cloud.callFunction({
           name: 'process',
           data: {

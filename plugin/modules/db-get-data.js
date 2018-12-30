@@ -1,7 +1,3 @@
-wx.cloud.init({
-  env: 'lyqplugincloud-b64fe0',
-  traceUser: true
-})
 const db = wx.cloud.database();
 const _ = db.command;
 const crypto = require('crypto');
