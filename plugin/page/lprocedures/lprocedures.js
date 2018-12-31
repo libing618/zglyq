@@ -35,7 +35,7 @@ Page ({
 
   createProcedure(){
     var that = this;
-    let url='/plugin-private://wx4b1c27ae1940d4fd/page/fprocedure?pNo='+that.data.pno+(that.data.fn==-1 ? '' : '&fn='+that.data.fn;
+    let url='/plugin-private://wx4b1c27ae1940d4fd/page/fprocedure?pNo='+that.data.pno+(that.data.fn==-1 ? '' : '&fn='+that.data.fn);
     wx.navigateTo({ url: url});
   },
 

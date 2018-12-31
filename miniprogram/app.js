@@ -8,7 +8,7 @@ App({
 
   onLaunch: function () {
     var that = this;
-    
+
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;
@@ -21,9 +21,11 @@ App({
             compressed(res) { setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000); }
           })
         };                  //转换比例屏幕宽750rpx
-        that.sysinfo.menuButton = wx.getMenuButtonBoundingClientRect()
+        let menuButton = wx.getMenuButtonBoundingClientRect();
+        that.sysinfo.useWindowTop = menuButton.bottom+5;
         that.sysinfo.useWindowHeight = res.windowHeight-20//res.statusBarHeight-20;
         that.sysinfo.rpxTopx = res.windowWidth/750;
+        wx.setStorageSync('sysinfo', that.sysinfo)
       }
     });
     ['aIndex', 'aData','aCount'].forEach(dataName => {

@@ -24,12 +24,6 @@ function _getError(error) {
   });
 };
 
-export function querySsq(saddv) {                                //读村镇区划数据
-  return new Promise((resolve, reject) => {
-    db.collection('ssq4').where({tncode: saddv}).get().then(({data}) => { resolve(data) })
-  }).catch(err=>{_getError(err)});
-};
-
 export function afamilySwitchSave(pno,modalId,arrNext) {                                //读村镇区划数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).set('afamily',arrNext).save().then(({data}) => { resolve(data) })
@@ -107,7 +101,7 @@ export class getData {               //wxcloud批量查询
   };
   _mapResData(dataIndex,rData){           //处理查询到的数组
     rData.forEach(aProc =>{
-      if (dataIndex.includes(aProc._id) {this.nData[aProc._id] = aProc};
+      if (dataIndex.includes(aProc._id)) {this.nData[aProc._id] = aProc};
     });
     return
   };

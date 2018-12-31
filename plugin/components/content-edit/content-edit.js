@@ -1,6 +1,6 @@
 var modalBehavior = require('../utils/poplib.js')
 Component({
-  behaviors: [modalBehavior，'wx://form-field'],
+  behaviors: [modalBehavior,'wx://form-field'],
   properties: {
     name: {
       type: String,

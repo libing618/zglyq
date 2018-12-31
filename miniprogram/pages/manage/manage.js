@@ -55,6 +55,7 @@ Page({
           succPage.grids[0].mIcon = rData.user.avatarUrl;   //把微信头像地址存入第一个菜单icon
         };
         app.roleData = rData;
+        wx.setStorageSync('roleData', rData)
         if (app.roleData.user.line != 9) { wx.showTabBar() };
         let firstPage = [
           that.banner.upData().then(banner=>{

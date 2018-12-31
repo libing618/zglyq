@@ -42,7 +42,7 @@ Page({
     };
   },
 
-  getM(cPageSet.cId,pNo,artId){
+  getM(pNo,artId){
     let aData = wx.getStorageSync(pNo)[artId] || {};
     let cPageSet = {messages: conMsg[cPageSet.cId]};
     if (options.pNo && options.artId){
@@ -75,7 +75,7 @@ Page({
     this.setData({enMultimedia: !this.data.enMultimedia});
   },
 
-  iMultimedia(){
+  iMultimedia(e){
     this.setData({
       mtype: '-'+e.currentTarget.id,
       wcontent: {}

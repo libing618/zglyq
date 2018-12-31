@@ -2,7 +2,7 @@ wx.cloud.init({
   env: 'lyqplugincloud-b64fe0',
   traceUser: true
 })
-import {querySsq} from '../../modules/db-get-data';
+const db = wx.cloud.database();
 var modalBehavior = require('../utils/poplib.js')
 var mapBahavior = require('../utils/mapAnalysis.js');   //位置授权及解析
 
@@ -107,9 +107,9 @@ Component({
 
     raddgroup: function({ currentTarget:{id,dataset},detail:{value} }){                  //读村镇区划数据
       if (this.data.saddv != 0) {
-        querySsq(this.data.saddv).then(ssqdata => {
-          if (ssqdata.length>0){
-            this.setData({dglist: ssqdata[0].tn});
+        db.collection('ssq4').where({tncode: this.data.saddv}).get().then(({data}) => {
+          if (data.length>0){
+            this.setData({dglist: data[0].tn});
           };
         }).catch( console.error );
       };
