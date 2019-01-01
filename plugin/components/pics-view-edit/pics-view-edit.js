@@ -14,13 +14,17 @@ Component({
   },
   data: {
     explain: [],
-    replacefile: false,
-    filepaths: placeFiles
+    replacefile: false
   },
   lifetimes:{
     attached(){
-      this.fileNameAnaly(this.data.value,this.data.csc);
-      if (this.data.editable==2){ this.choosepics() }
+      this.fileNameAnaly(this.data.value,this.data.csc).then(()=>{
+        if (this.data.editable) {
+          this.setData({ filepaths: this.data.placeFile})
+          if (this.data.editable == 2) { this.choosepics() }
+        }
+      });
+      
     }
   },
   methods: {

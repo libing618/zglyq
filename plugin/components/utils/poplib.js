@@ -1,4 +1,4 @@
-const cloudPath = 'lyqplugincloud-b64fe0'
+const cloudPath = 'cloud://lyqplugincloud-b64fe0.6c79-lyqplugincloud-b64fe0/'
 const sysinfo = wx.getStorageSync('sysinfo');
 module.exports = Behavior({
   data: {
@@ -12,10 +12,10 @@ module.exports = Behavior({
       return new Promise((resolve,reject)=>{
         let sFile = {};
         let placeFiles = {     //占位文件
-          img: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/零分.png',
-          pic: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/零分.png',
-          audio: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/中国好人 - 王玮玮.mp3',
-          video: 'cloud://cyfwtest-07b693.2c28-cyfwtest-07b693/x0691yxjflz_1.mp4',
+          img: 'cloud://lyqplugincloud-b64fe0.6c79-lyqplugincloud-b64fe0/placeimg.png',
+          pic: 'cloud://lyqplugincloud-b64fe0.6c79-lyqplugincloud-b64fe0/placeimg.png',
+          audio: 'cloud://lyqplugincloud-b64fe0.6c79-lyqplugincloud-b64fe0/placeaudio.mp3',
+          video: 'cloud://lyqplugincloud-b64fe0.6c79-lyqplugincloud-b64fe0/placevideo.mp4',
           pics: [
             'https://e3sl2viw1q4ta7me-10007535.file.myqcloud.com/790f500d14e467fe28e3.jpg',
             'https://e3sl2viw1q4ta7me-10007535.file.myqcloud.com/ff933806fce411614341.jpg',
