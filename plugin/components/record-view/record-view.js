@@ -1,6 +1,4 @@
 //显示数据的关键要素
-import {initData} from '../../modules/initForm';
-const roleData = wx.getStorageSync('roleData');
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],
@@ -23,7 +21,7 @@ Component({
   data: {
     fieldName: [],
     fieldType: {},
-    uEV: roleData.user.line!=9,    //用户已通过单位和职位审核
+    uEV: false,    //非注册用户
     enUpdate: false,
     vData:{},
     scale: 0,
@@ -39,10 +37,13 @@ Component({
   methods:{
     clickitem(e){
       let docDefine = require('../../modules/procedureclass')[this.data.pno];
+      let initData = require('../../modules/initForm').initData;
+      let roleData = wx.getStorageSync('roleData');
       this.setData({
         fieldName: docDefine.pSuccess,
         fieldType: docDefine.fieldType,
         inFamily: typeof docDefine.afamily != 'undefined',
+        uEV: roleData.user.line != 9,    //用户已通过单位和职位审核
         vData: initData(docDefine.pSuccess, docDefine.fieldType, this.data.sitem),
         enUpdate: this.data.sitem.unitId==roleData.uUnit._id && typeof docDefine.suRoles!='undefined'
       });

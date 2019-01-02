@@ -69,15 +69,14 @@ export class cargoStock {
     return new Promise((resolve, reject) => {
       this.stockCargo.get().then(({data}) => {
         if (data){
-            resolve(
-              {scale: ((data.payment + data.delivering + data.delivered) / this.packages).toFixed(0),
-              csupply: (data.canSupply / this.packages - 0.5).toFixed(0)}
-            )
-          } else {
-            resolve( {scale:0,csupply:0} )
-          }
-        })
-      }
+          resolve(
+            {scale: ((data.payment + data.delivering + data.delivered) / this.packages).toFixed(0),
+            csupply: (data.canSupply / this.packages - 0.5).toFixed(0)}
+          )
+        } else {
+          resolve( {scale:0,csupply:0} )
+        }
+      })
     }).catch(err=>{_getError(err)})
   }
 };

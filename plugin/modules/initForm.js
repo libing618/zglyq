@@ -1,4 +1,4 @@
-import {noEmptyObject} from '../../index.js';
+import {noEmptyObject} from '../index.js';
 const db = wx.cloud.database();
 
 function requestCallback(err, data) {

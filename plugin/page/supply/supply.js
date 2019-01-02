@@ -1,5 +1,5 @@
 // 供货操作
-import { indexClick,binddata } from '../../modules/util.js';
+import { indexClick,binddata } from '../../index';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const suppliesDefine = require('../../modules/procedureclass').supplies;
 const db = wx.cloud.database();

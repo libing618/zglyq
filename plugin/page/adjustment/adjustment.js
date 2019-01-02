@@ -1,5 +1,5 @@
 //调整当日成品生产计划
-import {hTabClick} from '../../modules/util.js';
+import {hTabClick} from '../../index';
 import {checkRols} from '../../modules/initForm';
 const docDefine = require('../../modules/procedureclass').prodesign;
 const db = wx.cloud.database();

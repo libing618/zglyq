@@ -43,8 +43,8 @@ Component({
   methods: {
     shareOrder(){
       if (this.data.clickid==this.data.sitem._id){
-        let docDefine = require('../../modules/procedureclass')[this.data.name];
-        this.
+        let docDefine = require('../../modules/procedureclass').cargo;
+        this.specs = new cargoStock(this.data.sitem._id,this.data.sitem.packages)
         this.setData({
           fieldName: docDefine.pSuccess,
           fieldType: docDefine.fieldType
