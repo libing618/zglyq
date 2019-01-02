@@ -1,4 +1,4 @@
-const {cargoStock} = getApp();
+import {cargoStock} from '../../modules/db-get-data.js';
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],
@@ -32,8 +32,7 @@ Component({
         case 's_cargo':
           cargototal = cargoStock[this.data.sitem._id]
           this.setData({
-            scale: ((cargototal.payment + cargototal.delivering + cargototal.delivered) / cargototal.packages).toFixed(0),
-            csupply: (cargototal.canSupply / cargototal.packages - 0.5).toFixed(0)
+
           });
           break;
         default:
@@ -45,6 +44,7 @@ Component({
     shareOrder(){
       if (this.data.clickid==this.data.sitem._id){
         let docDefine = require('../../modules/procedureclass')[this.data.name];
+        this.
         this.setData({
           fieldName: docDefine.pSuccess,
           fieldType: docDefine.fieldType

@@ -1,6 +1,5 @@
 const db = wx.cloud.database();
 const _ = db.command;
-const crypto = require('crypto');
 const sysinfo = wx.getStorageSync('sysinfo');
 const roleData = wx.getStorageSync('roleData');
 
@@ -24,7 +23,7 @@ function _getError(error) {
   });
 };
 
-export function afamilySwitchSave(pno,modalId,arrNext) {                                //读村镇区划数据
+export function afamilySwitchSave(pno,modalId,arrNext) {                //切换afamily数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).set('afamily',arrNext).save().then(({data}) => { resolve(data) })
   }).catch(err=>{_getError(err)});
@@ -59,7 +58,30 @@ export class geoQueryUnit {
       }
     }).catch(err=>{_getError(err)})
   }
-}
+};
+
+export class cargoStock {
+  constructor (cargo_id,packages){
+    this.stockCargo = db.collection('cargoStock').doc(cargo_id);
+    this.packages = packages;
+  };
+  getStock(){
+    return new Promise((resolve, reject) => {
+      this.stockCargo.get().then(({data}) => {
+        if (data){
+            resolve(
+              {scale: ((data.payment + data.delivering + data.delivered) / this.packages).toFixed(0),
+              csupply: (data.canSupply / this.packages - 0.5).toFixed(0)}
+            )
+          } else {
+            resolve( {scale:0,csupply:0} )
+          }
+        })
+      }
+    }).catch(err=>{_getError(err)})
+  }
+};
+
 export class getData {               //wxcloud批量查询
   constructor (dataName,afamily=0,uId=roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
     this.pNo = dataName;
@@ -77,6 +99,7 @@ export class getData {               //wxcloud批量查询
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
     let requirStrArr = _objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');
+    let crypto = require('crypto');
     this.filterId = crypto.enc.Base64.stringify(crypto.HmacSHA1(requirString, this.unitFamily));  //生成条件签名
     this.dQuery = db.collection(this.pNo).where(requirement)
     orderArr.forEach(ind=> {this.dQuery=this.dQuery.orderBy(ind[0],ind[1])} );
