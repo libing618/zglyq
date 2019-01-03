@@ -1,5 +1,5 @@
 import {shareMessage} from '../../libs/util.js';
-const db = wx.cloud.database();
+const { queryById, loginAndMenu, getData, openWxLogin } = requirePlugin('lyqPlugin');
 var app = getApp()
 Page({
   data:{
@@ -37,7 +37,7 @@ Page({
     return new Promise((resolve, reject) => {
       wx.checkSession({
         success: function () {            //session_key 未过期，并且在本生命周期一直有效
-          db.collection('miniProgramSession').doc(app.roleData.user._openid).get().then(()=>{
+          queryById('miniProgramSession',app.roleData.user._openid).then(()=>{
             resolve('sessionOk')
           }).catch(()=>{
             resolve(that.getLoginCode())

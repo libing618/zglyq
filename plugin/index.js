@@ -5,6 +5,7 @@ function formatNumber(n) {
 
 module.exports = {
   getData: require('modules/db-get-data.js').getData,
+  queryById: require('modules/db-get-data.js').queryById,
   cargoCount: require('modules/dataAnalysis.js').cargoCount,
   formatTime(date = new Date(), isDay = false) {
     date = new Date(date)
