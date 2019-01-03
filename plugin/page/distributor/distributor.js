@@ -3,7 +3,6 @@ import {hTabClick} from '../../index';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
 const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData');
 Page({
   data:{
     pNo: 'distributor',
@@ -31,6 +30,7 @@ Page({
 
   onLoad:function(options){
     var that = this;
+    let roleData = wx.getStorageSync('roleData');
     if (checkRols(8,roleData.user)) {
       db.collection('distributor').where({unitId:roleData.uUnit._id}).orderBy('updatedAt','asc').get().then(channel=>{
         if (channel) {
@@ -48,6 +48,5 @@ Page({
       }).catch( console.error);
     };
   },
-  hTabClick:hTabClick,
-  onShareAppMessage: shareMessage
+  hTabClick:hTabClick
 })

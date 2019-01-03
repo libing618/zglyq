@@ -174,7 +174,6 @@ Page({
         }
       }
     });
-  },
-
-  onShareAppMessage: shareMessage
+  }
+  
 })

@@ -12,6 +12,6 @@ Page({
 
   onLoad: function (options) {
     checkRols(0,roleData.user)     //负责人或综合条线员工
-  },
-  onShareAppMessage: shareMessage
+  }
+  
 })

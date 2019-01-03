@@ -100,7 +100,6 @@ export function initData(fieldName,fieldType, aData) {        //单一表记录�
   return vData;
 };
 
-
 export function openWxLogin() {              //解密unionid并进行注册
   return new Promise((resolve, reject) => {
     wx.login({
@@ -159,3 +158,24 @@ export function openWxLogin() {              //解密unionid并进行注册
     })
   });
 };
+
+export function fileUpload(cSavePath, filePath, fe) {
+  return new Promise((resolve, reject) => {
+    let nameIndex = filePath.lastIndexOf("\\");
+    let fileName = filePath.substring(nameIndex + 1);
+    wx.showLoading({ title: '正在上传《' + fe + '》', mack: true })
+    wx.cloud.uploadFile({
+      cloudPath: 'f' + cSavePath + '\\' + fileName,
+      filePath: filePath
+    }).then(res => {
+      wx.hideLoading()
+      resolve(fileName)
+    }).catch(e => {
+      wx.hideLoading()
+      wx.showToast({
+        icon: 'none',
+        title: '上传失败' + e.errMsg,
+      })
+    })
+  })
+}

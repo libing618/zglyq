@@ -1,4 +1,4 @@
-import { fileUpload } from '../modules/wxcloudcf';
+import { fileUpload } from 'initForm';
 const db = wx.cloud.database();
 const logData = wx.getStorageSync('logData');
 const roleData = wx.getStorageSync('roleData');

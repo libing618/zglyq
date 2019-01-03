@@ -2,16 +2,17 @@
 import {checkRols} from '../../modules/initForm';
 const db = wx.cloud.database();
 const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData');
-
 Page({
   data:{
-    navBarTitle: roleData.uUnit.uName+'的货架',
     statusBar: sysinfo.statusBarHeight,
     pageData: {}
   },
   onLoad:function(options){
-    checkRols(8,roleData.user)
+    var that = this;
+    let roleData = wx.getStorageSync('roleData');
+    if (checkRols(8, roleData.user)) {
+      that.setData({ navBarTitle: roleData.uUnit.uName + '的货架'});
+    }
   },
 
   clickSave:function({currentTarget:{id}}){

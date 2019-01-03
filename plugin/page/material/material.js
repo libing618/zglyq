@@ -107,7 +107,5 @@ Page({
     }).then(saveSuppli=>{
 
     })
-  },
-
-  onShareAppMessage: shareMessage
+  }
 })

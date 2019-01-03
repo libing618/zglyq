@@ -52,8 +52,6 @@ Page({
 
   orderquery:function(e){
     this.sumOrders();
-  },
-
-  onShareAppMessage: shareMessage
+  }
 
 })

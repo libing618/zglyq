@@ -47,7 +47,6 @@ Page({
       default:
         wx.navigateBack({ delta: 1 });
     }
-  },
-  onShareAppMessage: shareMessage
+  }
 
 })

@@ -3,18 +3,6 @@ function formatNumber(n) {
   return n[1] ? n : '0' + n
 };
 
-
-export function ;
-
-export function
-export function ;
-
-export function ;
-
-export function ;
-
-export function ;
-
 module.exports = {
   getData: require('modules/db-get-data.js').getData,
   cargoCount: require('modules/dataAnalysis.js').cargoCount,

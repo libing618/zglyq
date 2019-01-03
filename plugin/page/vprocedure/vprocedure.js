@@ -42,7 +42,6 @@ Page({
         break;
     };
     wx.navigateTo({ url: url});
-  },
-  onShareAppMessage: shareMessage
+  }
 
 })

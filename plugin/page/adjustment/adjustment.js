@@ -67,6 +67,5 @@ Page({
   },
   onReachBottom: function () {
     updateTodo('prodesign');
-  },
-  onShareAppMessage: shareMessage
+  }
 })
