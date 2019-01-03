@@ -11,7 +11,7 @@
   <view class="weui-tab">
     <block wx:for="{{mPage}}" wx:key="{{index}}" wx:for-item="ac">
       <view class="weui-cells">
-        <navigator url="/pluginPage/vprocedure/vprocedure?pNo={{pNo}}&artId={{ac}}">
+
           <view class="weui-media-box weui-media-box_appmsg" hover="true" hover-class="weui-cell_active">
             <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
               <image class="weui-media-box__thumb" src="{{pageData[ac].thumbnail}}" background-size="cover"></image>
@@ -21,7 +21,7 @@
               <view class="weui-media-box__desc">付款未发货{{pageData[ac].payment}},交货且签收{{pageData[ac].delivered}}</view>
             </view>
           </view>
-        </navigator>
+
       </view>
     </block>
   </view>

@@ -1,31 +1,22 @@
 import {shareMessage} from '../../libs/util.js';
-const { iMenu, cargoCount } = requirePlugin('lyqPlugin');
-const db = wx.cloud.database();
-var app = getApp();
+const { iMenu, cargoCount, getData } = requirePlugin('lyqPlugin');
+const {sysinfo,roleData} = getApp();
 Page({
   data:{
     mPage: [],
+    statusBar: sysinfo.statusBarHeight,
+    wWidth: sysinfo.windowWidth,
+    grids: iMenu(1, roleData.wmenu[1]),
     pNo: 'goods',                       //商品信息
     pageData: {}
   },
 
-  setPage: function(){
-    db.collection('goods').where({unitId:app.roleData.user.unit}).count().then(({total})=>{
-      this.setData({pandect:total})
-    })
-  },
-
   onReady: function(){
-    this.setPage();              //更新缓存以后有变化的数据
-    this.setData({
-      statusBar: app.sysinfo.statusBarHeight,
-      wWidth: app.sysinfo.windowWidth,
-      grids: iMenu(1, app.roleData.wmenu[1])
-    })
-  },
-
-  onPullDownRefresh:function(){
-    this.setPage()
+    let that = this;              //更新缓存以后有变化的数据
+    that.goods = new getData('goods');
+    that.goods.upData().then(gData=>{
+      that.goods.addViewData(gData,mPage)
+    });
   },
 
   onShareAppMessage: shareMessage

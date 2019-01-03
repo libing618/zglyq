@@ -22,9 +22,9 @@ module.exports = {
   },
 
   iMenu(indexArr, menuArr) {
-    allMenu = require['modules.js'][indexArr];
+    let allMenu = require('./modules/allmenu.js')[indexArr];
     return menuArr.map(rNumber=> {
-      return { tourl: allMenu['N' + rNumber].tourl, mIcon: allMenu[indexArr]['m' + rNumber], mName: allMenu[indexArr]['N' + rNumber].mName }
+      return { tourl: allMenu['N' + rNumber].tourl, mIcon: allMenu['m' + rNumber], mName: allMenu['N' + rNumber].mName }
     })
   },
 

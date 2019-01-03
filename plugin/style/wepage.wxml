@@ -119,12 +119,10 @@
 
 <template name="personConversation">
 <view class="chat-box__left" hover="true" hover-class="weui-cell_active">
-  <navigator url="/pluginPage/vprocedure/vprocedure?pNo={{pNo}}&artId={{item}}">
-    <view class="chat-box__hd">
-      <image class="weui-media-box__thumb" src="{{avatarUrl}}" background-size="cover"></image>
-      <view>uName</view>
-    </view>
-  </navigator>
+  <view class="chat-box__hd">
+    <image class="weui-media-box__thumb" src="{{avatarUrl}}" background-size="cover"></image>
+    <view>uName</view>
+  </view>
   <view class="chat-box__bd">
     <view class="weui-media-box__title">{{wtext}}</view>
     <view wx:if="{{wcontent}}" class="weui-media-box__desc">
@@ -147,7 +145,7 @@
 
 <template name="tabPanel">
   <block wx:for="{{tPage}}" wx:key="{{index}}">
-    <navigator url="/pluginPage/vprocedure/vprocedure?pNo={{pNo}}&artId={{item}}">
+
       <view class="weui-media-box weui-media-box_appmsg" hover="true" hover-class="weui-cell_active">
         <view class="weui-media-box__hd_in-appmsg">
           <image class="weui-media-box__thumb" src="{{pageData[item].thumbnail}}" background-size="cover"></image>
@@ -157,7 +155,7 @@
           <view class="weui-media-box__desc">{{pageData[item].title}}</view>
         </view>
       </view>
-    </navigator>
+
   </block>
 </template>
 

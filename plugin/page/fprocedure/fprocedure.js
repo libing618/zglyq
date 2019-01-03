@@ -3,7 +3,7 @@ import {initData} from '../../modules/initForm';
 import {noEmptyObject} from '../../index';
 const wImpEdit = require('../../modules/impedit.js');
 const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData');
+
 Page({
   data: {
     navBarTitle: '编辑--',              //申请项目名称
@@ -19,6 +19,7 @@ Page({
   onLoad: function (options) {        //传入参数为tgId或pNo/fn,不得为空
     var that = this;
     let aaData={};
+    let roleData = wx.getStorageSync('roleData');
     that.data.uEV = (roleData.user.line!=9);            //用户已通过单位和职位审核
     return new Promise((resolve, reject) => {
       if (typeof options.tgId == 'string') {                   //传入参数含审批流程ID，则为编辑审批中的数据

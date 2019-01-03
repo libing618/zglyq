@@ -26,7 +26,6 @@
   "pages": {
     "approve":"page/approve/approve",
     "procedures":"page/procedures/procedures",
-    "vprocedure":"page/vprocedure/vprocedure",
     "lprocedures":"page/lprocedures/lprocedures",
     "fprocedure":"page/fprocedure/fprocedure",
     "wxchat":"page/wxchat/wxchat",

@@ -1,4 +1,3 @@
-// inputedit/packing.js
 import {cosUploadFile} from '../../modules/initForm';
 const sysinfo = wx.getStorageSync('sysinfo');
 const roleData = wx.getStorageSync('roleData');
@@ -16,20 +15,10 @@ Page({
   },
   onLoad: function (options) {        //传入参数为tgId或pNo/artId
     var that = this;
-    wx.downloadFile({
-      url: 'https://lg-la2p7duw-1254249743.cos.ap-shanghai.myqcloud.com/agree/P020130603537924184482.doc',
-      success: function(res) {
-    // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
-        if (res.statusCode === 200) {
-          wx.saveFile({
-            tempFilePath: res.tempFilePath,
-            success:(sf)=>{
-              wx.openDocument({filePath:sf.savedFilePath})
-            }
-          })
-        }
-      }
-    })
+    let roleData = wx.getStorageSync('roleData');
+    if (checkRols(8, roleData.user)) {
+      that.setData({ navBarTitle: roleData.uUnit.uName + '的产品包装'});
+    }
   },
   simpleUpload:function () {
     wx.chooseImage({    // 选择文件

@@ -1,14 +1,12 @@
 //单位信息编辑
 import {initData} from '../../modules/initForm';
-const roleDefine = require('../../modules/procedureclass')._Role
 const db = wx.cloud.database();
 const wImpEdit = require('../../modules/impedit');
 const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData');
 Page({
   data: {
     pNo: '_Role',                       //流程的序号
-    navBarTitle: roleData.uUnit.uName ? roleData.uUnit.uName : '创业服务平台--单位信息',              //申请项目名称
+    navBarTitle: '创业服务平台--单位信息',              //申请项目名称
     statusBar: sysinfo.statusBarHeight,
     targetId: '0',              //流程申请表的ID
     dObjectId: '0',             //已建数据的ID作为修改标志，0则为新建
@@ -22,6 +20,8 @@ Page({
 
   onLoad: function (options) {
     var that = this;
+    let roleData = wx.getStorageSync('roleData');
+    let roleDefine = require('../../modules/procedureclass')._Role;
     if (roleData.user.position==8) {
       db.collection('sengpi').where({
         unitId: roleData.user._id,       //单位ID等于用户ID则为负责人
@@ -35,6 +35,7 @@ Page({
         wImpEdit.initFunc('_Role').forEach(functionName => {
           that[functionName] = wImpEdit[functionName]
         });
+        if(roleData.uUnit.uName) { that.data.navBarTitle = roleData.uUnit.uName};              //申请项目名称
         that.data.fieldName = roleDefine.pSuccess;
         that.data.fieldType = roleDefine.fieldType;
         that.setData( that.data );
