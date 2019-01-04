@@ -1,14 +1,12 @@
 
 App({
-  roleData: require('globaldata.js').roleData,                 //读数据记录的缓存
-  aIndex: require('globaldata.js').aIndex,
-  aCount: require('globaldata.js').aCount,
-  aData: {},
+  roleData: {},                 //读数据记录的缓存
+  aIndex: require('./test/articles').aIndex,
+  aCount: {},
   logData: [],
 
   onLaunch: function () {
     var that = this;
-
     wx.getSystemInfo({                     //读设备信息
       success: function (res) {
         that.sysinfo = res;
@@ -49,19 +47,6 @@ App({
 
   onHide: function () {             //进入后台时缓存数据。
     var that = this;
-    wx.getStorageInfo({             //查缓存的信息
-      success: function (res) {
-        if (res.currentSize > (res.limitSize - 512)) {          //如缓存占用大于限制容量减512kb，将大数据量的缓存移除。
-          wx.removeStorage({ key: "aData" });
-          wx.removeStorage({key:"aIndex"});
-          wx.removeStorage({key:"aCount"});
-        } else {
-          wx.setStorage({ key: 'roleData', data: that.roleData });
-          wx.setStorage({key:"aIndex", data:that.aIndex});
-          wx.setStorage({ key: 'aCount', data: that.aCount });
-        }
-      }
-    });
     let logData = that.logData.concat(wx.getStorageSync('loguser') || []);  //如有旧日志则拼成一个新日志数组
     if (logData.length > 0) {
       wx.getNetworkType({
@@ -75,7 +60,22 @@ App({
               userObjectId: that.roleData.user.uId,
               workRecord: logData,
             }).then(resok => {
-              wx.removeStorageSync('loguser');              //上传成功清空日志缓存
+              wx.getStorageInfo({             //查缓存的信息
+                success: function (res) {
+                  if (res.currentSize > (res.limitSize - 512)) {          //如缓存占用大于限制容量减512kb，将大数据量的缓存移除。
+                    wx.clearStorage({
+                      success:()=>{
+                        wx.setStorage({ key: 'roleData', data: that.roleData });
+                      }
+                    })
+                  } else {
+                    wx.removeStorageSync('loguser');              //上传成功清空日志缓存
+                    wx.setStorage({ key: 'roleData', data: that.roleData });
+                    wx.setStorage({key:"aIndex", data:that.aIndex});
+                    wx.setStorage({ key: 'aCount', data: that.aCount });
+                  }
+                }
+              });
             }).catch(error => {                            //上传失败保存日志缓存
               wx.setStorage({ key: 'loguser', data: logData })
             })

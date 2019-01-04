@@ -1,7 +1,7 @@
 const db = wx.cloud.database();
 const _ = db.command;
 const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData');
+const roleData = wx.getStorageSync('roleData') || require('globaldata');
 
 function _objToStrArr(dn,obj) {
   let arr = [dn];

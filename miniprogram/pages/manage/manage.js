@@ -13,13 +13,11 @@ Page({
 
   onLoad: function () {
     var that = this;
-    let grids,pageData;
+    let grids;
     wx.hideTabBar();
-    app.aData.banner = require('../../test/articles').banner;
-    app.aIndex = require('../../test/articles').aIndex;
-    app.aData.articles= require('../../test/articles').articles;
+    let pageData = require('../../test/articles').banner;
+    Object.assign(pageData, require('../../test/articles').articles);
     that.banner = new getData('banner');
-    pageData = that.banner.nData;
     that.articles = []
     for (let i = 0; i < 3; i++) { that.articles.push(new getData('articles', i)) };
     return new Promise((resolve,reject)=>{
@@ -41,6 +39,7 @@ Page({
         that.setData({
           statusBar: app.sysinfo.statusBarHeight,
           wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
+          pageCk: app.aIndex.pCkarticles ? app.aIndex.pCkarticles : that.data.pageCk,
           mSwiper: that.banner.nIndex,
           mPage: that.articles.map(a=>{return a.nIndex}),
           pageData,

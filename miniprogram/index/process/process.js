@@ -1,12 +1,12 @@
 //生产过程
-var app = getApp()
+var {sysinfo} = getApp()
 Page({
   data:{
 	pageData: {},
     fLength: 3,
     tabs: ['','今日工作',''],
-    pageCk: app.aIndex.prodesign,
-    wWidth: app.sysinfo.windowWidth
+    pageCk: 0,
+    wWidth: sysinfo.windowWidth
   },
   onLoad:function(options){
     // 页面初始化 options为页面跳转所带来的参数

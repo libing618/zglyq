@@ -5,6 +5,8 @@ function formatNumber(n) {
 
 module.exports = {
   getData: require('modules/db-get-data.js').getData,
+  loginAndMenu: require('modules/initForm.js').loginAndMenu,
+  openWxLogin: require('modules/initForm.js').openWxLogin,
   queryById: require('modules/db-get-data.js').queryById,
   cargoCount: require('modules/dataAnalysis.js').cargoCount,
   formatTime(date = new Date(), isDay = false) {
