@@ -1,9 +1,11 @@
 module.exports = {
   aIndex: {
-    "JCLz1KBiZihuA3kb01VNbjP/MUU=":["58cae6c5b1acfc0056b0359e","58cae9a3b1acfc0056b03615","58caea2bfac9bd005684536b"],
-    "jbXUexuX+RlmHf+oh2ax/NYKwFs=":["58caefbc4eb0020058529166","58cf45b5b1acfc0056b1e370"],
-    "GSJKfTc119sWNh5C5EQhk1D7sIA=":["58cf474bb1acfc0056b1e4ce"],
-    "cuJhyWRyFLPK1/mEGvI/dYaqP7g=":["58cdade6b1acfc0056b13d25"]
+    "banner":["58cae6c5b1acfc0056b0359e","58cae9a3b1acfc0056b03615","58caea2bfac9bd005684536b"],
+    "articles":[
+      ["58caefbc4eb0020058529166","58cf45b5b1acfc0056b1e370"],
+      ["58cf474bb1acfc0056b1e4ce"],
+      ["58cdade6b1acfc0056b13d25"]
+    ]
   },
 banner:{
 "58cae6c5b1acfc0056b0359e": {

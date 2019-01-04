@@ -1,6 +1,5 @@
-
 App({
-  roleData: {},                 //读数据记录的缓存
+  roleData: requirePlugin('lyqPlugin').initApp,                 //读数据记录的缓存
   aIndex: require('./test/articles').aIndex,
   aCount: {},
   logData: [],
@@ -26,7 +25,7 @@ App({
         wx.setStorageSync('sysinfo', that.sysinfo)
       }
     });
-    ['aIndex', 'aData','aCount'].forEach(dataName => {
+    ['aIndex','aCount'].forEach(dataName => {
       wx.getStorage({
         key: dataName,
         success: function (res) {

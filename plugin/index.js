@@ -24,6 +24,11 @@ module.exports = {
     }
   },
 
+  initApp(){
+    wx.cloud.init();
+    return wx.getStorageSync('roleData') || require('./modules/globaldata');
+  },
+
   iMenu(indexArr, menuArr) {
     let allMenu = require('./modules/allmenu.js')[indexArr];
     return menuArr.map(rNumber=> {

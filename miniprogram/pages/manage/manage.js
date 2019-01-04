@@ -19,33 +19,22 @@ Page({
     Object.assign(pageData, require('../../test/articles').articles);
     that.banner = new getData('banner');
     that.articles = []
-    for (let i = 0; i < 3; i++) { that.articles.push(new getData('articles', i)) };
+    for (let i = 0; i < 3; i++) {
+      that.articles.push(new getData('articles', i))
+      app.aIndex.articles[i] = that.articles[i].nIndex.concat(app.aIndex.articles[i])
+    };
     return new Promise((resolve,reject)=>{
-      wx.getStorage({
-        key: 'roleData',
-        success: function (res) {
-          resolve(res.data);
-        },
-        fail: ()=>{
-          resolve(false)
-        }
-      })
-    }).then(stoRole=>{
-      return new Promise((resolve, reject) => {
-        if (stoRole){app.roleData=stoRole};
-        grids = iMenu(0,app.roleData.wmenu[0]);
-        grids[0].mIcon = app.roleData.user.avatarUrl;
-        for (let i = 0; i < 3; i++) {Object.assign(pageData,that.articles[i].nData)}
-        that.setData({
-          statusBar: app.sysinfo.statusBarHeight,
-          wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
-          pageCk: app.aIndex.pCkarticles ? app.aIndex.pCkarticles : that.data.pageCk,
-          mSwiper: that.banner.nIndex,
-          mPage: that.articles.map(a=>{return a.nIndex}),
-          pageData,
-          grids: grids
-        },resolve(true));
-      })
+      grids = iMenu(0,app.roleData.wmenu[0]);
+      for (let i = 0; i < 3; i++) {Object.assign(pageData,that.articles[i].nData)}
+      that.setData({
+        statusBar: app.sysinfo.statusBarHeight,
+        wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
+        pageCk: app.aIndex.pCkarticles ? app.aIndex.pCkarticles : that.data.pageCk,
+        mSwiper: that.banner.nIndex.concat(app.aIndex.banner),
+        mPage: that.articles.map(a=>{return a.nIndex}),
+        pageData,
+        grids: grids
+      },resolve(true));
     }).then(() => {
       loginAndMenu(app.roleData).then(rData => {
         let succPage = { unAuthorize: false }
