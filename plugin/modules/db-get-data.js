@@ -35,6 +35,18 @@ export function queryById(pno, modalId) {                //根据查id数据
   }).catch(err => { _getError(err) });
 };
 
+export function loginCloud(lState, modalId) {                //根据查id数据
+  return new Promise((resolve, reject) => {
+    wx.cloud.callFunction({ name: 'login',data:{loginState:lState} }).then((rfmData) => {
+      resolve(rfmData.result)           //用户如已注册则返回菜单和单位数据，否则进行注册登录
+    }).catch(err=>{
+      openWxLogin().then(rlgData => {
+        resolve(rlgData)
+      }).catch(err=> { reject(err) });
+    });
+  }).catch(err => { _getError(err) });
+};
+
 export class geoQueryUnit {              //地理位置查单位信息
   constructor (selTypes,province_code){
     this.qUnit = db.collection('_Role').where(
@@ -100,7 +112,7 @@ export class getData {               //wxcloud批量查询
       requirement.afamily = _.eq(afamily);
       this.unitFamily += afamily;
     };
-    let aIndex = wx.getStorageSync('aIndex')[dataName];
+    let aIndex = wx.getStorageSync('aIndex')[dataName] || {};
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
     let requirStrArr = _objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');

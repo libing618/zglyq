@@ -1,5 +1,5 @@
 //分销招募
-import {hTabClick} from '../../index';
+import {hTabClick} from '../../modules/frequently';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
 const sysinfo = wx.getStorageSync('sysinfo');

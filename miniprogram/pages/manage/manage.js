@@ -1,7 +1,56 @@
 import {tabClick,shareMessage} from '../../libs/util.js';
-const { iMenu, loginAndMenu, getData, openWxLogin } = requirePlugin('lyqPlugin');
+const { iMenu, loginCloud, getData, openWxLogin } = requirePlugin('lyqPlugin');
 var app = getApp();
-
+function loginAndMenu(roleData) {
+  return new Promise((resolve, reject) => {
+    wx.getSetting({
+      success:(res)=> {
+        if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
+          wx.getStorage({
+            key: 'roleData',
+            success: function (res) {
+              resolve(res.data)
+            },
+            fail: function(){
+              resolve(roleData)
+            }
+          })
+        } else { resolve(roleData) }
+      },
+      fail: (resFail) => { reject('用户没有授权登录') }
+    })
+  }).then(rData=>{
+    return new Promise((resolve, reject) => {
+      loginCloud(1).then(reData=>{
+        wx.getUserInfo({        //检查客户信息
+          withCredentials: false,
+          lang: 'zh_CN',
+          success: function ({ userInfo }) {
+            if (userInfo) {
+              let updateInfo = false,gData={};
+              for (let iKey in userInfo) {
+                if (userInfo[iKey] != reData.user[iKey]) {             //客户信息有变化
+                  updateInfo = true;
+                  reData.user[iKey] = userInfo[iKey];
+                  gData[iKey] = userInfo[iKey];
+                }
+              };
+              if (updateInfo) {
+                db.collection('_User').doc(reData.user._id).update({
+                  data: gData
+                }).then(() => {
+                  resolve(reData);
+                })
+              } else {
+                resolve(reData);
+              };
+            }
+          }
+        });
+      })
+    });
+  }).catch((loginErr) => { reject('系统登录失败:' + JSON.stringify(loginErr)) });
+};
 Page({
   data: {
     autoplay: true,
@@ -73,10 +122,8 @@ Page({
     var that = this;
     openWxLogin().then( mstate=> {
       app.roleData = mstate;
-      app.logData.push([Date.now(), '用户授权' + JSON.stringify(app.sysinfo)]);                      //用户授权时间记入日志
-      let grids = iMenu(0,app.roleData.wmenu[0]);
-      grids[0].mIcon=app.roleData.user.avatarUrl;   //把微信头像地址存入第一个菜单icon
-      that.setData({ unAuthorize: false, grids: grids })
+      app.logData.push([Date.now(), '用户授权' + JSON.stringify(app.sysinfo)]);     //用户授权时间记入日志
+      that.setData({ unAuthorize: false, grids: iMenu(0,app.roleData.wmenu[0]) })
     }).catch( console.error );
   },
 

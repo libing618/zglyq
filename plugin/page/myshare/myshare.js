@@ -1,5 +1,5 @@
 //共享信息管理
-import {hTabClick} from '../../index';
+import {hTabClick} from '../../modules/frequently';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const shareFamily = require('../../modules/procedureclass').share.afamily;
 const sysinfo = wx.getStorageSync('sysinfo');

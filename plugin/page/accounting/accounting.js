@@ -1,5 +1,5 @@
 //帐务中心
-import { formatTime,indexClick } from '../../index';
+import { formatTime,indexClick } from '../../modules/frequently';
 import {checkRols} from '../../modules/initForm';
 const db = wx.cloud.database();
 const _ = db.command;

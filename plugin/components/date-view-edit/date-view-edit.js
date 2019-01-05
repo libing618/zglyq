@@ -1,4 +1,4 @@
-import {formatTime} from '../../index.js';
+import {formatTime} from '../../modules/frequently.js';
 const today = new Date()
 const week = [
   { value: '周日', classed: 'weekend' },

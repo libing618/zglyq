@@ -1,5 +1,5 @@
 App({
-  roleData: requirePlugin('lyqPlugin').initApp,                 //读数据记录的缓存
+  roleData: requirePlugin('lyqPlugin').initApp(),                 //读数据记录的缓存
   aIndex: require('./test/articles').aIndex,
   aCount: {},
   logData: [],
@@ -33,7 +33,6 @@ App({
         }
       })
     });
-
     wx.onNetworkStatusChange(res => {
       if (!res.isConnected) {
         that.netState = false;

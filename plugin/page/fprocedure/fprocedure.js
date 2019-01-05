@@ -1,6 +1,6 @@
 // 通用的内容编辑pages
 import {initData} from '../../modules/initForm';
-import {noEmptyObject} from '../../index';
+import {noEmptyObject} from '../../modules/frequently';
 const wImpEdit = require('../../modules/impedit.js');
 const sysinfo = wx.getStorageSync('sysinfo');
 

@@ -1,5 +1,5 @@
 //原材料
-import { indexClick,binddata } from '../../index';
+import { indexClick } from '../../modules/frequently';
 import {checkRols,shareMessage} from '../../modules/initForm';
 const db = wx.cloud.database();
 const _ = db.command;

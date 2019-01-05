@@ -1,5 +1,5 @@
                                                                                                                                                                                                     //审批流程列表
-import {hTabClick} from '../../index.js';
+import {hTabClick} from '../../modules/frequently.js';
 import { shareMessage,checkRols } from '../../modules/initForm';
 const db = wx.cloud.database();
 const sysinfo = wx.getStorageSync('sysinfo');
@@ -175,5 +175,5 @@ Page({
       }
     });
   }
-  
+
 })

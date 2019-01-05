@@ -9,7 +9,7 @@ module.exports={
     "language": "zh_CN",
     "gender": 1,
     "province": "Shanxi",
-    "avatarUrl": "../../images/index.png",
+    "avatarUrl": "avatarUrl",
     "country": "CN",
     "mobilePhoneNumber": "0",
     "_id": "0"

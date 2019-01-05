@@ -1,4 +1,4 @@
-import {noEmptyObject} from '../index.js';
+import {noEmptyObject} from 'frequently.js';
 const db = wx.cloud.database();
 
 function requestCallback(err, data) {
@@ -7,65 +7,6 @@ function requestCallback(err, data) {
   } else if (err) {
     wx.showModal({title: '上传文件', content: '请求出错：' + err + '；状态码：' + err.statusCode, showCancel: false});
   } else { return data}
-};
-
-export function loginAndMenu(roleData) {
-  return new Promise((resolve, reject) => {
-    wx.getSetting({
-      success:(res)=> {
-        if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
-          wx.getStorage({
-            key: 'roleData',
-            success: function (res) {
-              resolve(res.data)
-            },
-            fail: function(){
-              resolve(roleData)
-            }
-          })
-        } else { resolve(roleData) }
-      },
-      fail: (resFail) => { reject('用户没有授权登录') }
-    })
-  }).then(rData=>{
-    return new Promise((resolve, reject) => {
-      wx.cloud.callFunction({ name: 'login',data:{loginState:1} }).then((rfmData) => {
-        resolve(rfmData.result)           //用户如已注册则返回菜单和单位数据，否则进行注册登录
-      }).catch(err=>{
-        openWxLogin().then(rlgData => {
-          resolve(rlgData)
-        }).catch(err=> { reject(err) });
-      });
-    });
-  }).then(reData=>{
-    return new Promise((resolve, reject) => {
-      wx.getUserInfo({        //检查客户信息
-        withCredentials: false,
-        lang: 'zh_CN',
-        success: function ({ userInfo }) {
-          if (userInfo) {
-            let updateInfo = false,gData={};
-            for (let iKey in userInfo) {
-              if (userInfo[iKey] != reData.user[iKey]) {             //客户信息有变化
-                updateInfo = true;
-                reData.user[iKey] = userInfo[iKey];
-                gData[iKey] = userInfo[iKey];
-              }
-            };
-            if (updateInfo) {
-              db.collection('_User').doc(reData.user._id).update({
-                data: gData
-              }).then(() => {
-                resolve(reData);
-              })
-            } else {
-              resolve(reData);
-            };
-          }
-        }
-      });
-    }).catch((loginErr) => { reject('系统登录失败:' + JSON.stringify(loginErr)) });
-  });
 };
 
 export function checkRols(ouLine,user,ouPosition){  //要求的条线，用户数据，要求的岗位

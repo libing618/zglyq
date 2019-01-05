@@ -1,4 +1,4 @@
-import {formatTime} from '../../index.js';
+import {formatTime} from '../../modules/frequently.js';
 var modalBehavior = require('../utils/poplib.js');
 Component({
   behaviors: [modalBehavior,'wx://form-field'],
