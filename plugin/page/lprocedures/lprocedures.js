@@ -1,5 +1,5 @@
 import {shareMessage} from '../../modules/initForm';
-import {getData} from '../../modules/db-get-data';
+import {getData} from '../../modules/db-data';
 const sysinfo = wx.getStorageSync('sysinfo');
 Page ({
   data: {

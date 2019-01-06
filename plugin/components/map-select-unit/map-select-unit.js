@@ -1,5 +1,5 @@
 var modalBehavior = require('../utils/poplib.js');
-const {geoQueryUnit} = require('../../modules/db-get-data');
+const {geoQueryUnit} = require('../../modules/db-data');
 var mapBahavior = require('../utils/mapAnalysis.js');   //位置授权及解析
 const roleData = wx.getStorageSync('roleData');
 Component({

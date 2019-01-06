@@ -1,4 +1,4 @@
-import {cargoStock} from '../../modules/db-get-data.js';
+import {cargoStock} from '../../modules/db-data.js';
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],

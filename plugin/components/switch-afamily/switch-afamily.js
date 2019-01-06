@@ -1,5 +1,5 @@
 //顺序切换分类数据
-import {afamilySwitchSave} from '../../modules/db-get-data';
+import {afamilySwitchSave} from '../../modules/db-data';
 var modalBehavior = require('../utils/poplib.js')
 Component({
   behaviors: [modalBehavior],

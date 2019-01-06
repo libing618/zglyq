@@ -35,6 +35,12 @@ export function queryById(pno, modalId) {                //根据查id数据
   }).catch(err => { _getError(err) });
 };
 
+export function updateDoc(pno, modalId, data) {                //根据查id数据
+  return new Promise((resolve, reject) => {
+    db.collection(pno).doc(modalId).update({data:data}).then(({ result }) => { resolve(result) })
+  }).catch(err => { _getError(err) });
+};
+
 export function loginCloud(lState, modalId) {                //根据查id数据
   return new Promise((resolve, reject) => {
     wx.cloud.callFunction({ name: 'login',data:{loginState:lState} }).then((rfmData) => {

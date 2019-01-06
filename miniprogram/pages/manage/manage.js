@@ -1,54 +1,40 @@
 import {tabClick,shareMessage} from '../../libs/util.js';
-const { iMenu, loginCloud, getData, openWxLogin } = requirePlugin('lyqPlugin');
+const { updateDoc, iMenu, loginCloud, getData, openWxLogin } = requirePlugin('lyqPlugin');
 var app = getApp();
 function loginAndMenu(roleData) {
   return new Promise((resolve, reject) => {
     wx.getSetting({
       success:(res)=> {
         if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
-          wx.getStorage({
-            key: 'roleData',
-            success: function (res) {
-              resolve(res.data)
-            },
-            fail: function(){
-              resolve(roleData)
-            }
+          loginCloud(1).then(reData=>{
+            wx.getUserInfo({        //检查客户信息
+              withCredentials: false,
+              lang: 'zh_CN',
+              success: function ({ userInfo }) {
+                if (userInfo) {
+                  let updateInfo = false,gData={};
+                  for (let iKey in userInfo) {
+                    if (userInfo[iKey] != reData.user[iKey]) {             //客户信息有变化
+                      updateInfo = true;
+                      reData.user[iKey] = userInfo[iKey];
+                      gData[iKey] = userInfo[iKey];
+                    }
+                  };
+                  if (updateInfo) {
+                    updateDoc('_User',reData.user._id,gData).then(() => {
+                      resolve(reData);
+                    })
+                  } else {
+                    resolve(reData);
+                  };
+                }
+              }
+            });
           })
         } else { resolve(roleData) }
       },
       fail: (resFail) => { reject('用户没有授权登录') }
     })
-  }).then(rData=>{
-    return new Promise((resolve, reject) => {
-      loginCloud(1).then(reData=>{
-        wx.getUserInfo({        //检查客户信息
-          withCredentials: false,
-          lang: 'zh_CN',
-          success: function ({ userInfo }) {
-            if (userInfo) {
-              let updateInfo = false,gData={};
-              for (let iKey in userInfo) {
-                if (userInfo[iKey] != reData.user[iKey]) {             //客户信息有变化
-                  updateInfo = true;
-                  reData.user[iKey] = userInfo[iKey];
-                  gData[iKey] = userInfo[iKey];
-                }
-              };
-              if (updateInfo) {
-                db.collection('_User').doc(reData.user._id).update({
-                  data: gData
-                }).then(() => {
-                  resolve(reData);
-                })
-              } else {
-                resolve(reData);
-              };
-            }
-          }
-        });
-      })
-    });
   }).catch((loginErr) => { reject('系统登录失败:' + JSON.stringify(loginErr)) });
 };
 Page({
