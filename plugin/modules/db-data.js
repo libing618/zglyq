@@ -29,7 +29,7 @@ export function afamilySwitchSave(pno,modalId,arrNext) {                //切换
   }).catch(err=>{_getError(err)});
 };
 
-export function queryById(pno, modalId) {                //根据查id数据
+export function queryById(pno, modalId) {                //根据id查数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).get().then(({ data }) => { resolve(data) })
   }).catch(err => { _getError(err) });
@@ -43,12 +43,21 @@ export function updateDoc(pno, modalId, data) {                //根据查id数�
 
 export function loginCloud(lState, modalId) {                //根据查id数据
   return new Promise((resolve, reject) => {
-    wx.cloud.callFunction({ name: 'login',data:{loginState:lState} }).then((rfmData) => {
-      resolve(rfmData.result)           //用户如已注册则返回菜单和单位数据，否则进行注册登录
-    }).catch(err=>{
-      openWxLogin().then(rlgData => {
-        resolve(rlgData)
-      }).catch(err=> { reject(err) });
+    let accountInfo = wx.getAccountInfoSync();
+    wx.cloud.callFunction({ name: 'login',
+      data:{
+        appId: accountInfo.miniProgram.appId,
+        loginState:lState
+      }
+    }).then(({result}) => {
+      if (result){
+        resolve(result)           //用户如已注册则返回菜单和单位数据，否则进行注册登录
+      } else {
+        let {openWxLogin} = require('initForm')
+        openWxLogin().then(rlgData => {
+          resolve(rlgData)
+        }).catch(err=> { reject(err) });
+      }
     });
   }).catch(err => { _getError(err) });
 };
