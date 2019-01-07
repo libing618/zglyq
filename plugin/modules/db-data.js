@@ -127,7 +127,6 @@ export class getData {               //wxcloud批量查询
       requirement.afamily = _.eq(afamily);
       this.unitFamily += afamily;
     };
-    let aIndex = wx.getStorageSync('aIndex')[dataName] || {};
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
     let requirStrArr = _objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');
@@ -138,21 +137,21 @@ export class getData {               //wxcloud批量查询
     this.isEnd = false;
     this.nData = {};
     this.nIndex = []
-    if (aIndex.hasOwnProperty(this.filterId)) {       //添加以条件签名为Key的JSON初值
-      wx.getStorage({
-        key: this.pNo,
-        success: function (res) {
-          if (res.data){
-            this.nIndex = aIndex[this.filterId].filter(indkey=>{
+    wx.getStorage({
+      key: this.pNo,           //添加以条件签名为Key的JSON初值
+      success: function (res) {
+        if (res.data){
+          if (res.data.hasOwnProperty(this.filterId)) {
+            this.nIndex = res.data[this.filterId].filter(indkey=>{
               if (indkey in res.data){
-                this.nData = res.data[indkey];
+                this.nData[indkey] = res.data[indkey];
                 return true
               }
             });
           };
-        }
-      });
-    };
+        };
+      }
+    });
   };
   _mapResData(dataIndex,rData){           //处理查询到的数组
     rData.forEach(aProc =>{

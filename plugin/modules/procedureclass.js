@@ -269,7 +269,7 @@ module.exports = {
     "10"
   ]
 },
-"cargoOrder": {
+"cargo_order": {
   "pName": "商品订单",
   "pSuccess": ["tradeId","tradeType","goods","shopid","user","ip","quantity","cargo","serFamily","recaddress","_Role","prepayId","paidAt","confirmerArr","confirmTotal","deliverArr","deliverTotal","receiptArr","receiptTotal"],
   "fieldType":{
@@ -299,7 +299,7 @@ module.exports = {
     "10"
   ]
 },
-"sOrder":{
+"service_order":{
   "pName": "服务订单",
   "pSuccess": ["ledger_id","src_account","dst_account","asset_type","amount","sign_in_date"],
   "fieldType":{
