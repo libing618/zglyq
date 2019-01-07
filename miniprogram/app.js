@@ -1,7 +1,7 @@
 App({
   roleData: requirePlugin('lyqPlugin').initApp(),                 //读数据记录的缓存
-  aIndex: require('./test/articles').aIndex,
-  aCount: {},
+  articles: require('articles'),
+  banner: require('banner'),
   logData: [],
 
   onLaunch: function () {
@@ -24,14 +24,6 @@ App({
         that.sysinfo.rpxTopx = res.windowWidth/750;
         wx.setStorageSync('sysinfo', that.sysinfo)
       }
-    });
-    ['aIndex','aCount'].forEach(dataName => {
-      wx.getStorage({
-        key: dataName,
-        success: function (res) {
-          if (res.data) { that[dataName] = res.data };
-        }
-      })
     });
     wx.onNetworkStatusChange(res => {
       if (!res.isConnected) {

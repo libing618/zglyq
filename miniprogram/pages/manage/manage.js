@@ -31,9 +31,9 @@ function loginAndMenu(roleData) {
               }
             });
           })
-        } else { resolve(roleData) }
+        } else { resolve(false) }
       },
-      fail: (resFail) => { reject('用户没有授权登录') }
+      fail: (resFail) => { reject('读取用户授权信息错误') }
     })
   }).catch((loginErr) => { reject('系统登录失败:' + JSON.stringify(loginErr)) });
 };
@@ -50,45 +50,53 @@ Page({
     var that = this;
     let grids;
     wx.hideTabBar();
-    let pageData = require('../../test/articles').banner;
-    Object.assign(pageData, require('../../test/articles').articles);
+    let pageData = app.banner.nData;
+    Object.assign(pageData, app.articles.nData);
     that.banner = new getData('banner');
     that.articles = []
     for (let i = 0; i < 3; i++) {
       that.articles.push(new getData('articles', i))
-      app.aIndex.articles[i] = that.articles[i].nIndex.concat(app.aIndex.articles[i])
     };
     return new Promise((resolve,reject)=>{
       grids = iMenu(0,app.roleData.wmenu[0]);
-      for (let i = 0; i < 3; i++) {Object.assign(pageData,that.articles[i].nData)}
+      for (let i = 0; i < 3; i++) {
+        Object.assign(pageData,that.articles[i].nData);
+        app.articles.nIndex[i] = that.articles[i].nIndex.concat(app.articles.nIndex[i])
+      }
       that.setData({
         statusBar: app.sysinfo.statusBarHeight,
         wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
         pageCk: app.aIndex.pCkarticles ? app.aIndex.pCkarticles : that.data.pageCk,
-        mSwiper: that.banner.nIndex.concat(app.aIndex.banner),
-        mPage: that.articles.map(a=>{return a.nIndex}),
+        mSwiper: that.banner.nIndex.concat(app.banner.nIndex),
+        mPage: app.articles.nIndex,
         pageData,
         grids: grids
       },resolve(true));
     }).then(() => {
       loginAndMenu(app.roleData).then(rData => {
-        let succPage = { unAuthorize: false }
-        if (app.roleData.wmenu[0].toString() != rData.wmenu[0].toString()) {
-          succPage.grids = iMenu(0, rData.wmenu[0]);
-          succPage.grids[0].mIcon = rData.user.avatarUrl;   //把微信头像地址存入第一个菜单icon
+        let succPage = { unAuthorize: true }
+        if (rData){             //用户已授权
+          succPage.unAuthorize = false;
+          if (app.roleData.wmenu[0].toString() != rData.wmenu[0].toString()) {
+            succPage.grids = iMenu(0, rData.wmenu[0]);           //菜单有变化
+          };
+          app.roleData = rData;
+          wx.setStorageSync('roleData', rData)
+          if (app.roleData.user.line != 9) { wx.showTabBar() };
         };
-        app.roleData = rData;
-        wx.setStorageSync('roleData', rData)
-        if (app.roleData.user.line != 9) { wx.showTabBar() };
         let firstPage = [
           that.banner.upData().then(banner=>{
-            Object.assign(succPage, that.banner.addViewData(banner,'mSwiper') );
+            if (banner) {
+              Object.assign(succPage, that.banner.addViewData(banner,'mSwiper') );
+            }
           })
         ];
         that.articles.forEach((article,i)=>{
           firstPage.push(
             article.upData().then(artData=>{
-              Object.assign(succPage, article.addViewData(artData,'mPage['+i+']'))
+              if (artData){
+                Object.assign(succPage, article.addViewData(artData,'mPage['+i+']'))
+              }
             })
           )
         });
@@ -98,9 +106,6 @@ Page({
       })
     }).catch(loginerr=>{
       app.logData.push([Date.now(),JSON.stringify(loginerr)]);
-      that.setData({
-        unAuthorize: true
-      });
     });
   },
 
