@@ -1,5 +1,5 @@
-import {shareMessage} from '../../libs/util.js';
-const { queryById, loginCloud, getData, openWxLogin } = requirePlugin('lyqPlugin');
+import {shareMessage, openWxLogin} from '../../libs/util.js';
+const { queryById, loginCloud, getData } = requirePlugin('lyqPlugin');
 var app = getApp()
 Page({
   data:{

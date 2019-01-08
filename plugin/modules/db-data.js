@@ -35,31 +35,28 @@ export function queryById(pno, modalId) {                //根据id查数据
   }).catch(err => { _getError(err) });
 };
 
-export function updateDoc(pno, modalId, data) {                //根据查id数据
+export function addDoc(pno,data) {                //新增数据
+  return new Promise((resolve, reject) => {
+    db.collection(pno).add({data:data}).then(result => { resolve(result) })
+  }).catch(err => { _getError(err) });
+};
+
+export function updateDoc(pno, modalId, data) {                //根据id更新数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).update({data:data}).then(({ result }) => { resolve(result) })
   }).catch(err => { _getError(err) });
 };
 
-export function loginCloud(lState, modalId) {                //根据查id数据
+export function loginCloud(lState, lData) {                //调用登录云函数
   return new Promise((resolve, reject) => {
     let accountInfo = wx.getAccountInfoSync();
+    let loginData = lState==0 ? lData : {};
+    loginData.appId = accountInfo.miniProgram.appId;
+    loginData.loginState = lState;
     wx.cloud.callFunction({
       name: 'login',
-      data:{
-        appId: accountInfo.miniProgram.appId,
-        loginState:lState
-      }
-    }).then(({result}) => {
-      if (result){
-        resolve(result)           //用户如已注册则返回菜单和单位数据，否则进行注册登录
-      } else {
-        let {openWxLogin} = require('initForm')
-        openWxLogin().then(rlgData => {
-          resolve(rlgData)
-        }).catch(err=> { reject(err) });
-      }
-    });
+      data: loginData
+    }).then(({result}) => { resolve(result) })
   }).catch(err => { _getError(err) });
 };
 

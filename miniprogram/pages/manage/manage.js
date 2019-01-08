@@ -1,5 +1,5 @@
-import {tabClick,shareMessage} from '../../libs/util.js';
-const { updateDoc, iMenu, loginCloud, getData, openWxLogin } = requirePlugin('lyqPlugin');
+import {tabClick,shareMessage, openWxLogin} from '../../libs/util.js';
+const { updateDoc, iMenu, loginCloud, getData } = requirePlugin('lyqPlugin');
 var app = getApp();
 function loginAndMenu(roleData) {
   return new Promise((resolve, reject) => {
@@ -7,30 +7,36 @@ function loginAndMenu(roleData) {
       success:(res)=> {
         if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
           loginCloud(1).then(reData=>{
-            wx.getUserInfo({        //检查客户信息
-              withCredentials: false,
-              lang: 'zh_CN',
-              success: function ({ userInfo }) {
-                if (userInfo) {
-                  let updateInfo = false,gData={};
-                  for (let iKey in userInfo) {
-                    if (userInfo[iKey] != reData.user[iKey]) {             //客户信息有变化
-                      updateInfo = true;
-                      reData.user[iKey] = userInfo[iKey];
-                      gData[iKey] = userInfo[iKey];
-                    }
-                  };
-                  if (updateInfo) {
-                    updateDoc('_User',reData.user._id,gData).then(() => {
+            if (reData){           //用户如已注册则返回菜单和单位数据，否则进行注册登录
+              wx.getUserInfo({        //检查客户信息
+                withCredentials: false,
+                lang: 'zh_CN',
+                success: function ({ userInfo }) {
+                  if (userInfo) {
+                    let updateInfo = false,gData={};
+                    for (let iKey in userInfo) {
+                      if (userInfo[iKey] != reData.user[iKey]) {             //客户信息有变化
+                        updateInfo = true;
+                        reData.user[iKey] = userInfo[iKey];
+                        gData[iKey] = userInfo[iKey];
+                      }
+                    };
+                    if (updateInfo) {
+                      updateDoc('_User',reData.user._id,gData).then(() => {
+                        resolve(reData);
+                      })
+                    } else {
                       resolve(reData);
-                    })
-                  } else {
-                    resolve(reData);
-                  };
+                    };
+                  }
                 }
-              }
-            });
-          })
+              });
+            } else {
+              openWxLogin().then(rlgData => {
+                resolve(rlgData)
+              });
+            }
+          });
         } else { resolve(false) }
       },
       fail: (resFail) => { reject('读取用户授权信息错误') }
