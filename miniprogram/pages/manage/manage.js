@@ -53,24 +53,19 @@ Page({
     let pageData = app.banner.nData;
     Object.assign(pageData, app.articles.nData);
     that.banner = new getData('banner');
-    that.articles = []
-    for (let i = 0; i < 3; i++) {
-      that.articles.push(new getData('articles', i))
-    };
+    that.articles = new getData('articles');
     return new Promise((resolve,reject)=>{
       grids = iMenu(0,app.roleData.wmenu[0]);
-      for (let i = 0; i < 3; i++) {
-        Object.assign(pageData,that.articles[i].nData);
-        app.articles.nIndex[i] = that.articles[i].nIndex.concat(app.articles.nIndex[i])
-      }
+      Object.assign(pageData,that.banner.nData,that.articles.nData);
+      let mPage = that.articles.nIndex.concat(app.articles.nIndex);
       that.setData({
         statusBar: app.sysinfo.statusBarHeight,
-        wWidth: app.sysinfo.windowWidth / 3,                      //每个nav宽度
-        pageCk: app.aIndex.pCkarticles ? app.aIndex.pCkarticles : that.data.pageCk,
+        wWidth: app.sysinfo.windowWidth / 3,
+        pageCk: pageData[mPage[0]].afamily,
         mSwiper: that.banner.nIndex.concat(app.banner.nIndex),
-        mPage: app.articles.nIndex,
+        mPage,
         pageData,
-        grids: grids
+        grids
       },resolve(true));
     }).then(() => {
       loginAndMenu(app.roleData).then(rData => {
@@ -84,24 +79,16 @@ Page({
           wx.setStorageSync('roleData', rData)
           if (app.roleData.user.line != 9) { wx.showTabBar() };
         };
-        let firstPage = [
-          that.banner.upData().then(banner=>{
-            if (banner) {
-              Object.assign(succPage, that.banner.addViewData(banner,'mSwiper') );
-            }
+        that.banner.upData().then(banner=>{
+          if (banner) {
+            Object.assign(succPage, that.banner.addViewData(banner,'mSwiper') );
+          };
+          that.articles.upData().then(artData=>{
+            if (artData){
+              Object.assign(succPage, that.articles.addViewData(artData,'mPage'))
+            };
+            that.setData(succPage)
           })
-        ];
-        that.articles.forEach((article,i)=>{
-          firstPage.push(
-            article.upData().then(artData=>{
-              if (artData){
-                Object.assign(succPage, article.addViewData(artData,'mPage['+i+']'))
-              }
-            })
-          )
-        });
-        Promise.all(firstPage).then(()=>{
-          that.setData(succPage)
         });
       })
     }).catch(loginerr=>{
@@ -121,9 +108,9 @@ Page({
   tabClick: tabClick,
 
   onPullDownRefresh: function () {
-    this.articles[this.data.pageCk].upData().then(aSetData={
+    this.articles.upData().then(aSetData={
       if (aSetData) {
-        this.setData( this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']') )
+        this.articles.addViewData(aSetData,'mPage')
       }
     });
   },
@@ -131,13 +118,18 @@ Page({
   onReachBottom: function () {
     this.articles[this.data.pageCk].downData().then(aSetData={
       if (aSetData) {
-        this.setData( this.articles[this.data.pageCk].addViewData(aSetData,'mPage['+this.data.pageCk+']') )
+        this.articles.addViewData(aSetData,'mPage')
       }
     });
   },
 
   onUnload() {
-    app.aIndex['pCk'+this.data.pNo] = Number(this.data.pageCk);
+    let banner = {nData: that.banner.nData};
+    let articles = {nData: that.articles.nData};
+    banner[this.banner.filterId] = that.banner.nIndax;
+    articles[this.articles.filterId] = that.articles.nIndax;
+    wx.setStorage({ key: "banner", data: banner });
+    wx.setStorage({ key: 'articles', data: articles });
   },
 
   onShareAppMessage: shareMessage    // 用户点击右上角分享

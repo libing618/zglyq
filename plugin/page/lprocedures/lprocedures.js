@@ -14,23 +14,19 @@ Page ({
     var that = this;
     let fn = Number(ops.fn);
     let docDefine = require('../../modules/procedureclass')[ops.pNo];
-    that.gData = new getData(that.data.dataname, that.data.afamily, that.data.filterId)
-    that.gData.gStorage().then(()=> {
-      if (that.gData.aIndex.indArr.length>0){
-        let aData = {};
-        that.gData.aIndex.indArr.forEach(mId=>{ aData[mId]=that.gData.aData[mId] })
-        that.setData({
-          pNo: ops.pNo,
-          fn: isNaN(fn) ? -1 : fn,
-          navBarTitle: isNaN(fn) ? docDefine.pName : docDefine.pName+'--'+docDefine.afamily[fn],
-          mPage: that.gData.aIndex.indArr,
-          pageData: aData
-        });
-        that.gData.upData().then(topItem=>{
-          that._addViewData(topItem)
-        })
-      }
-    })
+    that.gData = new getData(that.data.dataname)
+    if (that.gData.nIndex.length>0){
+      that.setData({
+        pNo: ops.pNo,
+        fn: isNaN(fn) ? -1 : fn,
+        navBarTitle: isNaN(fn) ? docDefine.pName : docDefine.pName+'--'+docDefine.afamily[fn],
+        mPage: that.gData.nIndexr,
+        pageData: that.gData.nData
+      });
+    }
+    that.gData.upData().then(topItem=>{
+      that.gData._addViewData(topItem,'mPage')
+    });
   },
 
   createProcedure(){

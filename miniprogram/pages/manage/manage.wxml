@@ -36,8 +36,10 @@
 
     <template is="tabsCk" data="{{ fLength , pageCk , tabs ,wWidth }}"/>
      <view class="weui-tab__panel">
-      <block wx:for="{{mPage[pageCk]}}" wx:key="{{index}}">
-        <record-view pno="{{pNo}}" sitem="{{pageData[item]}}"></record-view>
+      <block wx:for="{{mPage}}" wx:key="{{index}}">
+        <view hidden="{{pageData[item].afamily != pageCk}}">
+          <record-view pno="{{pNo}}" sitem="{{pageData[item]}}"></record-view>
+        </view>
       </block>
     </view>
   </view>

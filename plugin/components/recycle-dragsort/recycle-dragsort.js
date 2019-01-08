@@ -54,19 +54,15 @@ Component({
   },
   lifetimes: {
     attached() {
-      this.gData = new getData(this.data.dataname, this.data.afamily, this.data.filterId)
-      this.gData.gStorage().then(()=> {
-        if (this.gData.aIndex.indArr.length>0){
-          let aData = {};
-          this.gData.aIndex.indArr.forEach(mId=>{ aData[mId]=this.gData.aData[mId] })
-          this.setData({
-            mPage: this.gData.aIndex.indArr,
-            pageData: aData
-          });
-          this.gData.upData().then(topItem=>{
-            this._addViewData(topItem)
-          })
-        }
+      this.gData = new getData(this.data.dataname, this.data.filterId)
+      if (this.gData.nIndex.length>0){
+        this.setData({
+          mPage: this.gData.nIndex,
+          pageData: this.gData.nData
+        });
+      };
+      this.gData.upData().then(topItem=>{
+        this.gData._addViewData(topItem,'mPage')
       })
     },
 
@@ -96,15 +92,6 @@ methods: {
 
   _isValid() {
     return this.data.pageData && this.gData
-  },
-
-  _addViewData(addItem) {
-    if (!this._isValid()) {    // 如果还没有初始化, 不做任何事情
-      return
-    }
-    let spData = {mPage: this.gData.aIndex.indArr}
-    addItem.forEach(mId=>{ spData['pageData.'+mId]=this.gData.aData[mId] });
-    this.setData({spData})
   },
 
   clickeditem({ detail: { itemid } }) {

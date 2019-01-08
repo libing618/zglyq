@@ -61,8 +61,6 @@ App({
                   } else {
                     wx.removeStorageSync('loguser');              //上传成功清空日志缓存
                     wx.setStorage({ key: 'roleData', data: that.roleData });
-                    wx.setStorage({key:"aIndex", data:that.aIndex});
-                    wx.setStorage({ key: 'aCount', data: that.aCount });
                   }
                 }
               });

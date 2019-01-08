@@ -7,6 +7,7 @@ const mRole = require('roleMenu');
 //loginState为0、第一次授权，1、已授权，2、读手机号，3、重新登录获得session_key
 exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
   const { OPENID, APPID, UNIONID } = cloud.getWXContext();     //微信小程序APPID
+  console.log(OPENID,APPID)
   const secret = process.env[APPID];     //微信小程序secret
   function reqSession(rcode) {
     return new Promise((resolve, reject) => {

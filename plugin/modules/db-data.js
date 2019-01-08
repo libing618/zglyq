@@ -44,7 +44,8 @@ export function updateDoc(pno, modalId, data) {                //根据查id数�
 export function loginCloud(lState, modalId) {                //根据查id数据
   return new Promise((resolve, reject) => {
     let accountInfo = wx.getAccountInfoSync();
-    wx.cloud.callFunction({ name: 'login',
+    wx.cloud.callFunction({
+      name: 'login',
       data:{
         appId: accountInfo.miniProgram.appId,
         loginState:lState
@@ -115,7 +116,7 @@ export class cargoStock {
 };
 
 export class getData {               //wxcloud批量查询
-  constructor (dataName,afamily=0,uId=roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
+  constructor (dataName,uId=roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
     this.pNo = dataName;
     if (['articles','banner','qa'].includes(dataName)) {               //是否全部单位数组
       this.unitFamily = 'allUnit';
@@ -123,10 +124,6 @@ export class getData {               //wxcloud批量查询
       this.unitFamily = uId;
       requirement.unitId = _.eq(uId)
     };                //除文章类数据外只能查指定单位的数据
-    if (require('procedureclass')[dataName].afamily) {       //是否有分类数组
-      requirement.afamily = _.eq(afamily);
-      this.unitFamily += afamily;
-    };
     let orderStrArr = orderArr.map(aOrder=>{ return aOrder[0]+'^'+aOrder[1] });  //排序条件生成字符串数组
     let requirStrArr = _objToStrArr(dataName,requirement).concat(orderStrArr);  //查询条件生成字符串数组合并排序条件字符串数组
     let requirString = requirStrArr.sort().join('&');
