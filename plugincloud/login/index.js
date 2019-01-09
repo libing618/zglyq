@@ -7,7 +7,6 @@ const mRole = require('roleMenu');
 //loginState为0、第一次授权，1、已授权，2、读手机号，3、重新登录获得session_key
 exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
   const { OPENID, APPID, UNIONID } = cloud.getWXContext();     //微信小程序APPID
-  console.log(OPENID,APPID)
   const secret = process.env[APPID];     //微信小程序secret
   function reqSession(rcode) {
     return new Promise((resolve, reject) => {
@@ -90,13 +89,11 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
         }).catch(err => { reject(err) });
         break;
       case 1:
-        db.collection('_User').where({
-          _openid: OPENID
-        })
-          .get()
-          .then(user => {
+        db.collection('_User').where({_openid: OPENID}).get().then(({data}) => {
+          console.log(data)
+          if (data.length>0){
             let roleData = {
-              user: user.data[0],
+              user: data[0],
               uUnit: {},
               sUnit: {}
             };
@@ -117,7 +114,10 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
               roleData.wmenu = mRole['m0' + roleData.user.line + roleData.user.position]
               resolve(roleData)
             };
-          }).catch(error => { reject(error) });
+          } else {
+            resolve(false)
+          };
+        }).catch(error => { reject(error) });
         break;
       case 2:
         reqSession(code).then(wxsk => {
