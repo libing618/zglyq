@@ -55,7 +55,6 @@ export function openWxLogin() {              //解密unionid并进行注册
                 loginCloud(0,{ code: wxlogined.code, encryptedData: wxuserinfo.encryptedData, iv: wxuserinfo.iv}).then(res => {
                   let roleData = {
                     user: {                          //用户的原始定义
-                      updatedAt: db.serverDate(),
                       line: 9,                   //条线
                       position: 9,               //岗位
                       nickName: res.result.nickName,
