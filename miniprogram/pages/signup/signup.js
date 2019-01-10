@@ -18,10 +18,7 @@ Page({
     return new Promise((resolve, reject) => {
       wx.login({
         success: (wxlogined)=> {
-          wx.cloud.callFunction({                  // 调用云函数
-          name: 'login',
-          data: { code: wxlogined.code, loginState:3 }
-          }).then(res => {
+          loginCloud(3,{ code: wxlogined.code }).then(res => {     // 调用云函数
             resolve('sessionOk')
           })
         },
@@ -88,11 +85,8 @@ Page({
           }
         })
       }).then(ressession=>{
-        wx.cloud.callFunction({                  // 调用云函数
-          name: 'login',
-          data: { code: that.data.wxlogincode, encryptedData: e.detail.encryptedData, iv: e.detail.iv, loginState: 2}
-        }).then(phone=> {
-          app.roleData.user.mobilePhoneNumber = phone.result.phoneNumber;
+        loginCloud(2,{ code: code: that.data.wxlogincode, encryptedData: e.detail.encryptedData, iv: e.detail.iv }).then(phone => {     // 调用云函数
+          app.roleData.user.mobilePhoneNumber = phone.phoneNumber;
           wx.showToast({
             title: '微信绑定的手机号注册成功', icon: 'none',duration: 2000
           })
@@ -100,9 +94,9 @@ Page({
         }).catch(console.error());
       });
     } else {
-        wx.showToast({
-          title: '不授权使用微信手机号则不可注册！',icon:'none', duration: 2000
-        });
+      wx.showToast({
+        title: '不授权使用微信手机号则不可注册！',icon:'none', duration: 2000
+      });
     }
   },
 

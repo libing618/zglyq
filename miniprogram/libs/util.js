@@ -57,15 +57,15 @@ export function openWxLogin() {              //解密unionid并进行注册
                     user: {                          //用户的原始定义
                       line: 9,                   //条线
                       position: 9,               //岗位
-                      nickName: res.result.nickName,
-                      gender: res.result.gender,
-                      language: res.result.language,
-                      city: res.result.city,
-                      province: res.result.province,
-                      country: res.result.country,
-                      avatarUrl: res.result.avatarUrl,
-                      uName: res.result.nickName,
-                      unionid: res.result.unionId || null,
+                      nickName: res.nickName,
+                      gender: res.gender,
+                      appid: res.watermark.appid,
+                      city: res.city,
+                      province: res.province,
+                      country: res.country,
+                      avatarUrl: res.avatarUrl,
+                      uName: res.nickName,
+                      unionid: res.unionId || null,
                       unit: '0',
                       mobilePhoneNumber: "0"
                     }

@@ -7,7 +7,6 @@ function loginAndMenu(roleData) {
       success:(res)=> {
         if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
           loginCloud(1).then(reData=>{
-
             if (reData){           //用户如已注册则返回菜单和单位数据，否则进行注册登录
               wx.getUserInfo({        //检查客户信息
                 withCredentials: false,
