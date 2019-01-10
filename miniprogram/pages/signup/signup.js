@@ -36,11 +36,11 @@ Page({
         success: function () {            //session_key 未过期，并且在本生命周期一直有效
           queryById('miniProgramSession',app.roleData.user._openid).then(sessionKey=>{
             if (sessionKey){
-              resolve('sessionOk')
+              resolve('sessionOk');
             } else {
               resolve(that.getLoginCode())
-            }
-          })
+            };
+          }).catch(() => { resolve(that.getLoginCode()) })
         },
         fail: function () {
           resolve(that.getLoginCode())
@@ -73,6 +73,7 @@ Page({
 
   gUserPhoneNumber: function(e) {
     var that = this;
+    console.log(e.detail,that.data.wxlogincode)
     if (e.detail.errMsg == 'getPhoneNumber:ok'){
       return new Promise((resolve, reject) => {
         wx.checkSession({
@@ -88,11 +89,18 @@ Page({
         })
       }).then(ressession=>{
         loginCloud(2,{ code: that.data.wxlogincode, encryptedData: e.detail.encryptedData, iv: e.detail.iv }).then(phone => {     // 调用云函数
-          app.roleData.user.mobilePhoneNumber = phone.phoneNumber;
-          wx.showToast({
-            title: '微信绑定的手机号注册成功', icon: 'none',duration: 2000
-          })
-          that.setData({ user:app.roleData.user })
+          if (phone){
+            app.roleData.user.mobilePhoneNumber = phone.phoneNumber;
+            wx.showToast({
+              title: '微信绑定的手机号注册成功', icon: 'none',duration: 2000
+            })
+            that.setData({ user:app.roleData.user })
+          } else {
+            that.getLoginCode();
+            wx.showToast({
+              title: '手机号注册失败，请重试。', icon: 'none',duration: 2000
+            })
+          };
         }).catch(console.error());
       });
     } else {

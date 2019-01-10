@@ -44,7 +44,7 @@ export function criteriaQuery(pno, condition) {                //根据id查数�
 export function queryById(pno, modalId) {                //根据id查数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).get().then(({ data }) => { resolve(data) })
-  }).catch(err => { _getError(err) });
+  }).catch(err => { reject(err) });
 };
 
 export function addDoc(pno,data) {                //新增数据
@@ -59,15 +59,12 @@ export function updateDoc(pno, modalId, data) {                //根据id更新�
   }).catch(err => { _getError(err) });
 };
 
-export function loginCloud(lState, lData) {                //调用登录云函数
+export function loginCloud(lState, lData = {}) {                //调用登录云函数
   return new Promise((resolve, reject) => {
-    let accountInfo = wx.getAccountInfoSync();
-    let loginData = lState==0 ? lData : {};
-    loginData.appId = accountInfo.miniProgram.appId;
-    loginData.loginState = lState;
+    lData.loginState = lState;
     wx.cloud.callFunction({
       name: 'login',
-      data: loginData
+      data: lData
     }).then(({result}) => { resolve(result) })
   }).catch(err => { _getError(err) });
 };

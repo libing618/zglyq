@@ -67,6 +67,7 @@ export function openWxLogin() {              //解密unionid并进行注册
                       uName: res.nickName,
                       unionid: res.unionId || null,
                       unit: '0',
+                      updatedAt: new Data(),
                       mobilePhoneNumber: "0"
                     }
                   };

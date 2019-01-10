@@ -12,22 +12,27 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
     return new Promise((resolve, reject) => {
       if (rcode == 'sessionOk') {
         db.collection('miniProgramSession').doc(OPENID).get().then(({ data }) => {
-          resolve(data.sessionKey)
-        }).catch(err => { resolve(false) })
+          if (data){
+            resolve(data.sessionKey ? data.sessionKey : 'sessionErr')
+          } else {
+            resolve('sessionErr')
+          }
+        }).catch(err => { resolve('sessionErr') })
       } else {
         resolve(false)
       }
-    }).then(sessionOk => {
+    }).then(sExistence => {
       return new Promise((resolve, reject) => {
-        if (sessionOk) {
-          resolve(sessionOk)
+        if (sExistence) {
+          resolve(sExistence)
         } else {
           var requestWx = require('request');
           var wxurl = 'https://api.weixin.qq.com/sns/jscode2session?APPID=' + APPID + '&secret=' + secret + '&js_code=' + rcode + '&grant_type=authorization_code';
           requestWx({ url: wxurl, header: { 'content-type': 'application/json' }, }, function (err, res, body) {
             if (!err) {
-              var wxLoginInfo = JSON.parse(body);
-              var wxsk = String(wxLoginInfo.session_key);
+              let wxLoginInfo = JSON.parse(body);
+              let wxsk = String(wxLoginInfo.session_key);
+              console.log('wxsk=====',wxsk)
               db.collection('miniProgramSession').doc(OPENID).get().then(({ data }) => {
                 if (data) {
                   db.collection('miniProgramSession').doc(OPENID).update({
@@ -37,18 +42,17 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
                   }).then(() => {
                     resolve(wxsk)
                   })
+                } else {
+                  db.collection('miniProgramSession').add({
+                    data: {
+                      _id: OPENID,
+                      sessionKey: wxsk
+                    }
+                  }).then(() => {
+                    resolve(wxsk)
+                  });
                 }
-              }).catch(serr => {
-                db.collection('miniProgramSession').add({
-                  data: {
-                    _id: OPENID,
-                    sessionKey: wxsk
-                  }
-                }).then(() => {
-                  resolve(wxsk)
-                });
               })
-
             } else {
               reject(err);
             }
@@ -121,18 +125,22 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
         break;
       case 2:
         reqSession(code).then(wxsk => {
-          deWxCode(wxsk).then(dewxcoded => {
-            db.collection('_User').where({
-              _openid: OPENID
-            }).update({                         //设置并保存手机号
-              data: {
-                mobilePhoneNumber: dewxcoded.phoneNumber,
-                updatedAt: db.serverDate()
-              }
-            }).then(() => {
-              resolve({ phoneNumber: dewxcoded.phoneNumber });
+          if (wxsk!='sessionErr'){
+            deWxCode(wxsk).then(dewxcoded => {
+              db.collection('_User').where({
+                _openid: OPENID
+              }).update({                         //设置并保存手机号
+                data: {
+                  mobilePhoneNumber: dewxcoded.phoneNumber,
+                  updatedAt: db.serverDate()
+                }
+              }).then(() => {
+                resolve({ phoneNumber: dewxcoded.phoneNumber });
+              })
             })
-          })
+          } else {
+            resolve(false)
+          }
         }).then(err => { reject(err); });
         break;
       default:
