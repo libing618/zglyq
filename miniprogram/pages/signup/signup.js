@@ -1,5 +1,5 @@
 import {shareMessage, openWxLogin} from '../../libs/util.js';
-const { queryById, loginCloud, getData } = requirePlugin('lyqPlugin');
+const { queryById, loginCloud, getData, updateDoc, criteriaQuery } = requirePlugin('lyqPlugin');
 var app = getApp()
 Page({
   data:{
@@ -10,7 +10,7 @@ Page({
     unitName: '',
     phonen: '',
     wxlogincode: '',
-    cUnitInfo: '创建或加入单位(必须输入姓名)'
+    cUnitInfo: '创建或加入单位(必须输入真实姓名)'
 	},
 
   getLoginCode: function() {
@@ -34,10 +34,12 @@ Page({
     return new Promise((resolve, reject) => {
       wx.checkSession({
         success: function () {            //session_key 未过期，并且在本生命周期一直有效
-          queryById('miniProgramSession',app.roleData.user._openid).then(()=>{
-            resolve('sessionOk')
-          }).catch(()=>{
-            resolve(that.getLoginCode())
+          queryById('miniProgramSession',app.roleData.user._openid).then(sessionKey=>{
+            if (sessionKey){
+              resolve('sessionOk')
+            } else {
+              resolve(that.getLoginCode())
+            }
           })
         },
         fail: function () {
@@ -85,7 +87,7 @@ Page({
           }
         })
       }).then(ressession=>{
-        loginCloud(2,{ code: code: that.data.wxlogincode, encryptedData: e.detail.encryptedData, iv: e.detail.iv }).then(phone => {     // 调用云函数
+        loginCloud(2,{ code: that.data.wxlogincode, encryptedData: e.detail.encryptedData, iv: e.detail.iv }).then(phone => {     // 调用云函数
           app.roleData.user.mobilePhoneNumber = phone.phoneNumber;
           wx.showToast({
             title: '微信绑定的手机号注册成功', icon: 'none',duration: 2000
@@ -102,13 +104,9 @@ Page({
 
   i_Name: function(e) {							//修改用户姓名
     if ( e.detail.value.uName ) {                  //结束输入后验证是否为空
-			db.collection('_User').doc(app.roleData.user._id).update({
-        data:{
-          uName: e.detail.value.uName  // 设置并保存用户姓名
-        }
-      }).then((user)=> {
-          app.roleData.user['uName'] = e.detail.value.uName;
-          this.setData({ iName: e.detail.value.uName})
+      updateDoc('_User', app.roleData.user._id, { uName: e.detail.value.uName }).then((user) => {  // 设置并保存用户姓名
+        app.roleData.user['uName'] = e.detail.value.uName;
+        this.setData({ iName: e.detail.value.uName})
 			}).catch((error)=>{console.log(error)
         wx.showToast({ title: '修改姓名出现问题,请重试。',icon: 'none'})
 			});
@@ -124,25 +122,25 @@ Page({
     var that = this;
 		var reqUnitName = e.detail.value.unitName;
     if (reqUnitName){
-      db.collection('_Role').where({uName:reqUnitName}).get().then(({data})=>{
-        if (data.length == 0) {                      //申请单位名称无重复
-          db.collection('_Role').add({                //创建单位并申请负责人岗位
-            data: {
+      criteriaQuery('_Role',{uName:reqUnitName}).get().then(unitData=>{
+        if (!unitData) {                      //申请单位名称无重复
+          addDoc('_Role',                //创建单位并申请负责人岗位
+            {
               _id: app.roleData.user._id,   //用创建人的ID作ROLE的ID
               uName: reqUnitName,
               sUnit: '0',
               uniType: 0,
               unitUsers: [{ "userId": app.roleData.user._id, "line": 9, "position": 8, "uName": app.roleData.user.uName, "avatarUrl": app.roleData.user.avatarUrl, "nickName": app.roleData.user.nickName }]
             }
-          }).then(() => {
+          ).then(() => {
             app.roleData.uUnit.uName = reqUnitName;
-            db.collection('_User').doc(app.roleData.user._id).update({
-              data: {
+            updateDoc('_User',app.roleData.user._id,
+              {
                 unit: app.roleData.user._id,  // 设置并保存单位ID,设定菜单为applyAdmin
                 line: 9,                   //条线
                 position: 8               //岗位
               }
-            }).then(() => {
+            ).then(() => {
               app.roleData.user.unit = app.roleData.user._id;
               app.roleData.user.line = 9;
               app.roleData.user.position = 8;
@@ -156,21 +154,21 @@ Page({
             wx.showToast({ title: '新建单位时出现问题,请重试。', icon: 'none', duration: 7500 })
           })
         } else {
-          if (data.uniType>2){                         //单位能招收员工
+          if (unitData.uniType>2){                         //单位能招收员工
             wx.showModal({
               title: '已存在同名单位',
               content: '选择取消进行核实修改，选择确定则申请加入该单位！',
               success: function (res) {
                 if (res.confirm) {              //用户点击确定则申请加入该单位
-                  db.collection('_User').doc(app.roleData.user._id).update({
-                    data: {
-                      unit: data[0]._id,        //申请加入该单位
+                  updateDoc('_User',app.roleData.user._id,
+                    {
+                      unit: unitData[0]._id,        //申请加入该单位
                       line: 9,                   //条线
                       position: 7               //岗位
                     }
-                  }).then(function (user) {
+                  ).then(function (user) {
                     app.roleData.uUnit.uName = reqUnitName
-                    app.roleData.user.unit = data[0]._id;
+                    app.roleData.user.unit = unitData[0]._id;
                     app.roleData.user.line = 9;
                     app.roleData.user.position = 7;
                     wx.navigateTo({ url: '/index/structure/structure' });
@@ -188,6 +186,11 @@ Page({
       }).catch(error=> { console.log(error) });                                     //打印错误日志
     }
 	},
+
+  onHide(){
+    wx.setStorage({ key: "roleData", data: app.roleData });
+  },
+
   onShareAppMessage: shareMessage
 
 })

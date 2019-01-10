@@ -2,6 +2,7 @@ module.exports = {
   getData: require('modules/db-data.js').getData,
   updateDoc: require('modules/db-data.js').updateDoc,
   addDoc: require('modules/db-data.js').addDoc,
+  criteriaQuery: require('modules/db-data.js').criteriaQuery,
   loginCloud: require('modules/db-data.js').loginCloud,
   queryById: require('modules/db-data.js').queryById,
   cargoCount: require('modules/dataAnalysis.js').cargoCount,

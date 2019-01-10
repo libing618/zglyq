@@ -29,6 +29,18 @@ export function afamilySwitchSave(pno,modalId,arrNext) {                //切换
   }).catch(err=>{_getError(err)});
 };
 
+export function criteriaQuery(pno, condition) {                //根据id查数据
+  return new Promise((resolve, reject) => {
+    db.collection(pno).where(condition).get().then(({ data }) => {
+      if (data.length>0){
+        resolve(data)
+      } else {
+        resolve(false)
+      }
+    })
+  }).catch(err => { _getError(err) });
+};
+
 export function queryById(pno, modalId) {                //根据id查数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).get().then(({ data }) => { resolve(data) })
