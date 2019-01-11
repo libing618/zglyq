@@ -44,7 +44,9 @@ export function criteriaQuery(pno, condition) {                //根据id查数�
 export function queryById(pno, modalId) {                //根据id查数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).get().then(({ data }) => { resolve(data) })
-  }).catch(err => { reject(err) });
+  }).catch(err => {
+    console.log(err)
+    reject(err) });
 };
 
 export function addDoc(pno,data) {                //新增数据

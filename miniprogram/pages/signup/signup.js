@@ -18,6 +18,7 @@ Page({
     return new Promise((resolve, reject) => {
       wx.login({
         success: (wxlogined)=> {
+          console.log(wxlogined.code)
           loginCloud(3,{ code: wxlogined.code }).then(res => {     // 调用云函数
             resolve('sessionOk')
           })
@@ -34,13 +35,15 @@ Page({
     return new Promise((resolve, reject) => {
       wx.checkSession({
         success: function () {            //session_key 未过期，并且在本生命周期一直有效
-          queryById('miniProgramSession',app.roleData.user._openid).then(sessionKey=>{
+          queryById('mpsession',app.roleData.user._openid).then(sessionKey=>{
             if (sessionKey){
               resolve('sessionOk');
             } else {
               resolve(that.getLoginCode())
             };
-          }).catch(() => { resolve(that.getLoginCode()) })
+          }).catch(err => {
+            console.log(err)
+            resolve(that.getLoginCode()) })
         },
         fail: function () {
           resolve(that.getLoginCode())

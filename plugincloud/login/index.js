@@ -11,7 +11,7 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
   function reqSession(rcode) {
     return new Promise((resolve, reject) => {
       if (rcode == 'sessionOk') {
-        db.collection('miniProgramSession').doc(OPENID).get().then(({ data }) => {
+        db.collection('mpsession').doc(OPENID).get().then(({ data }) => {
           if (data){
             resolve(data.sessionKey ? data.sessionKey : 'sessionErr')
           } else {
@@ -33,9 +33,9 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
               let wxLoginInfo = JSON.parse(body);
               let wxsk = String(wxLoginInfo.session_key);
               console.log('wxsk=====',wxsk)
-              db.collection('miniProgramSession').doc(OPENID).get().then(({ data }) => {
+              db.collection('mpsession').doc(OPENID).get().then(({ data }) => {
                 if (data) {
-                  db.collection('miniProgramSession').doc(OPENID).update({
+                  db.collection('mpsession').doc(OPENID).update({
                     data: {
                       sessionKey: wxsk
                     }
@@ -43,7 +43,7 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
                     resolve(wxsk)
                   })
                 } else {
-                  db.collection('miniProgramSession').add({
+                  db.collection('mpsession').add({
                     data: {
                       _id: OPENID,
                       sessionKey: wxsk
