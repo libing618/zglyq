@@ -1,5 +1,6 @@
 module.exports = {
   getData: require('modules/db-data.js').getData,
+  existence: require('modules/db-data.js').existence,
   updateDoc: require('modules/db-data.js').updateDoc,
   addDoc: require('modules/db-data.js').addDoc,
   criteriaQuery: require('modules/db-data.js').criteriaQuery,

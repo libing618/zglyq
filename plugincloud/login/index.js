@@ -3,7 +3,6 @@ const cloud = require('wx-server-sdk')
 cloud.init()
 const db = cloud.database()
 const _ = db.command
-const mRole = require('roleMenu');
 //loginState为0、第一次授权，1、已授权，2、读手机号，3、重新登录获得session_key
 exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
   const { OPENID, APPID, UNIONID } = cloud.getWXContext();     //微信小程序APPID
@@ -32,9 +31,8 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
             if (!err) {
               let wxLoginInfo = JSON.parse(body);
               let wxsk = String(wxLoginInfo.session_key);
-              console.log('wxsk=====',wxsk)
-              db.collection('mpsession').doc(OPENID).get().then(({ data }) => {
-                if (data) {
+              db.collection('mpsession').where({_id:OPENID}).count().then(({ total }) => {
+                if (total) {
                   db.collection('mpsession').doc(OPENID).update({
                     data: {
                       sessionKey: wxsk
@@ -94,13 +92,13 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
         break;
       case 1:
         db.collection('_User').where({_openid: OPENID}).get().then(({data}) => {
-          console.log(data)
           if (data.length>0){
             let roleData = {
               user: data[0],
               uUnit: {},
               sUnit: {}
             };
+            let mRole = require('roleMenu');
             if (roleData.user.line != 9) {
               db.collection('_Role').doc(roleData.user.unit).get().then(uRole => {
                 roleData.wmenu = mRole['m' + uRole.data.afamily + roleData.user.line + roleData.user.position]
@@ -127,17 +125,20 @@ exports.main = async ({ code, encryptedData, iv, loginState }, context) => {
         reqSession(code).then(wxsk => {
           if (wxsk!='sessionErr'){
             deWxCode(wxsk).then(dewxcoded => {
-              db.collection('_User').where({
-                _openid: OPENID
-              }).update({                         //设置并保存手机号
-                data: {
-                  mobilePhoneNumber: dewxcoded.phoneNumber,
-                  updatedAt: db.serverDate()
-                }
-              }).then(() => {
+              // db.collection('_User').where({
+              //   _openid: OPENID
+              // }).update({                         //设置并保存手机号
+              //   data: {
+              //     mobilePhoneNumber: dewxcoded.phoneNumber,
+              //     updatedAt: db.serverDate()
+              //   }
+              // }).then(() => {
+              //   console.log(dewxcoded.phoneNumber)
                 resolve({ phoneNumber: dewxcoded.phoneNumber });
-              })
-            })
+              }).catch(err=> {
+                console.log(err)
+              });
+          //  })
           } else {
             resolve(false)
           }

@@ -1,5 +1,5 @@
 import {shareMessage, openWxLogin} from '../../libs/util.js';
-const { queryById, loginCloud, getData, updateDoc, criteriaQuery } = requirePlugin('lyqPlugin');
+const { existence, loginCloud, getData, updateDoc, criteriaQuery } = requirePlugin('lyqPlugin');
 var app = getApp()
 Page({
   data:{
@@ -18,7 +18,6 @@ Page({
     return new Promise((resolve, reject) => {
       wx.login({
         success: (wxlogined)=> {
-          console.log(wxlogined.code)
           loginCloud(3,{ code: wxlogined.code }).then(res => {     // 调用云函数
             resolve('sessionOk')
           })
@@ -35,7 +34,7 @@ Page({
     return new Promise((resolve, reject) => {
       wx.checkSession({
         success: function () {            //session_key 未过期，并且在本生命周期一直有效
-          queryById('mpsession',app.roleData.user._openid).then(sessionKey=>{
+          existence("mpsession",app.roleData.user._openid).then(sessionKey=>{
             if (sessionKey){
               resolve('sessionOk');
             } else {
@@ -76,7 +75,6 @@ Page({
 
   gUserPhoneNumber: function(e) {
     var that = this;
-    console.log(e.detail,that.data.wxlogincode)
     if (e.detail.errMsg == 'getPhoneNumber:ok'){
       return new Promise((resolve, reject) => {
         wx.checkSession({
@@ -93,11 +91,13 @@ Page({
       }).then(ressession=>{
         loginCloud(2,{ code: that.data.wxlogincode, encryptedData: e.detail.encryptedData, iv: e.detail.iv }).then(phone => {     // 调用云函数
           if (phone){
-            app.roleData.user.mobilePhoneNumber = phone.phoneNumber;
-            wx.showToast({
-              title: '微信绑定的手机号注册成功', icon: 'none',duration: 2000
+            updateDoc('_User', app.roleData.user._id, { mobilePhoneNumber: phone.phoneNumber}).then(()=>{
+              app.roleData.user.mobilePhoneNumber = phone.phoneNumber;
+              wx.showToast({
+                title: '微信绑定的手机号注册成功', icon: 'none', duration: 2000
+              })
+              that.setData({ 'user.mobilePhoneNumber': app.roleData.user.mobilePhoneNumber })
             })
-            that.setData({ user:app.roleData.user })
           } else {
             that.getLoginCode();
             wx.showToast({
@@ -133,7 +133,7 @@ Page({
     var that = this;
 		var reqUnitName = e.detail.value.unitName;
     if (reqUnitName){
-      criteriaQuery('_Role',{uName:reqUnitName}).get().then(unitData=>{
+      criteriaQuery('_Role',{uName:reqUnitName}).then(unitData=>{
         if (!unitData) {                      //申请单位名称无重复
           addDoc('_Role',                //创建单位并申请负责人岗位
             {

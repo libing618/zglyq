@@ -26,10 +26,10 @@ function _getError(error) {
 export function afamilySwitchSave(pno,modalId,arrNext) {                //切换afamily数据
   return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).set('afamily',arrNext).save().then(({data}) => { resolve(data) })
-  }).catch(err=>{_getError(err)});
+  }).catch(err=>{reject(_getError(err))});
 };
 
-export function criteriaQuery(pno, condition) {                //根据id查数据
+export function criteriaQuery(pno, condition) {                //输入条件查数据
   return new Promise((resolve, reject) => {
     db.collection(pno).where(condition).get().then(({ data }) => {
       if (data.length>0){
@@ -42,11 +42,18 @@ export function criteriaQuery(pno, condition) {                //根据id查数�
 };
 
 export function queryById(pno, modalId) {                //根据id查数据
-  return new Promise((resolve, reject) => {
+ return new Promise((resolve, reject) => {
     db.collection(pno).doc(modalId).get().then(({ data }) => { resolve(data) })
   }).catch(err => {
-    console.log(err)
     reject(err) });
+};
+
+export function existence(pno, modalId) {                //根据id查记录是否存在
+  return new Promise((resolve, reject) => {
+    db.collection(pno).doc(modalId).count().then(({ total }) => { resolve(total) })
+  }).catch(err => {
+    reject(err)
+  });
 };
 
 export function addDoc(pno,data) {                //新增数据
@@ -57,6 +64,7 @@ export function addDoc(pno,data) {                //新增数据
 
 export function updateDoc(pno, modalId, data) {                //根据id更新数据
   return new Promise((resolve, reject) => {
+    data.updatedAt = db.serverDate();
     db.collection(pno).doc(modalId).update({data:data}).then(({ result }) => { resolve(result) })
   }).catch(err => { _getError(err) });
 };
