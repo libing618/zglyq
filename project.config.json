@@ -15,7 +15,7 @@
 	"miniprogramRoot": "miniprogram/",
 	"pluginRoot": "plugin/",
 	"cloudfunctionRoot": "plugincloud/",
-	"libVersion": "2.4.3",
+	"libVersion": "2.5.0",
 	"appid": "wx4b1c27ae1940d4fd",
 	"projectname": "%E9%9B%B6%E7%94%A8%E9%92%B1%E6%8F%92%E4%BB%B6",
 	"debugOptions": {

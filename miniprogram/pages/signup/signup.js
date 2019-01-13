@@ -1,14 +1,13 @@
 import {shareMessage, openWxLogin} from '../../libs/util.js';
-const { existence, loginCloud, getData, updateDoc, criteriaQuery } = requirePlugin('lyqPlugin');
+const { existence, loginCloud, addDoc, getData, updateDoc, criteriaQuery } = requirePlugin('lyqPlugin');
 var app = getApp()
 Page({
   data:{
     user: {},
     statusBar: app.sysinfo.statusBarHeight,
-    sysheight: app.sysinfo.windowHeight-300,
+    sysheight: app.sysinfo.useWindowHeight-300,
     swcheck: true,
     unitName: '',
-    phonen: '',
     wxlogincode: '',
     cUnitInfo: '创建或加入单位(必须输入真实姓名)'
 	},
