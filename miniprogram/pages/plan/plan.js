@@ -15,9 +15,26 @@ Page({
     let that = this;              //更新缓存以后有变化的数据
     that.goods = new getData('goods');
     that.goods.upData().then(gData=>{
-      that.goods.addViewData(gData,mPage)
+      if (gData) {
+        that.goods.addViewData(gData, 'mPage')
+      }
     });
   },
 
+  onPullDownRefresh: function () {
+    this.goods.upData().then(aSetData = {
+      if(aSetData) {
+        this.goods.addViewData(aSetData, 'mPage')
+      }
+    });
+  },
+
+  onReachBottom: function () {
+    this.goods[this.data.pageCk].downData().then(aSetData = {
+      if(aSetData) {
+        this.goods.addViewData(aSetData, 'mPage')
+      }
+    });
+  },
   onShareAppMessage: shareMessage
 })

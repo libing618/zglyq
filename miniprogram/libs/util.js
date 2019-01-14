@@ -1,3 +1,4 @@
+const { updateDoc, loginCloud, getData } = requirePlugin('lyqPlugin');
 function formatNumber(n) {
   n = n.toString()
   return n[1] ? n : '0' + n
@@ -39,6 +40,32 @@ export function formatTime(date=new Date(),isDay=false) {
     let second = date.getSeconds();
     return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
   }
+};
+
+export function synUserInfo(userData) {              //同步用户信息
+  wx.getUserInfo({        //检查客户信息
+    withCredentials: false,
+    lang: 'zh_CN',
+    success: function ({ userInfo }) {
+      if (userInfo) {
+        let updateInfo = false,gData={};
+        for (let iKey in userInfo) {
+          if (userInfo[iKey] != userData[iKey]) {             //客户信息有变化
+            updateInfo = true;
+            userData[iKey] = userInfo[iKey];
+            gData[iKey] = userInfo[iKey];
+          }
+        };
+        if (updateInfo) {
+          updateDoc('_User',userData._id,gData).then(() => {
+            return userData;
+          })
+        } else {
+          return userData;
+        };
+      }
+    }
+  });
 };
 
 export function openWxLogin() {              //解密unionid并进行注册

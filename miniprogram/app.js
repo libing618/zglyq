@@ -1,5 +1,5 @@
 App({
-  roleData: requirePlugin('lyqPlugin').initApp(),                 //读数据记录的缓存
+  roleData: wx.getStorageSync('roleData'),//requirePlugin('lyqPlugin').initApp(),                 //读数据记录的缓存
   articles: require('articles'),
   banner: require('banner'),
   logData: [],

@@ -9,7 +9,7 @@ module.exports = {
   cargoCount: require('modules/dataAnalysis.js').cargoCount,
   initApp(){
     wx.cloud.init();
-    return wx.getStorageSync('roleData') || require('./modules/globaldata');
+    return require('modules/globaldata.js')
   },
 
   iMenu(indexArr, menuArr) {
