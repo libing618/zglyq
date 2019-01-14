@@ -1,18 +1,21 @@
 import {shareMessage} from '../../libs/util.js';
 const { iMenu, cargoCount, getData } = requirePlugin('lyqPlugin');
-const {sysinfo,roleData} = getApp();
+const {sysinfo} = getApp();
 Page({
   data:{
     mPage: [],
     statusBar: sysinfo.statusBarHeight,
     wWidth: sysinfo.windowWidth,
-    grids: iMenu(1, roleData.wmenu[1]),
     pNo: 'goods',                       //商品信息
     pageData: {}
   },
 
   onReady: function(){
     let that = this;              //更新缓存以后有变化的数据
+    let { roleData } = getApp();
+    that.setData({
+      grids: iMenu(1, roleData.wmenu[1])
+    });
     that.goods = new getData('goods');
     that.goods.upData().then(gData=>{
       if (gData) {
