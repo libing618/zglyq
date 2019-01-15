@@ -100,6 +100,7 @@ export function loginCloud(lState, lData = {}) {                //调用登录�
       name: 'login',
       data: lData
     }).then(({result}) => {
+      if(lState==1){wx.setStorage({key:'roleData',data:result})}
       resolve(result)
     }).catch(err => {
       _getError(err);

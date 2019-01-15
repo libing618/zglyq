@@ -21,6 +21,7 @@ Page({
   onLoad: function (options) {
     var that = this;
     let roleData = wx.getStorageSync('roleData');
+    console.log(sysinfo)
     let roleDefine = require('../../modules/procedureclass')._Role;
     if (roleData.user.position==8) {
       db.collection('sengpi').where({

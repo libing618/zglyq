@@ -22,7 +22,11 @@ App({
         that.sysinfo.useWindowTop = menuButton.bottom+5;
         that.sysinfo.useWindowHeight = res.windowHeight-20//res.statusBarHeight-20;
         that.sysinfo.rpxTopx = res.windowWidth/750;
-        wx.setStorageSync('sysinfo', that.sysinfo)
+        wx.setStorage({ key:'__plugins_/wx4b1c27ae1940d4fd/sysinfo', data:that.sysinfo})
+        wx.getStorage({
+          key: '__plugins_/wx4b1c27ae1940d4fd/roleData',
+          success: function(res) {console.log(res)},
+        })
       }
     });
     wx.onNetworkStatusChange(res => {
