@@ -1,7 +1,5 @@
 const db = wx.cloud.database();
 const _ = db.command;
-const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData') || require('../index').roleData;
 
 function _objToStrArr(dn,obj) {
   let arr = [dn];
@@ -161,11 +159,13 @@ export class cargoStock {
 };
 
 export class getData {               //wxcloud批量查询
-  constructor (dataName,uId=roleData.user.unit,requirement={},orderArr=[['updatedAt','desc']]) {
+  constructor(dataName, requirement = {}, orderArr = [['updatedAt', 'desc']], uId) {
     this.pNo = dataName;
     if (['articles','banner','qa'].includes(dataName)) {               //是否全部单位数组
       this.unitFamily = 'allUnit';
     } else {
+      let roleData = wx.getStorageSync('roleData') || require('../index').roleData;
+      uId = uId ? uId : roleData.user.unit
       this.unitFamily = uId;
       requirement.unitId = _.eq(uId)
     };                //除文章类数据外只能查指定单位的数据
