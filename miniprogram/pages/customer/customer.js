@@ -1,12 +1,8 @@
 import {shareMessage} from '../../libs/util.js';
 const { iMenu, getData, cargoCount } = requirePlugin('lyqPlugin');
-const { sysinfo, roleData } = getApp();
 Page({
   data:{
     mPage: [],
-    statusBar: sysinfo.statusBarHeight,
-    wWidth: sysinfo.windowWidth,
-    grids: iMenu(3, roleData.wmenu[3]),
     pNo: 'cargo',                       //商品信息
     pageData: {}
   },
@@ -16,6 +12,16 @@ Page({
       this.setData({
         pandect:cSum
       })
+    })
+  },
+
+  onLoad: function () {
+    let that = this;
+    let { sysinfo, roleData } = getApp();
+    this.setData({
+      statusBar: sysinfo.statusBarHeight,
+      wWidth: sysinfo.windowWidth,
+      grids: iMenu(3, roleData.wmenu[3])
     })
   },
 

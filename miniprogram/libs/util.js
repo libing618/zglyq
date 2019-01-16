@@ -1,4 +1,4 @@
-const { updateDoc, loginCloud, getData } = requirePlugin('lyqPlugin');
+const { updateDoc, loginCloud } = requirePlugin('lyqPlugin');
 function formatNumber(n) {
   n = n.toString()
   return n[1] ? n : '0' + n
@@ -42,32 +42,59 @@ export function formatTime(date=new Date(),isDay=false) {
   }
 };
 
-export function synUserInfo(userData) {              //同步用户信息
-  wx.getUserInfo({        //检查客户信息
-    withCredentials: false,
-    lang: 'zh_CN',
-    success: function ({ userInfo }) {
-      if (userInfo) {
-        let updateInfo = false,gData={};
-        for (let iKey in userInfo) {
-          if (userInfo[iKey] != userData[iKey]) {             //客户信息有变化
-            updateInfo = true;
-            userData[iKey] = userInfo[iKey];
-            gData[iKey] = userInfo[iKey];
-          }
-        };
-        if (updateInfo) {
-          updateDoc('_User',userData._id,gData).then(() => {
+export function loginAndMenu(roleData) {
+  function synUserInfo(userData) {              //同步用户信息
+    wx.getUserInfo({        //检查客户信息
+      withCredentials: false,
+      lang: 'zh_CN',
+      success: function ({ userInfo }) {
+        if (userInfo) {
+          let updateInfo = false,gData={};
+          for (let iKey in userInfo) {
+            if (userInfo[iKey] != userData[iKey]) {             //客户信息有变化
+              updateInfo = true;
+              userData[iKey] = userInfo[iKey];
+              gData[iKey] = userInfo[iKey];
+            }
+          };
+          if (updateInfo) {
+            updateDoc('_User',userData._id,gData).then(() => {
+              return userData;
+            })
+          } else {
             return userData;
-          })
-        } else {
-          return userData;
-        };
+          };
+        }
       }
-    }
-  });
+    });
+  };
+  return new Promise((resolve, reject) => {
+    wx.getSetting({
+      success:(res)=> {
+        if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
+          loginCloud(1).then(reData=>{
+            if (reData){           //用户如已注册则返回菜单和单位数据，否则进行注册登录
+              wx.setStorage({
+                key: 'roleData',
+                data: reData
+              });
+              resolve(reData)
+            } else {
+              openWxLogin().then(rlgData => {
+                wx.setStorage({
+                  key: 'roleData',
+                  data: rlgData
+                });
+                resolve(rlgData)
+              });
+            }
+          });
+        } else { resolve(false) }
+      },
+      fail: (resFail) => { reject('读取用户授权信息错误') }
+    })
+  }).catch((loginErr) => { reject('系统登录失败:' + JSON.stringify(loginErr)) });
 };
-
 export function openWxLogin() {              //解密unionid并进行注册
   return new Promise((resolve, reject) => {
     wx.login({

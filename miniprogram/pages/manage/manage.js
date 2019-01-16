@@ -1,26 +1,5 @@
-import {tabClick,shareMessage, synUserInfo, openWxLogin} from '../../libs/util.js';
-const { iMenu, loginCloud, getData } = requirePlugin('lyqPlugin');
-var app = getApp();
-function loginAndMenu(roleData) {
-  return new Promise((resolve, reject) => {
-    wx.getSetting({
-      success:(res)=> {
-        if (res.authSetting['scope.userInfo']) {            //用户已经同意小程序使用用户信息
-          loginCloud(1).then(reData=>{
-            if (reData){           //用户如已注册则返回菜单和单位数据，否则进行注册登录
-              resolve(reData)
-            } else {
-              openWxLogin().then(rlgData => {
-                resolve(rlgData)
-              });
-            }
-          });
-        } else { resolve(false) }
-      },
-      fail: (resFail) => { reject('读取用户授权信息错误') }
-    })
-  }).catch((loginErr) => { reject('系统登录失败:' + JSON.stringify(loginErr)) });
-};
+import {tabClick,shareMessage, loginAndMenu,openWxLogin} from '../../libs/util.js';
+const { iMenu, getData } = requirePlugin('lyqPlugin');
 Page({
   data: {
     autoplay: true,
@@ -31,7 +10,8 @@ Page({
   },
 
   onLoad: function () {
-    var that = this;
+    var app = getApp();
+    let that = this;
     let grids;
     wx.hideTabBar();
     let pageData = app.banner.nData;
@@ -42,14 +22,6 @@ Page({
       grids = iMenu(0,app.roleData.wmenu[0]);
       Object.assign(pageData,that.banner.nData,that.articles.nData);
       let mPage = that.articles.nIndex.concat(app.articles.nIndex);
-      // wx.getStorage({
-      //   key: 'roleData',
-      //   success({ data }) {
-      //     if (data) {
-      //       that.roleData = data
-      //     }
-      //   }
-      // })
       that.setData({
         statusBar: app.sysinfo.statusBarHeight,
         wWidth: app.sysinfo.windowWidth / 3,
@@ -68,9 +40,9 @@ Page({
             succPage.grids = iMenu(0, rData.wmenu[0]);           //菜单有变化
           };
           app.roleData = rData;
-          wx.setStorageSync('roleData', rData)
           if (app.roleData.user.line != 9) { wx.showTabBar() };
         };
+        wx.setStorageSync('__plugins_/wx4b1c27ae1940d4fd/roleData', app.roleData)
         that.banner.upData().then(banner=>{
           if (banner) {
             Object.assign(succPage, that.banner.addViewData(banner,'mSwiper') );

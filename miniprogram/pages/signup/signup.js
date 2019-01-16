@@ -4,8 +4,6 @@ var app = getApp()
 Page({
   data:{
     user: {},
-    statusBar: app.sysinfo.statusBarHeight,
-    sysheight: app.sysinfo.useWindowHeight-300,
     swcheck: true,
     unitName: '',
     wxlogincode: '',
@@ -57,6 +55,8 @@ Page({
       that.setData({		    		// 获得当前用户
         user: app.roleData.user,
         uName: app.roleData.user.uName,
+        statusBar: app.sysinfo.statusBarHeight,
+        sysheight: app.sysinfo.useWindowHeight - 300,
         wxlogincode: ressession,
         navBarTitle: '尊敬的' + app.roleData.user.nickName + (app.roleData.user.gender == 1 ? '先生' : '女士'),
         cUnitInfo: that.data.cUnitInfo,

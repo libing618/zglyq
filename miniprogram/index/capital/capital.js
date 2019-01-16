@@ -6,7 +6,7 @@ Page({
   onReady: function () {
     var that = this;
     if (app.globalData.role.unit){                     //用户有所属单位
-      var income = wx.getStorageSync('income'+app.globalData.role.unit) || [];                  //产品成交率
+      var income = [];                  //产品成交率
       new wxCharts({
         canvasId: 'pieCanvas',
         type: 'pie',
@@ -30,8 +30,7 @@ Page({
         height: 300,
         dataLabel: true
       });
-    }else
-    {
+    } else {
       wx.showModal({
         title: '请确认您的单位',
         content: '请确认您申请的所属单位已通过审批。',

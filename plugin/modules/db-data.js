@@ -1,7 +1,7 @@
 const db = wx.cloud.database();
 const _ = db.command;
 const sysinfo = wx.getStorageSync('sysinfo');
-const roleData = wx.getStorageSync('roleData') || require('globaldata');
+const roleData = wx.getStorageSync('roleData') || require('../index').roleData;
 
 function _objToStrArr(dn,obj) {
   let arr = [dn];
@@ -100,7 +100,6 @@ export function loginCloud(lState, lData = {}) {                //调用登录�
       name: 'login',
       data: lData
     }).then(({result}) => {
-      if(lState==1){wx.setStorage({key:'roleData',data:result})}
       resolve(result)
     }).catch(err => {
       _getError(err);

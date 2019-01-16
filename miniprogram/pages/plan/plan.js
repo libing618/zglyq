@@ -1,14 +1,19 @@
 import {shareMessage} from '../../libs/util.js';
 const { iMenu, cargoCount, getData } = requirePlugin('lyqPlugin');
-const {sysinfo,roleData} = getApp();
 Page({
   data:{
     mPage: [],
-    statusBar: sysinfo.statusBarHeight,
-    wWidth: sysinfo.windowWidth,
-    grids: iMenu(1, roleData.wmenu[1]),
     pNo: 'goods',                       //商品信息
     pageData: {}
+  },
+
+  onLoad: function () {
+    let { sysinfo, roleData } = getApp();
+    this.setData({
+      statusBar: sysinfo.statusBarHeight,
+      wWidth: sysinfo.windowWidth,
+      grids: iMenu(1, roleData.wmenu[1])
+    })
   },
 
   onReady: function(){
