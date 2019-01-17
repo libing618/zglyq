@@ -69,6 +69,14 @@ module.exports = {
     return false;
   },
 
+  shareMessage() {
+    return {
+      title: '侠客岛创业服务平台', // 分享标题
+      desc: '扶贫济困，共享良品。', // 分享描述
+      path: '/pages/manage/manage' // 分享路径
+    }
+  },
+
   fetchRecord(requery,indexField,sumField) {             //同步云端数据到本机
     return new Promise((resolve, reject) => {
       let aData = {}, aIndex = {}, indexList = [], aPlace = -1, iField, iSum = {}, mChecked = {};

@@ -8,25 +8,33 @@ App({
   onLaunch: function () {
     var that = this;
     if (!that.roleData) {that.roleData = roleData}     // 读系统参数
-    wx.getSystemInfo({                     //读设备信息
-      success: function (res) {
-        that.sysinfo = res;
-        let sdkvc = res.SDKVersion.split('.');
-        let sdkVersion = parseFloat(sdkvc[0] + '.' + sdkvc[1] + sdkvc[2]);
-        if (sdkVersion < 2.41) {
-          wx.showModal({
-            title: '提示',
-            content: '当前微信版本过低，无法正常使用，请升级到最新微信版本后重试。',
-            compressed(res) { setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000); }
-          })
-        };                  //转换比例屏幕宽750rpx
-        let menuButton = wx.getMenuButtonBoundingClientRect()
-        that.sysinfo.useWindowTop = menuButton.Bottom + 5;
-        that.sysinfo.useWindowHeight = res.windowHeight - 20//res.statusBarHeight-20;
-        that.sysinfo.rpxTopx = res.windowWidth / 750;
-        console.log(that.sysinfo)
-        initApp(that.sysinfo);
-      }
+    // wx.getSystemInfo({                     //读设备信息
+    //   success: function (res) {
+    //     that.sysinfo = res;
+    //     let sdkvc = res.SDKVersion.split('.');
+    //     let sdkVersion = parseFloat(sdkvc[0] + '.' + sdkvc[1] + sdkvc[2]);
+    //     if (sdkVersion < 2.41) {
+    //       wx.showModal({
+    //         title: '提示',
+    //         content: '当前微信版本过低，无法正常使用，请升级到最新微信版本后重试。',
+    //         compressed(res) { setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000); }
+    //       })
+    //     };                  //转换比例屏幕宽750rpx
+    //     let menuButton = wx.getMenuButtonBoundingClientRect()
+    //     that.sysinfo.useWindowTop = menuButton.Bottom + 5;
+    //     that.sysinfo.useWindowHeight = res.windowHeight - 20//res.statusBarHeight-20;
+    //     that.sysinfo.rpxTopx = res.windowWidth / 750;
+    //
+    //   }
+    // });
+    initApp(wx.getMenuButtonBoundingClientRect()).then(sysinfo=>{
+      that.sysinfo = sysinfo;
+    }).catch(()=>{
+      wx.showModal({
+        title: '提示',
+        content: '当前微信版本过低，无法正常使用，请升级到最新微信版本后重试。',
+        compressed(res) { setTimeout(function () { wx.navigateBack({ delta: 1 }) }, 2000); }
+      })
     });
     wx.onNetworkStatusChange(res => {
       if (!res.isConnected) {
